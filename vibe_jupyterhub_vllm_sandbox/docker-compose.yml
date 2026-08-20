@@ -1,0 +1,216 @@
+name: vibe-jhub-sandbox
+
+services:
+  course-init:
+    image: alpine:3.21
+    command: >-
+      sh -c 'rm -rf /dest/* /dest/.[!.]* /dest/..?* 2>/dev/null || true;
+      cp -a /src/. /dest/;
+      chmod -R a+rX /dest'
+    volumes:
+      - ./course_materials:/src:ro
+      - course-materials:/dest
+    restart: "no"
+
+  user-image:
+    profiles: ["build"]
+    image: ${JUPYTER_USER_IMAGE:-vibe-classroom-user:latest}
+    build:
+      context: ./user
+      args:
+        INSTALL_BROWSER: ${INSTALL_BROWSER:-0}
+    command: ["true"]
+
+  vllm:
+    image: ${VLLM_IMAGE:-vllm/vllm-openai:v0.25.1-cu129-ubuntu2404}
+    restart: unless-stopped
+    ipc: host
+    environment:
+      NVIDIA_VISIBLE_DEVICES: "0"
+      VLLM_API_KEY: ${VLLM_INTERNAL_KEY}
+    volumes:
+      # Mount the model repository root, not only the snapshot directory.
+      # Hugging Face snapshots commonly use symlinks into ../../blobs.
+      - ${QWEN_MODEL_ROOT}:/models/qwen35:ro
+    command:
+      - /models/qwen35/snapshots/${QWEN_SNAPSHOT_ID}
+      - --served-model-name
+      - qwen35-9b
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --max-model-len
+      - ${VLLM_MAX_MODEL_LEN:-8192}
+      - --gpu-memory-utilization
+      - ${VLLM_GPU_MEMORY_UTILIZATION:-0.88}
+      - --max-num-seqs
+      - ${VLLM_MAX_NUM_SEQS:-4}
+      - --max-cudagraph-capture-size
+      - ${VLLM_MAX_CUDAGRAPH_CAPTURE_SIZE:-8}
+      - --language-model-only
+      - --reasoning-parser
+      - qwen3
+      - --default-chat-template-kwargs
+      - '{"enable_thinking": false}'
+      - --enable-prefix-caching
+      - --api-key
+      - ${VLLM_INTERNAL_KEY}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          python -c "import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)"
+      interval: 20s
+      timeout: 8s
+      retries: 60
+      start_period: 15m
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: litellm
+      POSTGRES_USER: litellm
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U litellm -d litellm"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  litellm:
+    image: ${LITELLM_IMAGE:-docker.litellm.ai/berriai/litellm-database:latest}
+    restart: unless-stopped
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    environment:
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
+      LITELLM_SALT_KEY: ${LITELLM_SALT_KEY}
+      DATABASE_URL: postgresql://litellm:${POSTGRES_PASSWORD}@db:5432/litellm
+      VLLM_INTERNAL_KEY: ${VLLM_INTERNAL_KEY}
+    volumes:
+      - ./gateway/config.yaml:/app/config.yaml:ro
+    networks:
+      - backend
+    depends_on:
+      db:
+        condition: service_healthy
+      vllm:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          python -c "import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:4000/health/readiness', timeout=5)"
+      interval: 10s
+      timeout: 8s
+      retries: 30
+      start_period: 2m
+
+  api-proxy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      # Local-only OpenAI-compatible gateway endpoint.
+      - "127.0.0.1:${LOCAL_GATEWAY_PORT:-4000}:8080"
+    volumes:
+      - ./proxy/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      - jhub
+      - backend
+    depends_on:
+      litellm:
+        condition: service_healthy
+
+  jupyterhub:
+    image: ${JUPYTERHUB_IMAGE:-vibe-jupyterhub:latest}
+    build:
+      context: ./hub
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${LOCAL_HUB_PORT:-8000}:8000"
+    environment:
+      DOCKER_NETWORK_NAME: vibe-jhub-net
+      JUPYTER_USER_IMAGE: ${JUPYTER_USER_IMAGE:-vibe-classroom-user:latest}
+      JUPYTERHUB_ALLOWED_USERS: ${JUPYTERHUB_ALLOWED_USERS:-instructor,student1,student2}
+      JUPYTERHUB_ADMIN_USERS: ${JUPYTERHUB_ADMIN_USERS:-instructor}
+      JUPYTERHUB_USER_PASSWORDS_JSON: '${JUPYTERHUB_USER_PASSWORDS_JSON}'
+      JUPYTERHUB_COOKIE_SECRET: ${JUPYTERHUB_COOKIE_SECRET}
+      LITELLM_ADMIN_URL: http://litellm:4000
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
+      STUDENT_LLM_BASE_URL: http://api-proxy:8080/v1
+      STUDENT_LLM_MODEL: classroom-qwen
+      STUDENT_KEY_DURATION: ${STUDENT_KEY_DURATION:-30d}
+      STUDENT_RPM_LIMIT: ${STUDENT_RPM_LIMIT:-6}
+      STUDENT_TPM_LIMIT: ${STUDENT_TPM_LIMIT:-12000}
+      STUDENT_MAX_PARALLEL_REQUESTS: ${STUDENT_MAX_PARALLEL_REQUESTS:-1}
+      STUDENT_MEM_LIMIT: ${STUDENT_MEM_LIMIT:-4G}
+      STUDENT_CPU_LIMIT: ${STUDENT_CPU_LIMIT:-2.0}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - hub-state:/srv/jupyterhub
+    networks:
+      - jhub
+      - backend
+    depends_on:
+      course-init:
+        condition: service_completed_successfully
+      api-proxy:
+        condition: service_started
+
+  edge:
+    profiles: ["public"]
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    environment:
+      LLM_DOMAIN: ${LLM_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./edge/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      - public
+      - backend
+    depends_on:
+      - litellm
+
+volumes:
+  course-materials:
+    name: vibe-course-materials
+  hub-state:
+    name: vibe-hub-state
+  postgres-data:
+    name: vibe-litellm-postgres
+  caddy-data:
+    name: vibe-caddy-data
+  caddy-config:
+    name: vibe-caddy-config
+
+networks:
+  jhub:
+    name: vibe-jhub-net
+  backend:
+    name: vibe-backend-net
+    internal: true
+  public:
+    name: vibe-public-net

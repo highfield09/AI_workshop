@@ -1,0 +1,30 @@
+{
+    email {$ACME_EMAIL}
+}
+
+{$LLM_DOMAIN} {
+    encode zstd gzip
+
+    @openai_api path /v1 /v1/*
+    handle @openai_api {
+        reverse_proxy litellm:4000
+    }
+
+    # Never expose LiteLLM's admin UI, key-management, spend-administration,
+    # or health routes through the public edge.
+    handle {
+        respond "Not found" 404
+    }
+
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "no-referrer"
+        -Server
+    }
+
+    log {
+        output stdout
+        format json
+    }
+}

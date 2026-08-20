@@ -1,0 +1,28 @@
+# EXAMPLE ONLY. Do not publish the Hub while using the sandbox password authenticator.
+# First replace it with institutional OIDC/OAuth and review JupyterHub's public
+# deployment security settings.
+{
+    email {$ACME_EMAIL}
+}
+
+{$HUB_DOMAIN} {
+    encode zstd gzip
+    reverse_proxy jupyterhub:8000
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
+    }
+}
+
+{$LLM_DOMAIN} {
+    encode zstd gzip
+    @openai_api path /v1 /v1/*
+    handle @openai_api {
+        reverse_proxy litellm:4000
+    }
+    handle {
+        respond "Not found" 404
+    }
+}
