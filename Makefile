@@ -4,7 +4,7 @@ install:
 	./scripts/create_venv.sh
 	.venv/bin/python -m pip install --upgrade pip
 	.venv/bin/python -m pip install -r requirements.txt
-	.venv/bin/python -m ipykernel install --user --name llm-workshop --display-name "Python (LLM Workshop)"
+	.venv/bin/python -m ipykernel install --user --name llm-workshop --display-name "Python (Vibe Workshop)"
 
 lab:
 	.venv/bin/python -m jupyter lab

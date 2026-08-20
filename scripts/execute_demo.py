@@ -10,7 +10,7 @@ from nbclient import NotebookClient
 
 
 ROOT = Path(__file__).resolve().parents[1]
-NOTEBOOK = ROOT / "notebooks" / "01_llm_chat_workshop.ipynb"
+NOTEBOOK = ROOT / "notebooks" / "01_start_here.ipynb"
 
 
 def main() -> None:

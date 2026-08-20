@@ -9,15 +9,13 @@ import nbformat
 
 
 ROOT = Path(__file__).resolve().parents[1]
-NOTEBOOK = ROOT / "notebooks" / "01_llm_chat_workshop.ipynb"
+NOTEBOOK = ROOT / "notebooks" / "01_start_here.ipynb"
 REQUIRED_HEADINGS = [
-    "## 0. Setup",
-    "## 1. Messages",
-    "## 2. Prompt design",
-    "## 3. Conversation memory",
-    "## 4. Interactive chatbox",
-    "## 5. Connect a live model",
-    "## 6. Reflection",
+    "## Stage 1 — Find your way around",
+    "## Stage 2 — Choose an AI helper",
+    "## Stage 3 — Ask, compare, and question",
+    "## Next — Six vibe-coding sandboxes",
+    "## Orientation complete",
 ]
 SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_-]{20,}"),

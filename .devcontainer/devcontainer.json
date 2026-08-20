@@ -1,7 +1,7 @@
 {
-  "name": "LLM Workshop",
+  "name": "Vibe Coding Workshop",
   "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bookworm",
-  "postCreateCommand": "python -m pip install --upgrade pip && python -m pip install -r requirements.txt && python -m ipykernel install --user --name llm-workshop --display-name 'Python (LLM Workshop)'",
+  "postCreateCommand": "python -m pip install --upgrade pip && python -m pip install -r requirements.txt && python -m ipykernel install --user --name llm-workshop --display-name 'Python (Vibe Workshop)'",
   "forwardPorts": [8888, 11434, 4000],
   "portsAttributes": {
     "8888": {
@@ -28,4 +28,3 @@
     }
   }
 }
-

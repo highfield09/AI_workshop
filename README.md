@@ -1,52 +1,47 @@
-# LLM Workshop Notebook
+# Vibe Coding Workshop
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/highfield09/AI_workshop)
 
-A small, classroom-style Jupyter project for experimenting with an LLM chat interface in VS Code or GitHub Codespaces. The notebook is designed to run immediately in an offline demo mode, then switch to:
+A beginner-friendly workshop for learning how to reproduce a clear output with help from an AI interface. The emphasis is on finding files, describing a target, making a small change, opening the result, and refining it—not on memorizing technical syntax.
 
-- a local OpenAI-compatible service such as Ollama or vLLM;
-- the existing classroom LiteLLM/vLLM gateway; or
-- OpenAI or another cloud-hosted OpenAI-compatible endpoint.
+## Start here
 
-The earlier full JupyterHub/vLLM deployment is preserved in [`vibe_jupyterhub_vllm_sandbox/`](vibe_jupyterhub_vllm_sandbox/). This root project is the lightweight notebook used by students.
+1. Open the repository in GitHub Codespaces.
+2. Wait for the development container to finish rebuilding.
+3. Open notebooks/01_start_here.ipynb.
+4. Select **Python (Vibe Workshop)** if VS Code asks for a kernel.
+5. Run the notebook from the top.
 
-## Open in GitHub Codespaces
+The first notebook contains:
 
-1. Push this repository to GitHub.
-2. Choose **Code → Codespaces → Create codespace on main**.
-3. Wait for the dev container to install the notebook dependencies.
-4. Open `notebooks/01_llm_chat_workshop.ipynb` and select **Python (LLM Workshop)** if VS Code asks for a kernel.
+- **Stage 1:** a friendly VS Code and directory-tree orientation with an interactive quiz;
+- **Stage 2:** direct links to common AI interfaces and a simple result-first prompt;
+- **Stage 3:** four copy-and-ask experiments with locally saved worksheet boxes;
+- a preview of six isolated vibe-coding sandboxes.
 
-The committed notebook includes safe offline outputs, so its examples are visible in GitHub and VS Code before a live API is configured.
+## Workshop folders
 
-## Run in this VS Code workspace
+| Folder | What belongs there |
+|---|---|
+| notebooks/ | Course lessons |
+| tasks/ | One self-contained folder per sandbox |
+| data/ | Small course input files |
+| outputs/ | Reference results and instructor examples |
+| scripts/ | Reusable instructions and course checks |
 
-```bash
-cp .env.example .env
-make install
-```
+The older deployment material remains in the repository for reference but is hidden from the default VS Code Explorer view.
 
-Then open the notebook in VS Code and choose the `.venv` Python interpreter. Alternatively, start JupyterLab with:
+## Local VS Code setup
 
-```bash
-make lab
-```
+From the repository root:
 
-## Configure an LLM
+    make install
+    make lab
 
-Keep secrets in `.env` or in Codespaces secrets—never in a notebook cell.
+Use make check before committing an iteration. Use make execute-demo to rebuild the safe committed notebook outputs.
 
-```dotenv
-LLM_PROVIDER=local
-LOCAL_LLM_BASE_URL=http://localhost:11434/v1
-LOCAL_LLM_API_KEY=ollama
-LOCAL_LLM_MODEL=qwen3:8b
-```
+## Course design rule
 
-For OpenAI cloud, set `LLM_PROVIDER=openai`, `OPENAI_API_KEY`, and `OPENAI_MODEL`. For the existing gateway, use `LLM_PROVIDER=classroom` plus the `CLASSROOM_*` variables from `.env.example`.
+Each sandbox should give learners one clear target, tiny isolated inputs, a starting prompt, an obvious way to open or run the result, and a short comparison checklist.
 
-## Instructor workflow
-
-The notebook is split into numbered sections with short tasks, hints, and extension prompts. Use the offline demo provider when teaching UI or prompt concepts without network access. Use `make check` before committing an iteration, and `make execute-demo` to refresh only the safe demo outputs.
-
-The official OpenAI Python SDK reads `OPENAI_API_KEY` from the environment; the project follows the same pattern and never serializes keys into notebook output.
+Secrets belong in Codespaces secrets or a local .env file. The .env file is Git-ignored and must never be committed.
