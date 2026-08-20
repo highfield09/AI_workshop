@@ -10,6 +10,7 @@ import nbformat
 
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK = ROOT / "notebooks" / "01_start_here.ipynb"
+EFFORT_REPORT = ROOT / "Resources" / "2026 Agentic Coding Trends Report.pdf"
 REQUIRED_HEADINGS = [
     "## Stage 1 — Find your way around",
     "## Stage 2 — Choose an AI helper",
@@ -20,9 +21,14 @@ REQUIRED_HEADINGS = [
 REQUIRED_SNIPPETS = [
     "Keep the lesson inside the available notebook width",
     "KEY CONCEPT · TOKEN EFFICIENCY",
+    "KEY CONCEPT · MODEL EFFORT",
+    "Effort is a <b>signal, not a strict token budget</b>",
+    "20 free prompts",
     "PROMPTING RESOURCES",
     "Read the icons at the end of each model option",
     "moonshotai/Kimi-K3",
+    "zai-org/GLM-5.2",
+    "TOKEN COUNT NOTE",
     "Always know where your output is going",
     "tasks/stage3_answers.json",
 ]
@@ -61,6 +67,26 @@ def main() -> None:
         raise SystemExit(
             f"Missing workshop concepts: {', '.join(missing_snippets)}"
         )
+
+    if not EFFORT_REPORT.is_file():
+        raise SystemExit(
+            f"Missing student reference: {EFFORT_REPORT.relative_to(ROOT)}"
+        )
+
+    if "<abbr title='Probabilistic" not in markdown:
+        raise SystemExit("Probabilistic definition must use a hover-only abbreviation")
+
+    sources = [cell.source for cell in notebook.cells]
+    checkpoint_index = next(
+        index for index, source in enumerate(sources) if "STAGE 3 CHECKPOINT" in source
+    )
+    reusable_prompt_index = next(
+        index
+        for index, source in enumerate(sources)
+        if "I want to reproduce the attached example" in source
+    )
+    if reusable_prompt_index <= checkpoint_index:
+        raise SystemExit("Reusable coding prompt must appear after Stage 3")
 
     expected_error_cells = [
         index

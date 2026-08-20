@@ -1,6 +1,7 @@
 from llm_workshop.worksheet import (
     _read_answers,
     _write_answers,
+    effort_comparison_box,
     model_comparison_box,
     worksheet_box,
 )
@@ -80,3 +81,39 @@ def test_single_answer_submission_saves_and_points_to_output(tmp_path):
     }
     assert path.as_posix() in box.children[3].value
     assert "VS Code Explorer" in box.children[3].value
+
+
+def test_effort_comparison_saves_answers_and_token_counts(tmp_path):
+    path = tmp_path / "answers.json"
+    box = effort_comparison_box(
+        "castle_effort",
+        model_name="zai-org/GLM-5.2",
+        answers_path=path,
+    )
+    box.children[1].children[1].value = "Low-effort castle"
+    box.children[2].children[0].value = "120"
+    box.children[2].children[1].value = "210"
+    box.children[4].children[1].value = "High-effort castle"
+    box.children[5].children[0].value = "120"
+    box.children[5].children[1].value = "450"
+    box.children[6].children[1].value = "High followed every rule."
+
+    box.children[7].click()
+
+    assert _read_answers(path)["castle_effort"] == {
+        "model": "zai-org/GLM-5.2",
+        "low": {
+            "effort": "Low",
+            "answer": "Low-effort castle",
+            "input_tokens": "120",
+            "output_tokens": "210",
+        },
+        "high": {
+            "effort": "High",
+            "answer": "High-effort castle",
+            "input_tokens": "120",
+            "output_tokens": "450",
+        },
+        "observation": "High followed every rule.",
+    }
+    assert box.layout.border == "2px solid #12B76A"

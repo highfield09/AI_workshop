@@ -21,8 +21,8 @@ If the notebook asks for a kernel, choose **Python (Vibe Workshop)**. Someone ru
 The first notebook contains:
 
 - **Stage 1:** a friendly VS Code and directory-tree orientation with an interactive quiz;
-- **Stage 2:** AI links, a visual model-card guide, token efficiency, and a copyable result-first prompt;
-- **Stage 3:** HuggingChat capability icons, focused model experiments, locally saved worksheets, and an AI-assisted repair challenge;
+- **Stage 2:** AI links, a visual model-card guide, token efficiency, model-effort controls, and prompting references;
+- **Stage 3:** HuggingChat capability icons, Low-versus-High effort testing, focused model experiments, locally saved worksheets, and an AI-assisted repair challenge;
 - a preview of six isolated vibe-coding sandboxes.
 
 Open [KEY_CONCEPTS.md](KEY_CONCEPTS.md) for the growing student take-home reference.
@@ -35,6 +35,7 @@ Open [KEY_CONCEPTS.md](KEY_CONCEPTS.md) for the growing student take-home refere
 | tasks/ | One self-contained folder per sandbox |
 | data/ | Small course input files |
 | outputs/ | Reference results and instructor examples |
+| Resources/ | Optional student reading and reports |
 | scripts/ | Reusable instructions and course checks |
 
 The older deployment material remains in the repository for reference but is hidden from the default VS Code Explorer view.

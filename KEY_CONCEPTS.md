@@ -11,6 +11,7 @@ This is the workshop's growing take-home reference. Open it from the VS Code Exp
 - `tasks/` contains isolated challenges and learner worksheets.
 - `data/` contains shared input files.
 - `outputs/` contains results you create.
+- `Resources/` contains optional student reading and reports.
 - `scripts/` and Python modules contain reusable instructions.
 - Run a notebook cell with the ▶ play button or `Shift + Enter`.
 
@@ -38,6 +39,20 @@ Use a six-point prompt check: set the objective, be clear, add only useful conte
 - Large files, long conversations, detailed reasoning, and long answers can consume more tokens than expected.
 - State the task and desired format clearly, include only useful context, and request an appropriate answer length.
 
+### Model effort
+
+**Key concept: match effort to complexity instead of automatically choosing the highest setting.**
+
+- Some models expose Low, Medium, High, Max, or XHigh effort; other models and providers use a fixed or automatic level.
+- Low effort usually prioritises speed and token efficiency for short, simple tasks.
+- High effort gives difficult, multi-step work more reasoning and checking budget.
+- Max or XHigh can suit long agentic or coding work when the model supports it.
+- Effort is a signal, not a strict token budget or a guarantee of quality.
+- Compare effort settings fairly: keep the model, prompt, and fresh-chat context identical, and change only effort.
+- Use exact token counts supplied by the interface or provider. If they are not shown, record **Not shown** rather than accepting an invented estimate.
+
+References: [Claude effort controls](https://platform.claude.com/docs/en/build-with-claude/effort) and the local [2026 Agentic Coding Trends Report](Resources/2026%20Agentic%20Coding%20Trends%20Report.pdf).
+
 ## Stage 3 — Question, compare, and trace outputs
 
 **Key concept: always know where your output is going and where to find it.**
@@ -47,6 +62,7 @@ Use a six-point prompt check: set the objective, be clear, add only useful conte
 - The hammer badge means tool calling.
 - Provider badges describe where or how the model runs, not a new skill.
 - LLM outputs are probabilistic: wording can vary even when the intended meaning is similar.
+- Plan for the classroom prompt allowance and leave room for retries; the live interface counter is authoritative because service limits can change.
 - Compare the answer itself; a larger model is not automatically correct.
 - Use a troubleshooting loop: run, read the last error line, make one repair, and rerun.
 - In Stage 3, **Submit & save** triggers the instructions in `llm_workshop/worksheet.py`.

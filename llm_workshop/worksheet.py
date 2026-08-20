@@ -214,3 +214,111 @@ def model_comparison_box(
 
     save.on_click(on_save)
     return box
+
+
+def effort_comparison_box(
+    question_id: str,
+    *,
+    model_name: str,
+    answers_path: str | Path = DEFAULT_ANSWERS_PATH,
+):
+    """Compare two effort settings while recording provider token counts."""
+
+    path = Path(answers_path)
+    saved = _read_answers(path).get(question_id, {})
+    low_saved = saved.get("low", {})
+    high_saved = saved.get("high", {})
+    if not isinstance(low_saved, dict):
+        low_saved = {}
+    if not isinstance(high_saved, dict):
+        high_saved = {}
+
+    def token_field(description: str, value: str):
+        return widgets.Text(
+            value=str(value),
+            description=description,
+            placeholder="Number or Not shown",
+            style={"description_width": "105px"},
+            layout=widgets.Layout(
+                flex="1 1 250px",
+                width="auto",
+                max_width="100%",
+                min_width="0",
+            ),
+        )
+
+    low_answer = _field(
+        "Paste the Low-effort answer:",
+        low_saved.get("answer", ""),
+        height="180px",
+    )
+    low_input = token_field("Input tokens:", low_saved.get("input_tokens", ""))
+    low_output = token_field("Output tokens:", low_saved.get("output_tokens", ""))
+    high_answer = _field(
+        "Paste the High-effort answer:",
+        high_saved.get("answer", ""),
+        height="180px",
+    )
+    high_input = token_field("Input tokens:", high_saved.get("input_tokens", ""))
+    high_output = token_field("Output tokens:", high_saved.get("output_tokens", ""))
+    observation = _field(
+        "Which answer obeyed more rules? Was the extra effort worth the time or tokens?",
+        saved.get("observation", ""),
+        height="100px",
+    )
+    count_layout = widgets.Layout(
+        display="flex",
+        flex_flow="row wrap",
+        width="100%",
+        max_width="100%",
+        min_width="0",
+    )
+    low_counts = widgets.HBox([low_input, low_output], layout=count_layout)
+    high_counts = widgets.HBox([high_input, high_output], layout=count_layout)
+    save = widgets.Button(
+        description="Submit & save",
+        button_style="primary",
+        icon="save",
+    )
+    status = widgets.HTML(_initial_status(path))
+    box = widgets.VBox(
+        [
+            widgets.HTML(f"<b>{model_name} · Low effort</b>"),
+            low_answer,
+            low_counts,
+            widgets.HTML(f"<b>{model_name} · High effort</b>"),
+            high_answer,
+            high_counts,
+            observation,
+            save,
+            status,
+        ],
+        layout=_worksheet_layout(),
+    )
+
+    def on_save(_button) -> None:
+        answers = _read_answers(path)
+        answers[question_id] = {
+            "model": model_name,
+            "low": {
+                "effort": "Low",
+                "answer": low_answer.children[1].value.strip(),
+                "input_tokens": low_input.value.strip(),
+                "output_tokens": low_output.value.strip(),
+            },
+            "high": {
+                "effort": "High",
+                "answer": high_answer.children[1].value.strip(),
+                "input_tokens": high_input.value.strip(),
+                "output_tokens": high_output.value.strip(),
+            },
+            "observation": observation.children[1].value.strip(),
+        }
+        _write_answers(path, answers)
+        save.button_style = "success"
+        save.description = "Saved"
+        box.layout.border = "2px solid #12B76A"
+        status.value = _saved_status(path)
+
+    save.on_click(on_save)
+    return box

@@ -200,6 +200,7 @@ You do not need to memorize commands. The aim is to learn where things live and 
     "├── tasks/       ← one isolated folder for each challenge\n"
     "├── data/        ← small input files supplied by the course\n"
     "├── outputs/     ← viewers, reports, and other results you create\n"
+    "├── Resources/   ← optional student reading and reports\n"
     "├── scripts/     ← reusable instructions that run a task\n"
     "├── KEY_CONCEPTS.md ← growing take-home reference\n"
     "└── README.md    ← the project welcome page</pre>"
@@ -342,39 +343,40 @@ An **LLM card** is the model's label and short information page. Use three signa
 </div>
 
 See [Hugging Face pricing and billing](https://huggingface.co/docs/inference-providers/en/pricing) for an example of how one service handles credits and pay-as-you-go use.
-"""
-        ),
-        markdown(
-            f"""
-### Give the AI a result, not a vague instruction
+
+### Match effort to the task
 
 {panel(
-    "TASK",
-    "For every sandbox, begin by showing or describing the target. Copy "
-    "the prompt from the box below and replace the bracketed text.",
+    "KEY CONCEPT · MODEL EFFORT",
+    "Some interfaces provide an <b>Effort</b> control. It signals the model "
+    "to spend less or more of its response budget on reasoning and checking. "
+    "More effort can help on difficult, multi-step work, but it usually takes "
+    "longer and may use more output or reasoning tokens. It does not guarantee "
+    "a better answer.<br><br><b>Not every model or provider exposes this "
+    "control.</b> Others use a fixed or automatic reasoning level.",
     "task",
 )}
-"""
-        ),
-        code(
-            '''from llm_workshop.prompt_card import copyable_prompt
 
-copyable_prompt(
-    """I want to reproduce the attached example.
+| Effort level | Compute / token use | Best fit |
+|---|---|---|
+| **Low** | Usually the smallest response and reasoning budget | Quick factual lookups, routing, and high-volume simple work. |
+| **Medium** | A balanced, moderate budget | Routine editing, summaries, and tightly scoped tasks. |
+| **High (often default)** | A larger reasoning and checking budget | Complex engineering, nuanced analysis, and difficult multi-step tasks. |
+| **Max / XHigh** | The largest available budget; can be much more expensive | Long agentic work, large refactors, and difficult multi-file debugging. Availability varies. |
 
-The result must:
-- [describe what should visibly match]
-- use the files inside [task folder]
-- stay simple enough for a beginner to edit
+{panel(
+    "IMPORTANT",
+    "Effort is a <b>signal, not a strict token budget</b>. The same setting "
+    "can use different amounts on different questions, models, or providers. "
+    "High or Max is not automatically the most token-efficient choice.",
+    "info",
+)}
 
-Before writing code, ask me up to three short questions.
-Then suggest the smallest file plan and help me build one step at a time."""
-)''',
-            "interactive",
-        ),
-        markdown(
-            f"""
-Replace the bracketed text. Attach only course files that are safe to share.
+Student references:
+
+- [Claude: optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence)
+- [Claude effort controls — current documentation](https://platform.claude.com/docs/en/build-with-claude/effort)
+- [2026 Agentic Coding Trends Report](../Resources/2026%20Agentic%20Coding%20Trends%20Report.pdf) — a broader reference on increasingly complex, long-running coding agents.
 
 ### A six-point prompt check
 
@@ -437,20 +439,19 @@ Replace the bracketed text. Attach only course files that are safe to share.
             f"""
 ### Stage 2 mini-check
 
-Before asking an AI to create anything, what should you provide first?
+Before choosing a model, which four controls or clues should you check?
 
 <details>
 <summary>Show the suggested answer</summary>
 
-Provide the target result—or a clear description of what the finished output must look like and do.
+Check the model's description, parameter scale, supported input types, and whether an Effort control is available and appropriate for the task.
 
 </details>
 
 {panel(
     "STAGE 2 CHECKPOINT",
-    "Provide the target result—or a clear description of what the finished "
-    "output must look like and do. Check the model card, then ask in a "
-    "clear and token-efficient way.",
+    "Check the model card and match the model and effort level to the task. "
+    "Then ask in a clear, token-efficient way.",
     "success",
 )}
 """
@@ -463,11 +464,14 @@ Provide the target result—or a clear description of what the finished output m
     "IMPORTANT",
     "Stage 3 uses <a href='https://huggingface.co/chat/'>HuggingChat</a>, "
     "a single interface that lets you chat with different available open "
-    "models.",
+    "models.<br><br><b>Prompt budget:</b> plan for no more than <b>20 free "
+    "prompts</b>. The exercises below use seven planned prompts, leaving "
+    "room for retries. Limits can change, so the counter shown in your own "
+    "interface is the final authority.",
     "info",
 )}
 
-LLMs are <a href='https://huggingface.co/docs/transformers/generation_strategies' title='Probabilistic means the model chooses among likely next pieces of text; the same request can produce different wording.' style='text-decoration:underline dotted;cursor:help'><b>probabilistic</b></a>. In simple words, they choose from several likely next pieces of text rather than retrieving one fixed sentence. Two runs may therefore use different wording or detail. Ideally, the answers should remain **semantically similar**—their central meaning should agree—even when their phrasing varies.
+LLMs are <abbr title='Probabilistic means the model chooses among likely next pieces of text; the same request can produce different wording.' style='text-decoration:underline dotted;cursor:help'><b>probabilistic</b></abbr>. Hover over the dotted word for its definition; it is no longer a clickable link. In simple words, models choose from several likely next pieces of text rather than retrieving one fixed sentence. Two runs may therefore use different wording or detail. Ideally, the answers should remain **semantically similar**—their central meaning should agree—even when their phrasing varies.
 """
         ),
         markdown(
@@ -528,7 +532,11 @@ The growing workshop reference is in [**KEY_CONCEPTS.md**](../KEY_CONCEPTS.md) a
         ),
         code(
             """
-from llm_workshop.worksheet import model_comparison_box, worksheet_box
+from llm_workshop.worksheet import (
+    effort_comparison_box,
+    model_comparison_box,
+    worksheet_box,
+)
 """
         ),
         markdown(
@@ -621,6 +629,105 @@ model_comparison_box(
             f"""
 {panel(
     "EXPERIMENT 3",
+    "<b>Same model, different effort.</b> Give zai-org/GLM-5.2 the same "
+    "constraint-heavy castle task once at Low effort and once at High "
+    "effort. Compare rule-following, time, and any token counts shown.",
+    "task",
+)}
+
+Use [zai-org/GLM-5.2 in HuggingChat](https://huggingface.co/chat/models/zai-org/GLM-5.2). Its [model card](https://huggingface.co/zai-org/GLM-5.2) describes flexible effort levels for balancing performance and latency.
+
+1. Start a **fresh chat**, choose **Low** from the Effort menu, and send the prompt once.
+2. Start another **fresh chat**, choose **High**, and send the identical prompt once.
+3. Do not repair either answer. Paste both original results into the worksheet.
+4. Record exact input/output token counts only if the interface exposes them. Otherwise enter **Not shown**—a model cannot reliably audit its provider's billing counters.
+
+{panel(
+    "FAIR TEST",
+    "Keep the <b>model, prompt, and fresh-chat context identical</b>. Change "
+    "only Effort. This does not prove that High always wins; it tests whether "
+    "extra effort helped on this one structured task.",
+    "info",
+)}
+"""
+        ),
+        code(
+            '''from llm_workshop.prompt_card import copyable_prompt
+
+copyable_prompt(
+    """Create a 10x10 text grid called a Medieval Castle Map.
+
+Follow every rule exactly:
+1. Output exactly 10 grid rows, each containing exactly 10 visible characters.
+2. Every cell on the outer edge must be a wall marked W.
+3. Inside the walls, place exactly three treasures marked T.
+4. The three T cells must form a straight descending diagonal: each next T is one row lower and one column farther right.
+5. On one inner row, place K, I, N, and G in that left-to-right order. They may have ground dots between them but must not overlap a T.
+6. Fill every other inner cell with a ground dot (.).
+7. Below the grid, list exact 0-based (row, column) coordinates for K, I, N, G, and all three T cells.
+8. Add a short SELF-CHECK reporting: grid rows, characters per row, wall-edge check, treasure count, diagonal check, KING order check, and coordinate check.
+
+Do not put row numbers, bullets, spaces, or Markdown fences inside the 10 grid rows. Double-check the constraints before answering, but do not show hidden reasoning.
+
+Finish with a TOKEN REPORT. If the chat system gives you exact input and output token counts, report them. If those counts are not available to you, write "not available to the model". Never estimate or invent token counts."""
+)''',
+            "interactive",
+        ),
+        markdown(
+            f"""
+Use this quick comparison checklist:
+
+| Check | Low | High |
+|---|:---:|:---:|
+| Exactly 10 rows of 10 characters | ☐ | ☐ |
+| Outer edge is entirely `W` | ☐ | ☐ |
+| Exactly three `T`s form a descending diagonal | ☐ | ☐ |
+| `K`, `I`, `N`, `G` appear in order on one row | ☐ | ☐ |
+| Every coordinate matches the grid | ☐ | ☐ |
+| Token report avoids invented numbers | ☐ | ☐ |
+
+{panel(
+    "TOKEN COUNT NOTE",
+    "The prompt asks for a token report to expose an important limitation: "
+    "the model may not have access to exact provider counters. Prefer numbers "
+    "shown by the interface. If none are shown, record <b>Not shown</b> and "
+    "compare response length and quality without pretending they are exact tokens.",
+    "success",
+)}
+"""
+        ),
+        code(
+            '''effort_comparison_box(
+    "castle_effort",
+    model_name="zai-org/GLM-5.2",
+)''',
+            "interactive",
+        ),
+        markdown(
+            f"""
+<details style='background:#F4F3FF;border:1px solid #D9D6FE;border-radius:10px;padding:12px'>
+<summary><b>Reveal one valid castle only after recording both attempts</b></summary>
+
+Many layouts can satisfy the rules. This is one valid reference:
+
+<pre style='overflow:auto;max-width:100%;box-sizing:border-box'>WWWWWWWWWW
+W.T......W
+W..T.....W
+W...T....W
+WK.I.N.G.W
+W........W
+W........W
+W........W
+W........W
+WWWWWWWWWW</pre>
+
+`K (4,1)` · `I (4,3)` · `N (4,5)` · `G (4,7)`<br>
+`T (1,2)` · `T (2,3)` · `T (3,4)`
+
+</details>
+
+{panel(
+    "EXPERIMENT 4",
     "<b>The nearby car-wash test.</b> This is a quick common-sense logic "
     "check. Ask one named model; there is nothing to submit here.",
     "task",
@@ -649,7 +756,7 @@ This is better described as a **context and common-sense reasoning** failure tha
 </details>
 
 {panel(
-    "EXPERIMENT 4",
+    "EXPERIMENT 5",
     "<b>Repair a broken disco script.</b> Run the next cell as written. It "
     "contains one small naming bug and is expected to show a red error.",
     "task",
@@ -791,6 +898,9 @@ worksheet_box(
     "<ul style='margin:0;padding-left:20px'>"
     "<li>separate text-first models from vision or multimodal models;</li>"
     "<li>expect probabilistic wording while checking semantic meaning;</li>"
+    "<li>change only one variable when comparing Low and High effort;</li>"
+    "<li>use provider token counts when shown—never invented estimates;</li>"
+    "<li>budget prompts so free classroom limits leave room for retries;</li>"
     "<li>distinguish translation from interpretation;</li>"
     "<li>check common-sense logic before accepting a confident answer;</li>"
     "<li>use a short run–repair–rerun troubleshooting loop;</li>"
@@ -812,6 +922,31 @@ worksheet_box(
     "obvious way to run the result, and a comparison checklist.",
     "task",
 )}
+
+### Save this prompt for the six sandboxes
+
+Now that you have used the interfaces, compared models, and adjusted Effort, this longer reusable prompt will make more sense. Keep it for the later build tasks.
+"""
+        ),
+        code(
+            '''from llm_workshop.prompt_card import copyable_prompt
+
+copyable_prompt(
+    """I want to reproduce the attached example.
+
+The result must:
+- [describe what should visibly match]
+- use the files inside [task folder]
+- stay simple enough for a beginner to edit
+
+Before writing code, ask me up to three short questions.
+Then suggest the smallest file plan and help me build one step at a time."""
+)''',
+            "interactive",
+        ),
+        markdown(
+            f"""
+Replace the bracketed text when a sandbox begins. Attach only course files that are safe to share.
 
 - one clear target to copy, mimic, or reproduce;
 - a tiny input file or reference;
