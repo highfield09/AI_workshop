@@ -17,6 +17,14 @@ REQUIRED_HEADINGS = [
     "## Next — Six vibe-coding sandboxes",
     "## Orientation complete",
 ]
+REQUIRED_SNIPPETS = [
+    "KEY CONCEPT · TOKEN EFFICIENCY",
+    "PROMPTING RESOURCES",
+    "Read the icons at the end of each model option",
+    "moonshotai/Kimi-K3",
+    "Always know where your output is going",
+    "tasks/stage3_answers.json",
+]
 SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
     re.compile(r"(api[_-]?key\s*[=:]\s*)['\"][^'\"]{12,}['\"]", re.I),
@@ -47,15 +55,35 @@ def main() -> None:
     if missing:
         raise SystemExit(f"Missing workshop sections: {', '.join(missing)}")
 
-    errors = [
+    missing_snippets = [text for text in REQUIRED_SNIPPETS if text not in markdown]
+    if missing_snippets:
+        raise SystemExit(
+            f"Missing workshop concepts: {', '.join(missing_snippets)}"
+        )
+
+    expected_error_cells = [
+        index
+        for index, cell in enumerate(notebook.cells)
+        if "expected-error" in cell.get("metadata", {}).get("tags", [])
+    ]
+    if len(expected_error_cells) != 1:
+        raise SystemExit(
+            "Notebook must contain exactly one intentional repair cell; "
+            f"found {expected_error_cells}"
+        )
+
+    unexpected_errors = [
         index
         for index, cell in enumerate(notebook.cells)
         if cell.cell_type == "code"
+        if "expected-error" not in cell.get("metadata", {}).get("tags", [])
         for output in cell.get("outputs", [])
         if output.get("output_type") == "error"
     ]
-    if errors:
-        raise SystemExit(f"Notebook has error outputs in cells: {errors}")
+    if unexpected_errors:
+        raise SystemExit(
+            f"Notebook has unexpected error outputs in cells: {unexpected_errors}"
+        )
 
     searchable = [cell.source for cell in notebook.cells]
     searchable.extend(

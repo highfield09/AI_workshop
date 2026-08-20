@@ -20,6 +20,7 @@ def main() -> None:
         notebook,
         timeout=120,
         kernel_name="llm-workshop",
+        allow_errors=True,
         resources={"metadata": {"path": str(ROOT)}},
     )
     client.execute()

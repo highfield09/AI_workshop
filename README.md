@@ -21,9 +21,11 @@ If the notebook asks for a kernel, choose **Python (Vibe Workshop)**. Someone ru
 The first notebook contains:
 
 - **Stage 1:** a friendly VS Code and directory-tree orientation with an interactive quiz;
-- **Stage 2:** direct links to common AI interfaces and a simple result-first prompt;
-- **Stage 3:** four copy-and-ask experiments with locally saved worksheet boxes;
+- **Stage 2:** AI links, a visual model-card guide, token efficiency, and a copyable result-first prompt;
+- **Stage 3:** HuggingChat capability icons, focused model experiments, locally saved worksheets, and an AI-assisted repair challenge;
 - a preview of six isolated vibe-coding sandboxes.
+
+Open [KEY_CONCEPTS.md](KEY_CONCEPTS.md) for the growing student take-home reference.
 
 ## Workshop folders
 
