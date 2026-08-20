@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import csv
+from html import escape
 from pathlib import Path
 
 import nbformat as nbf
@@ -9,6 +11,7 @@ import nbformat as nbf
 
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK = ROOT / "notebooks" / "01_start_here.ipynb"
+CATALOGUE_CSV = ROOT / "data" / "notebook1" / "products.csv"
 PALETTES = {
     "info": {
         "background": "#EFF8FF",
@@ -111,6 +114,46 @@ def model_card_diagram() -> str:
         "border-radius:10px;padding:11px;text-align:center'>"
         "<b>Choose the smallest suitable model that accepts your input and "
         "fits the task.</b></div></div>"
+    )
+
+
+def catalogue_preview() -> str:
+    """Return a compact CSV-ordered preview of all catalogue products."""
+
+    with CATALOGUE_CSV.open(newline="", encoding="utf-8") as handle:
+        rows = list(csv.DictReader(handle))
+
+    cards = []
+    for row in rows:
+        name = escape(row["name"])
+        image = escape(row["image"])
+        product_type = escape(row["type"])
+        colour = escape(row["colour"])
+        cards.append(
+            "<div style='border:1px solid #D0D5DD;border-radius:8px;"
+            "padding:7px;background:#FFFFFF;min-width:0;text-align:center;"
+            "box-sizing:border-box;overflow:hidden'>"
+            "<div style='height:64px;background:#F2F4F7;border-radius:6px;"
+            "display:grid;place-items:center;overflow:hidden'>"
+            f"<img src='../data/notebook1/{image}' alt='{name}' "
+            "style='display:block;width:64px;height:64px;object-fit:contain;"
+            "image-rendering:pixelated'></div>"
+            f"<div style='font-size:0.72rem;font-weight:700;margin-top:5px;"
+            f"line-height:1.15'>{name}</div>"
+            f"<div style='font-size:0.64rem;color:#667085;line-height:1.2;"
+            f"margin-top:2px'>{product_type}<br>{colour}</div></div>"
+        )
+
+    return (
+        "<div style='background:#F8FAFC;border:1px solid #D0D5DD;"
+        "border-radius:12px;padding:10px;margin:12px 0;max-width:100%;"
+        "box-sizing:border-box'>"
+        "<div style='font-size:0.78rem;font-weight:700;color:#344054;"
+        "margin-bottom:8px'>COMPACT INVENTORY · CSV ORDER · 18 ITEMS</div>"
+        "<div style='display:grid;grid-template-columns:repeat(auto-fit,"
+        "minmax(98px,1fr));gap:7px'>"
+        + "".join(cards)
+        + "</div></div>"
     )
 
 
@@ -933,59 +976,70 @@ Python reports that `disco_colours` is not defined. The list was created as `dis
         ),
         markdown(
             f"""
-## Experiment 6 — Brief a coding agent
+## Main task — Build and refine a shopping catalogue
 
 {panel(
-    "VIBE-CODING TASK",
-    "Use GitHub Copilot Chat inside VS Code to help you write one shopping-"
-    "catalogue HTML page. For this exercise, ask Copilot to <b>return the "
-    "code in chat</b>; create the HTML file yourself and paste the code into "
-    "it. This keeps you in control of where the output goes.",
+    "NOTEBOOK 1 · MAIN VIBE-CODING TASK",
+    "Use GitHub Copilot Chat inside VS Code to build, open, inspect, and "
+    "repeatedly improve a shopping catalogue. Ask Copilot to <b>return the "
+    "code in chat</b>; create and edit the HTML file yourself. The goal is "
+    "to practise expressing a target and steering one change at a time.",
     "task",
 )}
 
-### Understand the brief before talking to Copilot
+{panel(
+    "THE REITERATION LOOP",
+    "<div style='font-weight:700;text-align:center;letter-spacing:0.02em'>"
+    "PROMPT → BUILD → OPEN → INSPECT → REQUEST ONE CHANGE → VERIFY AGAIN"
+    "</div><div style='margin-top:7px'>Your first result is a starting "
+    "point. Each preview gives you evidence for the next small prompt.</div>",
+    "keyword",
+)}
+
+### 1 · Inspect the data and define the first version
 
 | Part | What it means in this task |
 |---|---|
-| **Data** | `data/notebook1/products.csv` plus six matching PNG clothing images in the same folder. |
+| **Data** | `data/notebook1/products.csv`: 18 product records mapped to 18 PNG images. |
+| **Core card details** | Image, name, brand, type and price. These belong in the uncluttered first version. |
+| **Optional details** | Colour, `release_date`, sizes, `country_of_origin` and designer. Keep these available, but hidden until they serve a purpose. |
 | **Output** | One file that you create yourself: `tasks/notebook1/catalogue.html`. |
 | **Target** | A clean shopping catalogue: three equal cards per row on a laptop, each showing the mapped image, name, brand, type and price. |
 
-The catalogue should:
+The first version should:
 
 - load `../../data/notebook1/products.csv` in the browser;
 - map each CSV image filename to `../../data/notebook1/<filename>`;
-- create one card per CSV row rather than hard-coding six cards;
+- create one card per CSV row rather than hard-coding 18 cards;
+- display only the five core card details at first;
 - use equal square image areas and consistent card heights;
 - show three columns on a laptop, two on a tablet and one on a narrow phone;
 - format every price with two decimal places;
 - use plain HTML, CSS and JavaScript with no framework or package install;
 - show a friendly message if the CSV cannot be loaded.
 
-<div class='workshop-flex' style='gap:10px;margin:12px 0'>
-<div style='flex:1 1 180px;border:1px solid #D0D5DD;border-radius:10px;padding:10px;background:#FFFFFF'><div style='aspect-ratio:1;background:#F2F4F7;border-radius:7px;display:grid;place-items:center;overflow:hidden'><img src='../data/notebook1/sunset-hoodie.png' alt='Pixel-art coral hoodie' style='width:100%;height:100%;object-fit:contain;image-rendering:pixelated'></div><b>Sunset Hoodie</b><br><small>Common Thread · Hoodie</small><br><b>$59.90</b></div>
-<div style='flex:1 1 180px;border:1px solid #D0D5DD;border-radius:10px;padding:10px;background:#FFFFFF'><div style='aspect-ratio:1;background:#F2F4F7;border-radius:7px;display:grid;place-items:center;overflow:hidden'><img src='../data/notebook1/midnight-sneakers.png' alt='Pixel-art navy sneakers' style='width:100%;height:100%;object-fit:contain;image-rendering:pixelated'></div><b>Midnight Sneakers</b><br><small>After Hours · Sneakers</small><br><b>$74.50</b></div>
-<div style='flex:1 1 180px;border:1px solid #D0D5DD;border-radius:10px;padding:10px;background:#FFFFFF'><div style='aspect-ratio:1;background:#F2F4F7;border-radius:7px;display:grid;place-items:center;overflow:hidden'><img src='../data/notebook1/moss-cap.png' alt='Pixel-art moss-green cap' style='width:100%;height:100%;object-fit:contain;image-rendering:pixelated'></div><b>Moss Cap</b><br><small>Moss and Main · Cap</small><br><b>$24.00</b></div>
-</div>
+{catalogue_preview()}
 
-### Write your own instruction
+The preview above is deliberately compact and follows CSV order: three colour
+variants of each product type sit together. It is an inventory glance, not the
+large shopping-card layout you are asking Copilot to build.
 
-1. In the Explorer, open `data/notebook1/products.csv` and preview two or three PNG files.
+### 2 · Write the first prompt and build
+
+1. In the Explorer, open `data/notebook1/products.csv`. Notice which columns are core and which are optional.
 2. Open **GitHub Copilot Chat** in VS Code and use **Ask/Chat mode**, not an automatic file-editing mode.
 3. Explain the **data**, **output**, **target** and requirements above in your own words. Tell Copilot not to create or edit files; ask it to return one complete HTML document in chat.
 4. Read its short plan. If it misunderstood a path or requirement, correct the instruction before accepting code.
 5. In the Explorer, create `tasks/notebook1/catalogue.html`, then copy the returned HTML code into that file and save it.
 6. Right-click `catalogue.html` and choose **Show Preview**. The Codespace includes VS Code Live Preview so the browser can load the CSV.
 
-If you later want different apparel pictures, a browser image generator such as [Gemini](https://gemini.google.com/app) can create cartoon or pixel-art assets. This workshop already supplies an original matched set so everyone starts from the same data.
-
 {panel(
     "KEY CONCEPT · ARTICULATE THE TARGET",
     "A coding agent works best when you can express the data it should read, "
     "the output you will create, the target you want to see, and the checks "
-    "that define success. Asking for code in chat and placing it yourself "
-    "also reinforces ownership of the file path.",
+    "that define success. Also state what should <b>not</b> appear yet. "
+    "Asking for code in chat and placing it yourself reinforces ownership "
+    "of the file path.",
     "success",
 )}
 """
@@ -994,22 +1048,81 @@ If you later want different apparel pictures, a browser image generator such as 
             '''worksheet_box(
     "catalogue_brief",
     answer_label="Write the instruction you will send to GitHub Copilot:",
-    observation_label="After previewing the page, what requirement did you need to clarify or change?",
+    observation_label="After opening the first version, what is its most important mismatch?",
 )''',
             "interactive",
         ),
         markdown(
             f"""
-### Does it match?
+### 3 · Inspect before asking again
 
-- [ ] Six CSV rows become six product cards.
-- [ ] Every card shows the correct mapped pixel-art image.
-- [ ] Name, brand, type and price match the CSV.
-- [ ] The laptop view has three equal columns with no sideways page scrolling.
+Check the evidence in the preview before writing another prompt:
+
+- Did all 18 rows become cards with the correct images?
+- Are only image, name, brand, type and price visible?
+- Do the cards remain even when product names have different lengths?
+- Does resizing produce three, then two, then one column without sideways scrolling?
+- Is the strongest problem a data problem, a layout problem, or a prompt problem?
+
+### 4 · Reiterate one change at a time
+
+Use the same chat so Copilot has the current code, but make each request small.
+You may ask for one complete revised HTML document or the exact section to
+replace; you still make the edit in `catalogue.html` yourself.
+
+1. **Visibility round:** add a **More details** control. It may reveal colour,
+   release date, sizes, country of origin and designer, but those fields should
+   remain hidden when the page first opens.
+2. **Sorting round:** add a selector for price low-to-high, price high-to-low,
+   and newest release. Keep the original CSV order as a default option.
+3. **Relevance round:** decide which optional details genuinely help a shopper.
+   Ask to hide one unhelpful field, or reveal only the useful fields instead
+   of displaying every available column.
+
+A useful follow-up prompt contains four parts:
+
+| Part | What to write |
+|---|---|
+| **Evidence** | What you can see in the current preview. |
+| **One change** | The single behaviour or field you want changed. |
+| **Preserve** | What already works and must stay unchanged. |
+| **Check** | How you will know the revision succeeded. |
+
+{panel(
+    "KEY CONCEPT · REITERATION LOOP",
+    "A useful first prompt sets direction; useful follow-up prompts steer "
+    "the result. Change one thing, reopen the page, and verify both the new "
+    "behaviour and the parts that should remain stable. Showing every field "
+    "is not automatically better—relevance is part of the design.",
+    "success",
+)}
+"""
+        ),
+        code(
+            '''worksheet_box(
+    "catalogue_reiteration",
+    answer_label="Write one small follow-up prompt using evidence, one change, preserve and check:",
+    observation_label="What changed after you applied it, and what will you verify next?",
+)''',
+            "interactive",
+        ),
+        markdown(
+            f"""
+### Final catalogue check
+
+- [ ] All 18 CSV rows become 18 product cards in the initial CSV order.
+- [ ] Every card shows the correct mapped image and core product details.
+- [ ] Optional metadata is hidden when the page first opens.
+- [ ] A deliberate control can reveal the optional details chosen as useful.
+- [ ] A sort control can order by price and release date.
+- [ ] Irrelevant fields remain hidden, and you can explain that choice.
+- [ ] The laptop view has three equal columns with no sideways scrolling.
 - [ ] Narrower windows change to two columns and then one.
 - [ ] The result is saved at `tasks/notebook1/catalogue.html`.
 
-Do not compare only the appearance. Check the CSV-to-image mapping and resize the preview window before deciding that the task is complete.
+Do not judge only by appearance. Check the CSV-to-image mapping, try the
+controls, resize the preview, and confirm that a later change did not break
+something that worked in the previous version.
 """
         ),
         markdown(

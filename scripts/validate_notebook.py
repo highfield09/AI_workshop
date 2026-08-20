@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import csv
 import re
+from collections import Counter
+from datetime import date
 from pathlib import Path
 
 import nbformat
@@ -18,7 +20,7 @@ REQUIRED_HEADINGS = [
     "## Stage 1 — Find your way around",
     "## Stage 2 — Choose an AI helper",
     "## Stage 3 — Ask, compare, and question",
-    "## Experiment 6 — Brief a coding agent",
+    "## Main task — Build and refine a shopping catalogue",
     "## Orientation complete",
 ]
 REQUIRED_SNIPPETS = [
@@ -36,6 +38,11 @@ REQUIRED_SNIPPETS = [
     "TOKEN COUNT NOTE",
     "KEY CONCEPT · INFERENCE AND ASSUMPTIONS",
     "KEY CONCEPT · ARTICULATE THE TARGET",
+    "KEY CONCEPT · REITERATION LOOP",
+    "PROMPT → BUILD → OPEN → INSPECT → REQUEST ONE CHANGE → VERIFY AGAIN",
+    "18 product records",
+    "country_of_origin",
+    "release_date",
     "data/notebook1/products.csv",
     "tasks/notebook1/catalogue.html",
     "Always know where your output is going",
@@ -75,11 +82,23 @@ def validate_catalogue_data() -> None:
         reader = csv.DictReader(handle)
         rows = list(reader)
 
-    expected_fields = {"id", "name", "image", "price", "brand", "type"}
+    expected_fields = {
+        "id",
+        "name",
+        "image",
+        "price",
+        "brand",
+        "type",
+        "colour",
+        "release_date",
+        "sizes",
+        "country_of_origin",
+        "designer",
+    }
     if set(reader.fieldnames or []) != expected_fields:
         raise SystemExit("Catalogue CSV fields do not match the task brief")
-    if len(rows) != 6:
-        raise SystemExit(f"Catalogue must contain six products; found {len(rows)}")
+    if len(rows) != 18:
+        raise SystemExit(f"Catalogue must contain 18 products; found {len(rows)}")
 
     images = [row["image"] for row in rows]
     if len(set(images)) != len(images):
@@ -87,6 +106,15 @@ def validate_catalogue_data() -> None:
     missing = [name for name in images if not (CATALOGUE_DATA / name).is_file()]
     if missing:
         raise SystemExit(f"Missing catalogue images: {', '.join(missing)}")
+
+    type_counts = Counter(row["type"] for row in rows)
+    if set(type_counts.values()) != {3} or len(type_counts) != 6:
+        raise SystemExit("Catalogue must contain three variants of six product types")
+    for row in rows:
+        date.fromisoformat(row["release_date"])
+        for field in ("colour", "sizes", "country_of_origin", "designer"):
+            if not row[field].strip():
+                raise SystemExit(f"Catalogue field {field!r} cannot be blank")
 
 
 def validate_castle_reference(markdown: str) -> None:
@@ -161,6 +189,15 @@ def main() -> None:
 
     if "<abbr title='Probabilistic" not in markdown:
         raise SystemExit("Probabilistic definition must use a hover-only abbreviation")
+
+    thumbnails = re.findall(
+        r"src='../data/notebook1/([^']+\.png)'",
+        markdown,
+    )
+    if len(thumbnails) != 18 or len(set(thumbnails)) != 18:
+        raise SystemExit("Notebook must preview all 18 catalogue images once")
+    if markdown.count("width:64px;height:64px") != 18:
+        raise SystemExit("Catalogue preview thumbnails must remain compact")
 
     validate_catalogue_data()
     validate_castle_reference(markdown)

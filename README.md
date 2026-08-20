@@ -23,7 +23,7 @@ The first notebook contains:
 - **Stage 1:** a friendly VS Code and directory-tree orientation with an interactive quiz;
 - **Stage 2:** AI links, a visual model-card guide, token efficiency, model-effort controls, and prompting references;
 - **Stage 3:** Google AI Mode fact retrieval, HuggingChat model selection, Gemini reasoning comparisons, locally saved worksheets, and an AI-assisted repair challenge;
-- **Experiment 6:** a GitHub Copilot brief that turns supplied CSV data and original pixel-art apparel into a browser catalogue.
+- **Main task:** a prompt-and-reiteration exercise that turns an 18-row CSV and original pixel-art apparel into a browser catalogue, then changes which fields are shown or hidden.
 
 Open [KEY_CONCEPTS.md](KEY_CONCEPTS.md) for the growing student take-home reference.
 

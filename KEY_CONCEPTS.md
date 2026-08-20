@@ -70,15 +70,20 @@ References: [Claude effort controls](https://platform.claude.com/docs/en/build-w
 - In Stage 3, **Submit & save** triggers the instructions in `llm_workshop/worksheet.py`.
 - Stage 3 worksheet output is written to `tasks/stage3_answers.json`; the button does not choose that destination automatically.
 
-## Experiment 6 — Articulate a coding target
+## Notebook 1 main task — Build and refine a catalogue
 
 **Key concept: express the data, output, target, and success checks before asking a coding agent for code.**
 
-- Data: `data/notebook1/products.csv` and its mapped pixel-art apparel images.
+- Data: 18 rows in `data/notebook1/products.csv` and their mapped pixel-art apparel images.
 - Output: `tasks/notebook1/catalogue.html`.
 - Target: a responsive shopping grid whose cards come from the CSV.
 - Ask GitHub Copilot Chat to return the code; create the HTML file and paste the code yourself.
 - Preview the page with VS Code Live Preview and verify both appearance and CSV-to-image mapping.
+- Begin with the core card fields: image, name, brand, type, and price.
+- Treat colour, release date, sizes, country of origin, and designer as optional details that can be shown or hidden for a purpose.
+- Use a reiteration loop: prompt, build, open, inspect, request one change, and verify again.
+- Keep each follow-up prompt small enough that you can identify what changed.
+- Useful later requests include sorting by price or release date, filtering by type, and adding a details toggle.
 
 ## Before accepting any AI-assisted result
 

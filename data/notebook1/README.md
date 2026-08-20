@@ -1,11 +1,14 @@
 # Notebook 1 catalogue data
 
-This folder is the input for Experiment 6 in `notebooks/01_start_here.ipynb`.
+This folder is the input for the main task in `notebooks/01_start_here.ipynb`.
 
-- `products.csv` maps six product records to six PNG image filenames.
+- `products.csv` maps 18 product records to 18 PNG image filenames.
 - `ASSET_PROMPTS.md` records the image-generation brief used for the set.
-- Each row has an `id`, `name`, `image`, `price`, `brand`, and `type`.
-- The values deliberately contain no commas, so a beginner-level CSV parser can handle this controlled dataset.
+- The rows contain six product families with three colour variants each.
+- Core card fields are `image`, `name`, `brand`, `type`, and `price`.
+- Optional fields are `colour`, `release_date`, `sizes`, `country_of_origin`, and `designer`.
+- `sizes` uses a `|` separator so several sizes fit safely inside one CSV field.
+- ISO dates (`YYYY-MM-DD`) can be sorted without first changing their format.
 - The pixel-art images are original workshop assets generated for this exercise.
 
 The student's HTML output belongs at `tasks/notebook1/catalogue.html`.
