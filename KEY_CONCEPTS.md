@@ -62,11 +62,23 @@ References: [Claude effort controls](https://platform.claude.com/docs/en/build-w
 - The hammer badge means tool calling.
 - Provider badges describe where or how the model runs, not a new skill.
 - LLM outputs are probabilistic: wording can vary even when the intended meaning is similar.
-- Plan for the classroom prompt allowance and leave room for retries; the live interface counter is authoritative because service limits can change.
+- HuggingChat's free allowance for this workshop is 20 questions; Experiment 2 deliberately uses two.
 - Compare the answer itself; a larger model is not automatically correct.
+- Clear-looking wording can hide assumptions. Ask what must be physically present or true for the target outcome to happen.
+- A more explicit target can improve a lightweight model's answer without increasing model size or reasoning effort.
 - Use a troubleshooting loop: run, read the last error line, make one repair, and rerun.
 - In Stage 3, **Submit & save** triggers the instructions in `llm_workshop/worksheet.py`.
 - Stage 3 worksheet output is written to `tasks/stage3_answers.json`; the button does not choose that destination automatically.
+
+## Experiment 6 — Articulate a coding target
+
+**Key concept: express the data, output, target, and success checks before asking a coding agent for code.**
+
+- Data: `data/notebook1/products.csv` and its mapped pixel-art apparel images.
+- Output: `tasks/notebook1/catalogue.html`.
+- Target: a responsive shopping grid whose cards come from the CSV.
+- Ask GitHub Copilot Chat to return the code; create the HTML file and paste the code yourself.
+- Preview the page with VS Code Live Preview and verify both appearance and CSV-to-image mapping.
 
 ## Before accepting any AI-assisted result
 

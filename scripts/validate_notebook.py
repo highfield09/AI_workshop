@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import csv
 import re
 from pathlib import Path
 
@@ -11,11 +12,13 @@ import nbformat
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK = ROOT / "notebooks" / "01_start_here.ipynb"
 EFFORT_REPORT = ROOT / "Resources" / "2026 Agentic Coding Trends Report.pdf"
+CATALOGUE_DATA = ROOT / "data" / "notebook1"
+CATALOGUE_CSV = CATALOGUE_DATA / "products.csv"
 REQUIRED_HEADINGS = [
     "## Stage 1 — Find your way around",
     "## Stage 2 — Choose an AI helper",
     "## Stage 3 — Ask, compare, and question",
-    "## Next — Six vibe-coding sandboxes",
+    "## Experiment 6 — Brief a coding agent",
     "## Orientation complete",
 ]
 REQUIRED_SNIPPETS = [
@@ -23,14 +26,30 @@ REQUIRED_SNIPPETS = [
     "KEY CONCEPT · TOKEN EFFICIENCY",
     "KEY CONCEPT · MODEL EFFORT",
     "Effort is a <b>signal, not a strict token budget</b>",
-    "20 free prompts",
+    "20 questions",
     "PROMPTING RESOURCES",
+    "Google AI Mode",
     "Read the icons at the end of each model option",
     "moonshotai/Kimi-K3",
-    "zai-org/GLM-5.2",
+    "Gemini 3.5 Flash-Lite",
+    "Gemini 3.6 Flash",
     "TOKEN COUNT NOTE",
+    "KEY CONCEPT · INFERENCE AND ASSUMPTIONS",
+    "KEY CONCEPT · ARTICULATE THE TARGET",
+    "data/notebook1/products.csv",
+    "tasks/notebook1/catalogue.html",
     "Always know where your output is going",
     "tasks/stage3_answers.json",
+]
+FORBIDDEN_SNIPPETS = [
+    "it is no longer a clickable link",
+    "The growing workshop reference",
+    "Limits can change",
+    "add one light joke",
+    "FINAL REFLECTION",
+    "TROUBLESHOOTING LOOP",
+    "I want to reproduce the attached example",
+    "zai-org/GLM-5.2",
 ]
 SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
@@ -51,6 +70,68 @@ def output_text(output) -> str:
     return "\n".join(chunks)
 
 
+def validate_catalogue_data() -> None:
+    with CATALOGUE_CSV.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        rows = list(reader)
+
+    expected_fields = {"id", "name", "image", "price", "brand", "type"}
+    if set(reader.fieldnames or []) != expected_fields:
+        raise SystemExit("Catalogue CSV fields do not match the task brief")
+    if len(rows) != 6:
+        raise SystemExit(f"Catalogue must contain six products; found {len(rows)}")
+
+    images = [row["image"] for row in rows]
+    if len(set(images)) != len(images):
+        raise SystemExit("Every catalogue row must map to a different image")
+    missing = [name for name in images if not (CATALOGUE_DATA / name).is_file()]
+    if missing:
+        raise SystemExit(f"Missing catalogue images: {', '.join(missing)}")
+
+
+def validate_castle_reference(markdown: str) -> None:
+    match = re.search(
+        r"Reveal one valid logic map.*?<pre[^>]*>(.*?)</pre>",
+        markdown,
+        re.DOTALL,
+    )
+    if not match:
+        raise SystemExit("Missing hidden castle reference grid")
+    rows = match.group(1).strip().splitlines()
+    if len(rows) != 12 or any(len(row) != 12 for row in rows):
+        raise SystemExit("Castle reference must be exactly 12 by 12")
+
+    expected = {
+        (0, 5): "G",
+        (11, 6): "G",
+        (1, 1): "C",
+        (1, 10): "C",
+        (10, 1): "C",
+        (10, 10): "C",
+        (2, 2): "T",
+        (4, 4): "T",
+        (6, 6): "T",
+        (8, 8): "T",
+        (2, 9): "K",
+        (4, 7): "K",
+        (6, 5): "K",
+        (8, 3): "K",
+    }
+    expected.update(
+        {(9, column): letter for column, letter in zip((1, 3, 5, 7, 9), "CROWN")}
+    )
+    wrong = [
+        f"{position}={rows[position[0]][position[1]]!r}"
+        for position, symbol in expected.items()
+        if rows[position[0]][position[1]] != symbol
+    ]
+    if wrong:
+        raise SystemExit(f"Castle reference violates fixed positions: {', '.join(wrong)}")
+    border = rows[0] + rows[-1] + "".join(row[0] + row[-1] for row in rows[1:-1])
+    if border.count("W") != 42 or border.count("G") != 2:
+        raise SystemExit("Castle reference border must contain 42 walls and two gates")
+
+
 def main() -> None:
     notebook = nbformat.read(NOTEBOOK, as_version=4)
     nbformat.validate(notebook)
@@ -68,6 +149,11 @@ def main() -> None:
             f"Missing workshop concepts: {', '.join(missing_snippets)}"
         )
 
+    all_sources = "\n".join(cell.source for cell in notebook.cells)
+    forbidden = [text for text in FORBIDDEN_SNIPPETS if text in all_sources]
+    if forbidden:
+        raise SystemExit(f"Removed workshop text returned: {', '.join(forbidden)}")
+
     if not EFFORT_REPORT.is_file():
         raise SystemExit(
             f"Missing student reference: {EFFORT_REPORT.relative_to(ROOT)}"
@@ -76,17 +162,8 @@ def main() -> None:
     if "<abbr title='Probabilistic" not in markdown:
         raise SystemExit("Probabilistic definition must use a hover-only abbreviation")
 
-    sources = [cell.source for cell in notebook.cells]
-    checkpoint_index = next(
-        index for index, source in enumerate(sources) if "STAGE 3 CHECKPOINT" in source
-    )
-    reusable_prompt_index = next(
-        index
-        for index, source in enumerate(sources)
-        if "I want to reproduce the attached example" in source
-    )
-    if reusable_prompt_index <= checkpoint_index:
-        raise SystemExit("Reusable coding prompt must appear after Stage 3")
+    validate_catalogue_data()
+    validate_castle_reference(markdown)
 
     expected_error_cells = [
         index
@@ -119,6 +196,11 @@ def main() -> None:
         if cell.cell_type == "code"
         for output in cell.get("outputs", [])
     )
+    if not any(
+        "document.execCommand" in text and "navigator.clipboard.writeText" in text
+        for text in searchable
+    ):
+        raise SystemExit("Notebook is missing the direct browser clipboard control")
     for pattern in SECRET_PATTERNS:
         if any(pattern.search(text) for text in searchable):
             raise SystemExit(f"Possible credential matched {pattern.pattern!r}")

@@ -22,8 +22,8 @@ The first notebook contains:
 
 - **Stage 1:** a friendly VS Code and directory-tree orientation with an interactive quiz;
 - **Stage 2:** AI links, a visual model-card guide, token efficiency, model-effort controls, and prompting references;
-- **Stage 3:** HuggingChat capability icons, Low-versus-High effort testing, focused model experiments, locally saved worksheets, and an AI-assisted repair challenge;
-- a preview of six isolated vibe-coding sandboxes.
+- **Stage 3:** Google AI Mode fact retrieval, HuggingChat model selection, Gemini reasoning comparisons, locally saved worksheets, and an AI-assisted repair challenge;
+- **Experiment 6:** a GitHub Copilot brief that turns supplied CSV data and original pixel-art apparel into a browser catalogue.
 
 Open [KEY_CONCEPTS.md](KEY_CONCEPTS.md) for the growing student take-home reference.
 
@@ -39,6 +39,8 @@ Open [KEY_CONCEPTS.md](KEY_CONCEPTS.md) for the growing student take-home refere
 | scripts/ | Reusable instructions and course checks |
 
 The older deployment material remains in the repository for reference but is hidden from the default VS Code Explorer view.
+
+The Codespace also installs GitHub Copilot Chat and VS Code Live Preview. Copilot access depends on the GitHub account signed into VS Code.
 
 ## Local VS Code setup
 

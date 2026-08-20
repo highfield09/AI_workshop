@@ -87,7 +87,7 @@ def test_effort_comparison_saves_answers_and_token_counts(tmp_path):
     path = tmp_path / "answers.json"
     box = effort_comparison_box(
         "castle_effort",
-        model_name="zai-org/GLM-5.2",
+        model_name="Gemini 3.6 Flash",
         answers_path=path,
     )
     box.children[1].children[1].value = "Low-effort castle"
@@ -101,7 +101,7 @@ def test_effort_comparison_saves_answers_and_token_counts(tmp_path):
     box.children[7].click()
 
     assert _read_answers(path)["castle_effort"] == {
-        "model": "zai-org/GLM-5.2",
+        "model": "Gemini 3.6 Flash",
         "low": {
             "effort": "Low",
             "answer": "Low-effort castle",

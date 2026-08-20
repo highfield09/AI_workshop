@@ -1,84 +1,77 @@
-"""Selectable prompt cards with a browser-copy button for notebook learners."""
+"""Selectable prompt cards with a browser-native copy button."""
 
 from __future__ import annotations
 
-import json
+from html import escape
 from textwrap import dedent
+from uuid import uuid4
 
-import ipywidgets as widgets
-from IPython.display import Javascript, display
+from IPython.display import HTML
 
 
 def copyable_prompt(prompt: str, *, title: str = "Copy this prompt"):
-    """Return a readable prompt box with a clipboard button and fallback."""
+    """Return a prompt card whose copy action stays inside the browser click."""
 
     prompt = dedent(prompt).strip()
     line_count = prompt.count("\n") + 1
-    prompt_height = max(115, min(330, 24 * line_count + 34))
-    heading = widgets.HTML(
-        "<div style='background:#FFFAEB;border:1px solid #FEDF89;"
-        "border-radius:10px 10px 0 0;padding:10px 12px;color:#B54708;"
-        "box-sizing:border-box;max-width:100%;overflow-wrap:anywhere'>"
-        f"<b>📋 {title}</b>"
-        "</div>"
-    )
-    text = widgets.Textarea(
-        value=prompt,
-        description="",
-        layout=widgets.Layout(
-            width="100%",
-            max_width="100%",
-            min_width="0",
-            height=f"{prompt_height}px",
-            border="1px solid #D0D5DD",
-        ),
-    )
-    copy = widgets.Button(
-        description="Copy prompt",
-        icon="copy",
-        button_style="primary",
-        tooltip="Copy this prompt to your browser clipboard",
-    )
-    status = widgets.HTML(
-        "<small>You can also click in the box and press Ctrl+A, then Ctrl+C.</small>"
-    )
-    javascript_output = widgets.Output(
-        layout=widgets.Layout(height="0", overflow="hidden")
-    )
+    prompt_height = max(115, min(360, 24 * line_count + 34))
+    card_id = f"prompt-card-{uuid4().hex}"
+    prompt_html = escape(prompt)
+    title_html = escape(title)
 
-    def copy_prompt(_button) -> None:
-        # Use the browser clipboard, not the remote Codespace clipboard.
-        safe_prompt = json.dumps(text.value).replace("</", "<\\/")
-        with javascript_output:
-            javascript_output.clear_output(wait=True)
-            display(Javascript(f"navigator.clipboard.writeText({safe_prompt});"))
-        copy.button_style = "success"
-        copy.description = "Copy requested"
-        status.value = (
-            "<small style='color:#067647'><b>Copy requested.</b> Paste it into "
-            "the AI chat. If your browser blocks clipboard access, use "
-            "Ctrl+A and Ctrl+C inside the box.</small>"
-        )
+    return HTML(
+        f"""
+<div id="{card_id}" style="border:1px solid #FEDF89;border-radius:10px;
+  width:100%;max-width:100%;box-sizing:border-box;overflow:hidden">
+  <div style="background:#FFFAEB;border-bottom:1px solid #FEDF89;
+    padding:10px 12px;color:#B54708;box-sizing:border-box;
+    max-width:100%;overflow-wrap:anywhere"><b>📋 {title_html}</b></div>
+  <textarea aria-label="{title_html}" spellcheck="false" style="display:block;
+    width:100%;max-width:100%;min-width:0;height:{prompt_height}px;
+    padding:10px;border:0;border-bottom:1px solid #FEDF89;resize:vertical;
+    box-sizing:border-box;font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,
+    monospace;color:#101828;background:#FFFFFF">{prompt_html}</textarea>
+  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+    padding:10px 12px;background:#FFFFFF">
+    <button type="button" data-copy-prompt style="border:1px solid #1570EF;
+      border-radius:7px;background:#1570EF;color:#FFFFFF;padding:7px 12px;
+      font-weight:600;cursor:pointer">⧉ Copy prompt</button>
+    <small data-copy-status style="color:#475467">Click once, then paste into the AI chat.</small>
+  </div>
+</div>
+<script>
+(() => {{
+  const root = document.getElementById("{card_id}");
+  if (!root || root.dataset.copyReady === "true") return;
+  root.dataset.copyReady = "true";
+  const button = root.querySelector("[data-copy-prompt]");
+  const area = root.querySelector("textarea");
+  const status = root.querySelector("[data-copy-status]");
 
-    copy.on_click(copy_prompt)
-    controls = widgets.HBox(
-        [copy, status],
-        layout=widgets.Layout(
-            align_items="center",
-            flex_flow="row wrap",
-            width="100%",
-            max_width="100%",
-            min_width="0",
-        ),
-    )
-    return widgets.VBox(
-        [heading, text, controls, javascript_output],
-        layout=widgets.Layout(
-            border="1px solid #FEDF89",
-            padding="0 0 12px 0",
-            width="100%",
-            max_width="100%",
-            min_width="0",
-            overflow="hidden",
-        ),
+  button.addEventListener("click", async () => {{
+    area.focus();
+    area.select();
+    area.setSelectionRange(0, area.value.length);
+    let copied = false;
+
+    try {{ copied = document.execCommand("copy"); }} catch (_error) {{}}
+    if (!copied && navigator.clipboard && window.isSecureContext) {{
+      try {{
+        await navigator.clipboard.writeText(area.value);
+        copied = true;
+      }} catch (_error) {{}}
+    }}
+
+    if (copied) {{
+      button.textContent = "✓ Copied";
+      button.style.background = "#12B76A";
+      button.style.borderColor = "#12B76A";
+      status.innerHTML = "<b style='color:#067647'>Copied.</b> Paste it into the AI chat.";
+    }} else {{
+      status.innerHTML = "<b>Prompt selected.</b> Press Ctrl+C (Windows/Linux) or Cmd+C (Mac).";
+    }}
+  }});
+}})();
+</script>
+"""
     )

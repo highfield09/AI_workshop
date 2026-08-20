@@ -1,17 +1,19 @@
+from html import unescape
+
 from llm_workshop.prompt_card import copyable_prompt
 
 
-def test_prompt_card_is_selectable_and_has_copy_icon():
+def test_prompt_card_copies_during_the_browser_click_with_fallback():
     card = copyable_prompt("""
         First line.
         Second line.
     """)
+    rendered = unescape(card.data)
 
-    assert card.children[1].value == "First line.\nSecond line."
-    copy_button = card.children[2].children[0]
-    assert copy_button.description == "Copy prompt"
-    assert copy_button.icon == "copy"
-    assert "Ctrl+A" in card.children[2].children[1].value
-    assert card.layout.max_width == "100%"
-    assert card.layout.min_width == "0"
-    assert card.children[1].layout.max_width == "100%"
+    assert "First line.\nSecond line." in rendered
+    assert "Copy prompt" in rendered
+    assert 'addEventListener("click"' in rendered
+    assert 'document.execCommand("copy")' in rendered
+    assert "navigator.clipboard.writeText(area.value)" in rendered
+    assert "Ctrl+C" in rendered
+    assert "width:100%;max-width:100%" in rendered
