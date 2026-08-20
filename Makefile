@@ -1,7 +1,7 @@
 .PHONY: install lab check execute-demo
 
 install:
-	python3 -m venv .venv
+	./scripts/create_venv.sh
 	.venv/bin/python -m pip install --upgrade pip
 	.venv/bin/python -m pip install -r requirements.txt
 	.venv/bin/python -m ipykernel install --user --name llm-workshop --display-name "Python (LLM Workshop)"
@@ -15,4 +15,3 @@ check:
 
 execute-demo:
 	.venv/bin/python scripts/execute_demo.py
-
