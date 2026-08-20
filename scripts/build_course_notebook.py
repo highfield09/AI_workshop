@@ -9,6 +9,28 @@ import nbformat as nbf
 
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK = ROOT / "notebooks" / "01_start_here.ipynb"
+PALETTES = {
+    "info": {
+        "background": "#EFF8FF",
+        "border": "#B2DDFF",
+        "accent": "#175CD3",
+    },
+    "task": {
+        "background": "#FFFAEB",
+        "border": "#FEDF89",
+        "accent": "#B54708",
+    },
+    "keyword": {
+        "background": "#F4F3FF",
+        "border": "#D9D6FE",
+        "accent": "#5925DC",
+    },
+    "success": {
+        "background": "#ECFDF3",
+        "border": "#ABEFC6",
+        "accent": "#067647",
+    },
+}
 
 
 def markdown(source: str):
@@ -22,23 +44,52 @@ def code(source: str, *tags: str):
     return cell
 
 
+def chip(label: str, tone: str = "keyword") -> str:
+    colors = PALETTES[tone]
+    return (
+        f"<span style='display:inline-block;background:{colors['background']};"
+        f"border:1px solid {colors['border']};color:{colors['accent']};"
+        "border-radius:999px;padding:2px 9px;font-size:0.76rem;"
+        "font-weight:700;letter-spacing:0.04em;white-space:nowrap'>"
+        f"{label}</span>"
+    )
+
+
+def panel(label: str, body: str, tone: str = "info") -> str:
+    colors = PALETTES[tone]
+    return (
+        f"<div style='background:{colors['background']};"
+        f"border:1px solid {colors['border']};border-left:5px solid "
+        f"{colors['accent']};border-radius:12px;padding:15px 17px;"
+        "margin:12px 0;color:#344054;line-height:1.55'>"
+        f"{chip(label, tone)}"
+        f"<div style='margin-top:9px'>{body}</div></div>"
+    )
+
+
 def main() -> None:
     cells = [
         markdown(
-            """
+            f"""
 # Vibe Coding Workshop — Start Here
 
 **Friendly setup · 20–30 minutes · No coding experience required**
 
 This short notebook helps you get comfortable in VS Code, find the course files, and choose an AI helper. After this orientation, you will work through six small challenges where you reproduce a visible result.
 
-> Run each cell from top to bottom. Nothing in Stages 1 or 2 sends data to an API.
-
-**Using GitHub Codespaces?** Python runs inside the online workspace, so you do not need it installed on your laptop. If prompted for a kernel, select **Python (Vibe Workshop)**.
+{panel(
+    "IMPORTANT",
+    "<b>Run each cell from top to bottom.</b> Nothing in Stages 1 or 2 "
+    "sends data to an API.<br><br><b>Using GitHub Codespaces?</b> Python "
+    "runs inside the online workspace, so you do not need it installed on "
+    "your laptop. If prompted for a kernel, select "
+    "<b>Python (Vibe Workshop)</b>.",
+    "info",
+)}
 """
         ),
         markdown(
-            """
+            f"""
 ### The simple workflow
 
 1. **Look** at the result you want to recreate.
@@ -49,47 +100,77 @@ This short notebook helps you get comfortable in VS Code, find the course files,
 6. **Refine** one thing at a time.
 
 You do not need to memorize commands. The aim is to learn where things live and how to ask for a clear outcome.
+
+{panel(
+    "COLOUR KEY",
+    chip("KEYWORD") + " marks a useful term. &nbsp; "
+    + chip("TASK", "task") + " tells you to do something. &nbsp; "
+    + chip("CHECKPOINT", "success") + " shows progress.",
+    "info",
+)}
 """
         ),
         markdown(
-            """
+            f"""
 ## Stage 1 — Find your way around
 
 ### Five friendly terms
 
 | Term | What it means here |
 |---|---|
-| **Editor** | The main VS Code area where you open and change a file. |
-| **Script** | A saved list of instructions that makes the computer do a repeatable task. |
-| **Data type** | The shape of information, such as text, a number, a table, JSON, or CSV. |
-| **Terminal** | The small command area where you can ask the computer to run something. |
-| **Directory tree** | The folder-and-file map shown in the Explorer on the left. |
+| {chip("EDITOR")} | The main VS Code area where you open and change a file. |
+| {chip("SCRIPT")} | A saved list of instructions that makes the computer do a repeatable task. |
+| {chip("DATA TYPE")} | The shape of information, such as text, a number, a table, JSON, or CSV. |
+| {chip("TERMINAL")} | The small command area where you can ask the computer to run something. |
+| {chip("DIRECTORY TREE")} | The folder-and-file map shown in the Explorer on the left. |
 
-**Tip:** If you feel lost, return to the Explorer and look for the folder named in the task.
+{panel(
+    "TIP",
+    "If you feel lost, return to the <b>Explorer</b> and look for the "
+    "folder named in the task.",
+    "info",
+)}
 """
         ),
         markdown(
-            """
-### Your workshop map
-
-~~~text
-AI_workshop/
-├── notebooks/   ← lessons like this one
-├── tasks/       ← one isolated folder for each challenge
-├── data/        ← small input files supplied by the course
-├── outputs/     ← viewers, reports, and other results you create
-├── scripts/     ← reusable instructions that run a task
-└── README.md    ← the project welcome page
-~~~
-
-Keep each challenge self-contained inside its own task folder. Put shared source files in **data/** and finished examples in **outputs/**.
+            f"""
+{panel(
+    "WORKSHOP MAP",
+    "<pre style='margin:0;padding:12px;background:#FFFFFF;"
+    "border:1px solid #D0D5DD;border-radius:8px;line-height:1.55;"
+    "overflow:auto'>AI_workshop/\n"
+    "├── notebooks/   ← lessons like this one\n"
+    "├── tasks/       ← one isolated folder for each challenge\n"
+    "├── data/        ← small input files supplied by the course\n"
+    "├── outputs/     ← viewers, reports, and other results you create\n"
+    "├── scripts/     ← reusable instructions that run a task\n"
+    "└── README.md    ← the project welcome page</pre>"
+    "<p style='margin:10px 0 0'>Keep each challenge self-contained inside "
+    "its own <b>tasks/</b> folder. Put shared source files in <b>data/</b> "
+    "and finished examples in <b>outputs/</b>.</p>",
+    "info",
+)}
 """
         ),
         markdown(
-            """
-### See where you are
+            f"""
+{panel(
+    "RUN A CELL",
+    "<b>Click the ▶ play button</b> beside a code cell, or press "
+    "<b>Shift + Enter</b>. The cell will run and place its result directly "
+    "underneath.",
+    "task",
+)}
 
-Run the next cell. It reports your current folder and shows the top-level workshop items. This is a safe way to answer: “Where am I?” and “What files are here?”
+{panel(
+    "YOU CAN IGNORE THE CODE",
+    "You do not need to understand the code inside the next cell. The "
+    "folder list that appears underneath—and the interactive widget later—"
+    "are direct results of the instructions in their code cells.<br><br>"
+    "Run the next cell to answer: <b>Where am I?</b> and "
+    "<b>What files are here?</b>",
+    "info",
+)}
 """
         ),
         code(
@@ -106,90 +187,70 @@ for item in sorted(workspace.iterdir(), key=lambda path: (not path.is_dir(), pat
 """
         ),
         markdown(
-            """
-### Quick check
-
-Choose an answer and press **Submit answer**. The notebook will tell you immediately whether you are correct.
+            f"""
+{panel(
+    "QUICK CHECK",
+    "Choose an answer and press <b>Submit answer</b>. The question panel "
+    "turns green for a correct answer and red when you should try again.",
+    "task",
+)}
 """
         ),
         code(
             """
-import ipywidgets as widgets
-from IPython.display import display
+from llm_workshop.quiz import stage1_quiz
 
-stage1_question = widgets.HTML(
-    "<b>A task gives you a small CSV file that several exercises will use. "
-    "Where should you keep it?</b>"
-)
-stage1_choices = widgets.RadioButtons(
-    options=[
-        ("In notebooks/", "notebooks"),
-        ("In data/", "data"),
-        ("Inside .git/", "git"),
-    ],
-    value=None,
-)
-stage1_submit = widgets.Button(description="Submit answer", button_style="primary")
-stage1_feedback = widgets.HTML("<small>Choose one answer.</small>")
-
-def check_stage1(_button):
-    if stage1_choices.value == "data":
-        stage1_feedback.value = (
-            "<b style='color:#18794e'>Correct!</b> "
-            "Shared source files belong in <b>data/</b>."
-        )
-        stage1_submit.button_style = "success"
-    elif stage1_choices.value is None:
-        stage1_feedback.value = "<b>Choose an answer first.</b>"
-    else:
-        stage1_feedback.value = (
-            "<b style='color:#b42318'>Not quite.</b> "
-            "Look at the workshop map and try again."
-        )
-
-stage1_submit.on_click(check_stage1)
-display(widgets.VBox([
-    stage1_question,
-    stage1_choices,
-    stage1_submit,
-    stage1_feedback,
-]))
+stage1_quiz()
 """,
             "interactive",
         ),
         markdown(
-            """
-### Stage 1 complete when you can…
-
-- find the **Explorer**, **editor**, and **terminal**;
-- point to the **notebooks**, **tasks**, **data**, and **outputs** folders;
-- explain the difference between an input file and something you created.
-
-That is enough orientation to begin vibe coding.
+            f"""
+{panel(
+    "STAGE 1 CHECKPOINT",
+    "<ul style='margin:0;padding-left:20px'>"
+    "<li>find the <b>Explorer</b>, <b>editor</b>, and <b>terminal</b>;</li>"
+    "<li>point to the <b>notebooks</b>, <b>tasks</b>, <b>data</b>, and "
+    "<b>outputs</b> folders;</li>"
+    "<li>explain the difference between an input file and something you "
+    "created.</li></ul><p style='margin:10px 0 0'>That is enough "
+    "orientation to begin vibe coding.</p>",
+    "success",
+)}
 """
         ),
         markdown(
-            """
+            f"""
 ## Stage 2 — Choose an AI helper
 
 Use any interface available to you. These links open the official web experiences in a browser:
 
 | AI interface | Open it |
 |---|---|
-| **ChatGPT** | [Open ChatGPT ↗](https://chatgpt.com/) |
-| **Claude** | [Open Claude ↗](https://claude.ai/) |
-| **Gemini** | [Open Gemini ↗](https://gemini.google.com/) |
-| **HuggingChat** | [Open HuggingChat ↗](https://huggingface.co/chat/) |
-| **Google AI Mode** | [Open Google AI Mode ↗](https://www.google.com/search?udm=50) |
+| {chip("CHATGPT")} | [Open ChatGPT ↗](https://chatgpt.com/) |
+| {chip("CLAUDE")} | [Open Claude ↗](https://claude.ai/) |
+| {chip("GEMINI")} | [Open Gemini ↗](https://gemini.google.com/) |
+| {chip("HUGGINGCHAT")} | [Open HuggingChat ↗](https://huggingface.co/chat/) |
+| {chip("GOOGLE AI MODE")} | [Open Google AI Mode ↗](https://www.google.com/search?udm=50) |
 
-Access can depend on your account, organization, or region. It is fine if the class uses a mixture of tools.
+{panel(
+    "IMPORTANT",
+    "Access can depend on your account, organization, or region. It is "
+    "fine if the class uses a mixture of tools.",
+    "info",
+)}
 """
         ),
         markdown(
-            """
+            f"""
 ### Give the AI a result, not a vague instruction
 
-For every sandbox, begin by showing or describing the target. Then use this lightweight prompt:
+{panel(
+    "TASK",
+    "For every sandbox, begin by showing or describing the target. Copy "
+    "the lightweight prompt below and replace the bracketed text.",
+    "task",
+)}
 
 ~~~text
 I want to reproduce the attached example.
@@ -207,20 +268,25 @@ Replace the bracketed text. Attach only course files that are safe to share.
 """
         ),
         markdown(
-            """
+            f"""
 ### Your role while using AI
 
-- **You choose the target.**
-- **The AI proposes a step.**
-- **You place files in the correct folder.**
-- **You run or open the result.**
-- **You compare and decide what changes next.**
+- {chip("YOU CHOOSE")} the target.
+- {chip("AI PROPOSES")} a step.
+- {chip("YOU PLACE")} files in the correct folder.
+- {chip("YOU RUN")} or open the result.
+- {chip("YOU COMPARE")} and decide what changes next.
 
-If the answer becomes too technical, say: “Explain that in plain language and give me only the next action.”
+{panel(
+    "USEFUL PHRASE",
+    "If the answer becomes too technical, say: <i>Explain that in plain "
+    "language and give me only the next action.</i>",
+    "info",
+)}
 """
         ),
         markdown(
-            """
+            f"""
 ### Stage 2 mini-check
 
 Before asking an AI to create anything, what should you provide first?
@@ -231,13 +297,26 @@ Before asking an AI to create anything, what should you provide first?
 Provide the target result—or a clear description of what the finished output must look like and do.
 
 </details>
+
+{panel(
+    "STAGE 2 CHECKPOINT",
+    "Provide the target result—or a clear description of what the finished "
+    "output must look like and do.",
+    "success",
+)}
 """
         ),
         markdown(
-            """
+            f"""
 ## Stage 3 — Ask, compare, and question
 
-Stage 3 uses [HuggingChat](https://huggingface.co/chat/), a single interface that lets you chat with different available open models.
+{panel(
+    "IMPORTANT",
+    "Stage 3 uses <a href='https://huggingface.co/chat/'>HuggingChat</a>, "
+    "a single interface that lets you chat with different available open "
+    "models.",
+    "info",
+)}
 
 HuggingChat may begin with **Omni**, which automatically routes a request to a model. For this comparison, choose named models directly:
 
@@ -249,7 +328,12 @@ HuggingChat may begin with **Omni**, which automatically routes a request to a m
 
 Use the same prompt without correcting either model midway. Availability changes, so use models shown in the interface rather than looking for a particular name.
 
-Your worksheet is saved locally as tasks/stage3_answers.json. It is ignored by Git, so personal answers are not committed.
+{panel(
+    "YOUR WORKSHEET",
+    "Answers are saved locally as <b>tasks/stage3_answers.json</b>. The "
+    "file is ignored by Git, so personal answers are not committed.",
+    "info",
+)}
 """
         ),
         code(
@@ -258,10 +342,13 @@ from llm_workshop.worksheet import model_comparison_box, worksheet_box
 """
         ),
         markdown(
-            """
-### Experiment 1 — A simple factual request
-
-Copy this prompt:
+            f"""
+{panel(
+    "EXPERIMENT 1",
+    "<b>A simple factual request.</b> Copy the exact prompt into two named "
+    "HuggingChat models and compare their answers.",
+    "task",
+)}
 
 ~~~text
 What are three things a plant needs to grow?
@@ -281,10 +368,13 @@ model_comparison_box(
             "interactive",
         ),
         markdown(
-            """
-### Experiment 2 — Translate a short Sanskrit sentence
-
-Copy this prompt:
+            f"""
+{panel(
+    "EXPERIMENT 2",
+    "<b>Translate a short Sanskrit sentence.</b> Run the exact same text "
+    "through two named models.",
+    "task",
+)}
 
 ~~~text
 Translate this Sanskrit sentence into clear English.
@@ -293,7 +383,12 @@ Then explain its meaning in one short sentence:
 विद्या ददाति विनयम्।
 ~~~
 
-The literal idea is **“Knowledge gives humility.”** Notice whether the AI separates translation from interpretation.
+{panel(
+    "CHECKPOINT",
+    "The literal idea is <b>Knowledge gives humility.</b> Notice whether "
+    "each model separates translation from interpretation.",
+    "success",
+)}
 """
         ),
         code(
@@ -306,10 +401,13 @@ model_comparison_box(
             "interactive",
         ),
         markdown(
-            """
-### Experiment 3 — Logic with a silly voice
-
-Copy this prompt:
+            f"""
+{panel(
+    "EXPERIMENT 3",
+    "<b>Logic with a silly voice.</b> Check correctness before comparing "
+    "how playful each model becomes.",
+    "task",
+)}
 
 ~~~text
 A farmer has 17 sheep. All but 9 run away.
@@ -318,7 +416,12 @@ How many sheep remain?
 Give the correct answer first, then explain it like a pirate.
 ~~~
 
-The logic answer is **9**. Observe whether the AI gets the logic right before becoming playful.
+{panel(
+    "CHECKPOINT",
+    "The logic answer is <b>9</b>. Observe whether each model gets the "
+    "logic right before becoming playful.",
+    "success",
+)}
 """
         ),
         code(
@@ -331,10 +434,13 @@ model_comparison_box(
             "interactive",
         ),
         markdown(
-            """
-### Experiment 4 — Make an intimidating error understandable
-
-Copy the whole prompt:
+            f"""
+{panel(
+    "EXPERIMENT 4",
+    "<b>Make an intimidating error understandable.</b> Copy the whole "
+    "prompt into both models without changing the trace.",
+    "task",
+)}
 
 ~~~text
 I am a beginner. Explain this error in plain language.
@@ -352,7 +458,13 @@ Traceback (most recent call last):
 KeyError: 'region'
 ~~~
 
-A useful answer should explain that the table does not contain a column named exactly region at that moment, then suggest checking column names, spelling, spaces, and the loaded file.
+{panel(
+    "CHECKPOINT",
+    "A useful answer explains that the table does not contain a column "
+    "named exactly <b>region</b> at that moment, then suggests checking "
+    "column names, spelling, spaces, and the loaded file.",
+    "success",
+)}
 """
         ),
         code(
@@ -365,10 +477,14 @@ model_comparison_box(
             "interactive",
         ),
         markdown(
-            """
-### Stage 3 comparison
-
-Now compare the four responses. Which task did the AI handle most confidently? Where did tone, ambiguity, or technical complexity change the quality of its answer?
+            f"""
+{panel(
+    "FINAL COMPARISON",
+    "Compare the four responses. Which task did the AI handle most "
+    "confidently? Where did tone, ambiguity, or technical complexity "
+    "change the quality of its answer?",
+    "task",
+)}
 """
         ),
         code(
@@ -382,23 +498,32 @@ worksheet_box(
             "interactive",
         ),
         markdown(
-            """
-### Stage 3 complete when you can…
-
-- ask for a simple format and audience;
-- distinguish translation from interpretation;
-- check logic before accepting a confident answer;
-- ask for plain-language explanations and safe next steps;
-- question, compare, and refine an AI response.
-
-AI can help with questions and answers, but you still decide whether the result is useful and trustworthy.
+            f"""
+{panel(
+    "STAGE 3 CHECKPOINT",
+    "<ul style='margin:0;padding-left:20px'>"
+    "<li>ask for a simple format and audience;</li>"
+    "<li>distinguish translation from interpretation;</li>"
+    "<li>check logic before accepting a confident answer;</li>"
+    "<li>ask for plain-language explanations and safe next steps;</li>"
+    "<li>question, compare, and refine an AI response.</li></ul>"
+    "<p style='margin:10px 0 0'>AI can help with questions and answers, "
+    "but you still decide whether the result is useful and trustworthy.</p>",
+    "success",
+)}
 """
         ),
         markdown(
-            """
+            f"""
 ## Next — Six vibe-coding sandboxes
 
-The next course iteration will add six isolated task folders. Each task will have:
+{panel(
+    "COMING NEXT",
+    "The next course iteration will add six isolated task folders. Each "
+    "task will have one clear target, tiny inputs, a starting prompt, an "
+    "obvious way to run the result, and a comparison checklist.",
+    "task",
+)}
 
 - one clear target to copy, mimic, or reproduce;
 - a tiny input file or reference;
@@ -410,12 +535,17 @@ The tasks will focus on visible HTML viewers and small scripts that trigger usef
 """
         ),
         markdown(
-            """
+            f"""
 ## Orientation complete
 
-You are ready when you can find the course folders, open one AI helper, and describe a target before asking for code.
-
-**Next action:** wait for the instructor to introduce Sandbox Task 1.
+{panel(
+    "READY",
+    "You are ready when you can find the course folders, open one AI "
+    "helper, and describe a target before asking for code.<br><br>"
+    "<b>Next action:</b> wait for the instructor to introduce Sandbox "
+    "Task 1.",
+    "success",
+)}
 """
         ),
     ]
