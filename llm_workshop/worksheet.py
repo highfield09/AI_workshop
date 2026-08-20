@@ -35,16 +35,22 @@ def _field(label: str, value: str, *, height: str):
     return widgets.VBox(
         [
             widgets.HTML(
-                "<div style='font-weight:600;color:#344054;margin:6px 0 4px'>"
+                "<div style='font-weight:600;color:#344054;margin:6px 0 4px;"
+                "max-width:100%;overflow-wrap:anywhere'>"
                 f"{label}</div>"
             ),
             widgets.Textarea(
                 value=value,
                 description="",
-                layout=widgets.Layout(width="100%", height=height),
+                layout=widgets.Layout(
+                    width="100%",
+                    max_width="100%",
+                    min_width="0",
+                    height=height,
+                ),
             ),
         ],
-        layout=widgets.Layout(width="100%"),
+        layout=widgets.Layout(width="100%", max_width="100%", min_width="0"),
     )
 
 
@@ -54,7 +60,8 @@ def _initial_status(path: Path) -> str:
         "border-radius:8px;padding:9px;color:#344054'>"
         "<small>Submitting runs the save instructions in "
         "<b>llm_workshop/worksheet.py</b>. Output path: "
-        f"<code>{path.as_posix()}</code>.</small></div>"
+        f"<code style='white-space:normal;overflow-wrap:anywhere'>"
+        f"{path.as_posix()}</code>.</small></div>"
     )
 
 
@@ -63,7 +70,8 @@ def _saved_status(path: Path) -> str:
         "<div style='background:#ECFDF3;border:1px solid #ABEFC6;"
         "border-radius:8px;padding:9px;color:#067647'>"
         "<b>Saved.</b> In the VS Code Explorer, open "
-        f"<code>{path.as_posix()}</code> to see the output. "
+        f"<code style='white-space:normal;overflow-wrap:anywhere'>"
+        f"{path.as_posix()}</code> to see the output. "
         "<small>The button triggered explicit file-writing instructions; "
         "it did not choose the destination automatically.</small></div>"
     )
@@ -74,6 +82,9 @@ def _worksheet_layout() -> widgets.Layout:
         border="2px solid #B2DDFF",
         padding="14px",
         width="100%",
+        max_width="100%",
+        min_width="0",
+        overflow="hidden",
     )
 
 
@@ -141,7 +152,7 @@ def model_comparison_box(
         description="Model A:",
         placeholder=model_a_placeholder,
         style={"description_width": "80px"},
-        layout=widgets.Layout(width="100%"),
+        layout=widgets.Layout(width="100%", max_width="100%", min_width="0"),
     )
     answer_a = _field(
         "Paste Answer A:",
@@ -153,7 +164,7 @@ def model_comparison_box(
         description="Model B:",
         placeholder=model_b_placeholder,
         style={"description_width": "80px"},
-        layout=widgets.Layout(width="100%"),
+        layout=widgets.Layout(width="100%", max_width="100%", min_width="0"),
     )
     answer_b = _field(
         "Paste Answer B:",

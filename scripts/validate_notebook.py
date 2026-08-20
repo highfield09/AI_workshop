@@ -18,6 +18,7 @@ REQUIRED_HEADINGS = [
     "## Orientation complete",
 ]
 REQUIRED_SNIPPETS = [
+    "Keep the lesson inside the available notebook width",
     "KEY CONCEPT · TOKEN EFFICIENCY",
     "PROMPTING RESOURCES",
     "Read the icons at the end of each model option",

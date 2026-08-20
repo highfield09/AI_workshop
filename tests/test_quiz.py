@@ -24,3 +24,5 @@ def test_correct_answer_turns_quiz_green_and_reveals_widget_note():
     assert "ipywidgets" in quiz.children[3].value
     assert quiz.layout.border == "2px solid #12B76A"
     assert quiz.children[2].button_style == "success"
+    assert quiz.layout.max_width == "100%"
+    assert quiz.layout.min_width == "0"

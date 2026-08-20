@@ -17,7 +17,8 @@ def copyable_prompt(prompt: str, *, title: str = "Copy this prompt"):
     prompt_height = max(115, min(330, 24 * line_count + 34))
     heading = widgets.HTML(
         "<div style='background:#FFFAEB;border:1px solid #FEDF89;"
-        "border-radius:10px 10px 0 0;padding:10px 12px;color:#B54708'>"
+        "border-radius:10px 10px 0 0;padding:10px 12px;color:#B54708;"
+        "box-sizing:border-box;max-width:100%;overflow-wrap:anywhere'>"
         f"<b>📋 {title}</b>"
         "</div>"
     )
@@ -26,6 +27,8 @@ def copyable_prompt(prompt: str, *, title: str = "Copy this prompt"):
         description="",
         layout=widgets.Layout(
             width="100%",
+            max_width="100%",
+            min_width="0",
             height=f"{prompt_height}px",
             border="1px solid #D0D5DD",
         ),
@@ -63,6 +66,9 @@ def copyable_prompt(prompt: str, *, title: str = "Copy this prompt"):
         layout=widgets.Layout(
             align_items="center",
             flex_flow="row wrap",
+            width="100%",
+            max_width="100%",
+            min_width="0",
         ),
     )
     return widgets.VBox(
@@ -71,5 +77,8 @@ def copyable_prompt(prompt: str, *, title: str = "Copy this prompt"):
             border="1px solid #FEDF89",
             padding="0 0 12px 0",
             width="100%",
+            max_width="100%",
+            min_width="0",
+            overflow="hidden",
         ),
     )

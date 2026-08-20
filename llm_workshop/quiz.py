@@ -56,6 +56,9 @@ def stage1_quiz():
             border="2px solid #B2DDFF",
             padding="14px",
             width="100%",
+            max_width="100%",
+            min_width="0",
+            overflow="hidden",
         ),
     )
 

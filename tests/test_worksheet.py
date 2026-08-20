@@ -62,6 +62,8 @@ def test_long_worksheet_label_is_shown_above_field(tmp_path):
 
     assert label in box.children[1].children[0].value
     assert box.children[1].children[1].description == ""
+    assert box.layout.max_width == "100%"
+    assert box.layout.min_width == "0"
 
 
 def test_single_answer_submission_saves_and_points_to_output(tmp_path):

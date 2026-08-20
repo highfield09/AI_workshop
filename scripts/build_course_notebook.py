@@ -50,7 +50,8 @@ def chip(label: str, tone: str = "keyword") -> str:
         f"<span style='display:inline-block;background:{colors['background']};"
         f"border:1px solid {colors['border']};color:{colors['accent']};"
         "border-radius:999px;padding:2px 9px;font-size:0.76rem;"
-        "font-weight:700;letter-spacing:0.04em;white-space:nowrap'>"
+        "font-weight:700;letter-spacing:0.04em;white-space:normal;"
+        "max-width:100%;box-sizing:border-box;overflow-wrap:anywhere'>"
         f"{label}</span>"
     )
 
@@ -61,7 +62,8 @@ def panel(label: str, body: str, tone: str = "info") -> str:
         f"<div style='background:{colors['background']};"
         f"border:1px solid {colors['border']};border-left:5px solid "
         f"{colors['accent']};border-radius:12px;padding:15px 17px;"
-        "margin:12px 0;color:#344054;line-height:1.55'>"
+        "margin:12px 0;color:#344054;line-height:1.55;box-sizing:border-box;"
+        "max-width:100%;overflow-wrap:anywhere'>"
         f"{chip(label, tone)}"
         f"<div style='margin-top:9px'>{body}</div></div>"
     )
@@ -90,13 +92,15 @@ def model_card_diagram() -> str:
     ]
     card_html = "".join(
         "<div style='flex:1 1 210px;background:#FFFFFF;border:1px solid "
-        "#D9D6FE;border-radius:10px;padding:13px'>"
+        "#D9D6FE;border-radius:10px;padding:13px;min-width:0;"
+        "max-width:100%;box-sizing:border-box;overflow-wrap:anywhere'>"
         f"{chip(title)}<p style='margin:9px 0 0'>{body}</p></div>"
         for title, body in cards
     )
     return (
         "<div style='background:#F9F5FF;border:1px solid #D9D6FE;"
-        "border-radius:14px;padding:16px;margin:12px 0;color:#344054'>"
+        "border-radius:14px;padding:16px;margin:12px 0;color:#344054;"
+        "box-sizing:border-box;max-width:100%;overflow-wrap:anywhere'>"
         "<div style='font-size:1.05rem;font-weight:700;color:#5925DC'>"
         "How to read a model card</div>"
         "<div style='display:flex;flex-wrap:wrap;gap:10px;margin-top:12px'>"
@@ -115,6 +119,16 @@ def main() -> None:
         markdown(
             f"""
 # Vibe Coding Workshop — Start Here
+
+<style>
+/* Keep the lesson inside the available notebook width on laptops. */
+table {{ display:block; max-width:100%; overflow-x:auto; }}
+pre {{ box-sizing:border-box; max-width:100%; overflow-x:auto; }}
+code {{ overflow-wrap:anywhere; }}
+img, svg {{ max-width:100%; height:auto; }}
+.workshop-flex {{ display:flex; flex-wrap:wrap; max-width:100%; }}
+.workshop-flex > * {{ min-width:0; max-width:100%; box-sizing:border-box; }}
+</style>
 
 **Friendly setup · 20–30 minutes · No coding experience required**
 
@@ -181,7 +195,7 @@ You do not need to memorize commands. The aim is to learn where things live and 
     "WORKSHOP MAP",
     "<pre style='margin:0;padding:12px;background:#FFFFFF;"
     "border:1px solid #D0D5DD;border-radius:8px;line-height:1.55;"
-    "overflow:auto'>AI_workshop/\n"
+    "overflow:auto;max-width:100%;box-sizing:border-box'>AI_workshop/\n"
     "├── notebooks/   ← lessons like this one\n"
     "├── tasks/       ← one isolated folder for each challenge\n"
     "├── data/        ← small input files supplied by the course\n"
@@ -321,7 +335,7 @@ An **LLM card** is the model's label and short information page. Use three signa
     "task",
 )}
 
-<div style='display:flex;flex-wrap:wrap;gap:8px;margin:10px 0'>
+<div class='workshop-flex' style='gap:8px;margin:10px 0'>
 <div style='flex:1 1 180px;background:#EFF8FF;border:1px solid #B2DDFF;border-radius:9px;padding:10px'><b>Ask clearly</b><br><small>State the task, audience, and output format.</small></div>
 <div style='flex:1 1 180px;background:#EFF8FF;border:1px solid #B2DDFF;border-radius:9px;padding:10px'><b>Send only what is needed</b><br><small>Avoid entire folders or repeated context.</small></div>
 <div style='flex:1 1 180px;background:#EFF8FF;border:1px solid #B2DDFF;border-radius:9px;padding:10px'><b>Request a useful length</b><br><small>For example: “Answer in five bullets.”</small></div>
@@ -462,7 +476,7 @@ LLMs are <a href='https://huggingface.co/docs/transformers/generation_strategies
 
 Open [HuggingChat Models](https://huggingface.co/chat/models). A model row may show small capability icons at its right-hand end. Hover over an icon in HuggingChat to see its own label.
 
-<div style='display:flex;flex-wrap:wrap;gap:10px;margin:12px 0'>
+<div class='workshop-flex' style='gap:10px;margin:12px 0'>
 <div style='flex:1 1 260px;background:#EFF8FF;border:1px solid #B2DDFF;border-radius:10px;padding:13px'><b>💬 Text / natural language model</b><br><small>Best for writing, explaining, translating, summarising, and text questions. It may have no image icon.</small></div>
 <div style='flex:1 1 260px;background:#F4F3FF;border:1px solid #D9D6FE;border-radius:10px;padding:13px'><b>🖼️ Vision / multimodal model</b><br><small>The image icon means it accepts images as well as text. Choose this when the task requires looking at a picture, chart, or screenshot.</small></div>
 </div>

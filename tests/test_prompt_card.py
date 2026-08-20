@@ -12,3 +12,6 @@ def test_prompt_card_is_selectable_and_has_copy_icon():
     assert copy_button.description == "Copy prompt"
     assert copy_button.icon == "copy"
     assert "Ctrl+A" in card.children[2].children[1].value
+    assert card.layout.max_width == "100%"
+    assert card.layout.min_width == "0"
+    assert card.children[1].layout.max_width == "100%"
