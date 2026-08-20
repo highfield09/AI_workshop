@@ -1,6 +1,6 @@
 # LLM Workshop Notebook
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/highfield09/highfield09)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/highfield09/AI_workshop)
 
 A small, classroom-style Jupyter project for experimenting with an LLM chat interface in VS Code or GitHub Codespaces. The notebook is designed to run immediately in an offline demo mode, then switch to:
 
@@ -50,22 +50,3 @@ For OpenAI cloud, set `LLM_PROVIDER=openai`, `OPENAI_API_KEY`, and `OPENAI_MODEL
 The notebook is split into numbered sections with short tasks, hints, and extension prompts. Use the offline demo provider when teaching UI or prompt concepts without network access. Use `make check` before committing an iteration, and `make execute-demo` to refresh only the safe demo outputs.
 
 The official OpenAI Python SDK reads `OPENAI_API_KEY` from the environment; the project follows the same pattern and never serializes keys into notebook output.
-
----
-
-## Hi there 👋
-
-<!--
-**highfield09/highfield09** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-
-Here are some ideas to get you started:
-
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
