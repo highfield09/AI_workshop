@@ -1,0 +1,21 @@
+# Optional stricter public edge: replace the example CIDRs with your campus/VPN
+# ranges. Requests outside those networks receive 403 even with a valid API key.
+{
+    email {$ACME_EMAIL}
+}
+
+{$LLM_DOMAIN} {
+    encode zstd gzip
+
+    @outside_allowed_networks not remote_ip 127.0.0.1/32 10.0.0.0/8 192.168.0.0/16 203.0.113.0/24
+    respond @outside_allowed_networks "Forbidden" 403
+
+    @openai_api path /v1 /v1/*
+    handle @openai_api {
+        reverse_proxy litellm:4000
+    }
+
+    handle {
+        respond "Not found" 404
+    }
+}
