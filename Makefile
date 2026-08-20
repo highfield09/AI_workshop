@@ -1,10 +1,7 @@
 .PHONY: install lab check execute-demo
 
 install:
-	./scripts/create_venv.sh
-	.venv/bin/python -m pip install --upgrade pip
-	.venv/bin/python -m pip install -r requirements.txt
-	.venv/bin/python -m ipykernel install --user --name llm-workshop --display-name "Python (Vibe Workshop)"
+	./scripts/setup_environment.sh
 
 lab:
 	.venv/bin/python -m jupyter lab

@@ -12,6 +12,12 @@ A beginner-friendly workshop for learning how to reproduce a clear output with h
 4. Select **Python (Vibe Workshop)** if VS Code asks for a kernel.
 5. Run the notebook from the top.
 
+### Do learners need Python on their laptops?
+
+No, not when they use GitHub Codespaces. Python, Jupyter, the extensions, and all course packages run inside the online Codespace.
+
+If the notebook asks for a kernel, choose **Python (Vibe Workshop)**. Someone running the project entirely on their own laptop will need Python 3.12; Codespaces users do not.
+
 The first notebook contains:
 
 - **Stage 1:** a friendly VS Code and directory-tree orientation with an interactive quiz;

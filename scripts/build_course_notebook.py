@@ -33,6 +33,8 @@ def main() -> None:
 This short notebook helps you get comfortable in VS Code, find the course files, and choose an AI helper. After this orientation, you will work through six small challenges where you reproduce a visible result.
 
 > Run each cell from top to bottom. Nothing in Stages 1 or 2 sends data to an API.
+
+**Using GitHub Codespaces?** Python runs inside the online workspace, so you do not need it installed on your laptop. If prompted for a kernel, select **Python (Vibe Workshop)**.
 """
         ),
         markdown(
