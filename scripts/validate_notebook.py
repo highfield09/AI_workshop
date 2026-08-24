@@ -52,7 +52,7 @@ REQUIRED_SNIPPETS = [
     "KEY CONCEPT · MODEL EFFORT",
     "Effort is a <b>signal, not a strict token budget</b>",
     "20 questions",
-    "PROMPTING RESOURCES",
+    "PROMPTING RESOURCES AND MORE GUIDES",
     "Google AI Mode",
     "Read the icons at the end of each model option",
     "HuggingChat models: read the card and the icons",
@@ -123,6 +123,10 @@ FORBIDDEN_SNIPPETS = [
     "QUESTION S1-",
     "QUESTION S2-",
     "stage3_",
+    "Hugging Face pricing and billing",
+    "CLASS BUDGET",
+    "If classroom credit is authorised",
+    "More guides linked from the resource directory",
 ]
 EXPECTED_QUESTION_LABELS = [f"QUESTION {number} ·" for number in range(1, 17)]
 

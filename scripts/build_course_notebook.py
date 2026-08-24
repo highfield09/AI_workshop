@@ -377,15 +377,6 @@ Use any interface available to you. These links open the official web experience
     "task",
 )}
 
-<div class='workshop-flex' style='gap:8px;margin:10px 0'>
-<div style='flex:1 1 180px;background:#EFF8FF;border:1px solid #B2DDFF;border-radius:9px;padding:10px'><b>Ask clearly</b><br><small>State the task, audience, and output format.</small></div>
-<div style='flex:1 1 180px;background:#EFF8FF;border:1px solid #B2DDFF;border-radius:9px;padding:10px'><b>Send only what is needed</b><br><small>Avoid entire folders or repeated context.</small></div>
-<div style='flex:1 1 180px;background:#EFF8FF;border:1px solid #B2DDFF;border-radius:9px;padding:10px'><b>Request a useful length</b><br><small>For example: “Answer in five bullets.”</small></div>
-</div>
-
-See [Hugging Face pricing and billing](https://huggingface.co/docs/inference-providers/en/pricing) for an example of how one service handles credits and pay-as-you-go use.
-
-
 ### A six-point prompt check
 
 1. **Set the objective:** decide whether you need information, ideas, or a problem solved.
@@ -395,18 +386,22 @@ See [Hugging Face pricing and billing](https://huggingface.co/docs/inference-pro
 5. **Name the audience:** say who will read or use the result.
 6. **Evaluate and adapt:** check the output and adjust rather than accepting it automatically.
 
-{panel(
-    "PROMPTING RESOURCES",
-    "<ul style='margin:0;padding-left:20px'>"
-    "<li><a href='https://drive.google.com/file/d/1AbaBYbEa_EbPelsT40-vj64L-2IwUJHy/view'>Google Prompt Engineering guide (PDF)</a> — a longer reference; Google Drive may ask you to sign in.</li>"
-    "<li><a href='https://community.openai.com/t/a-guide-to-crafting-effective-prompts-for-diverse-applications/493914'>Community forum: crafting effective prompts</a> — the source of the six-point outline above.</li>"
-    "<li><a href='https://www.amalytix.com/en/blog/free-prompt-engineering-guides/'>AMALYTIX directory of free prompting guides</a> — a third-party roundup with beginner and advanced choices.</li>"
-    "</ul>",
-    "info",
-)}
+<div class='workshop-flex' style='gap:8px;margin:12px 0'>
+<div style='flex:1 1 180px;background:#EFF8FF;border:1px solid #B2DDFF;border-radius:9px;padding:10px'><b>Ask clearly</b><br><small>State the task, audience, and output format.</small></div>
+<div style='flex:1 1 180px;background:#EFF8FF;border:1px solid #B2DDFF;border-radius:9px;padding:10px'><b>Send only what is needed</b><br><small>Avoid entire folders or repeated context.</small></div>
+<div style='flex:1 1 180px;background:#EFF8FF;border:1px solid #B2DDFF;border-radius:9px;padding:10px'><b>Request a useful length</b><br><small>For example: “Answer in five bullets.”</small></div>
+</div>
 
 <details style='background:#F4F3FF;border:1px solid #D9D6FE;border-radius:10px;padding:12px'>
-<summary><b>More guides linked from the resource directory</b></summary>
+<summary><b>PROMPTING RESOURCES AND MORE GUIDES</b></summary>
+
+**Suggested starting points**
+
+- [Google Prompt Engineering guide (PDF)](https://drive.google.com/file/d/1AbaBYbEa_EbPelsT40-vj64L-2IwUJHy/view) — Google Drive may ask you to sign in.
+- [Community forum: crafting effective prompts](https://community.openai.com/t/a-guide-to-crafting-effective-prompts-for-diverse-applications/493914) — source of the six-point outline above.
+- [AMALYTIX directory of free prompting guides](https://www.amalytix.com/en/blog/free-prompt-engineering-guides/) — a third-party roundup.
+
+**More references**
 
 - [OpenAI GPT-4.1 Prompting Guide](https://developers.openai.com/cookbook/examples/gpt-4-1_prompting_guide) — advanced and developer-focused.
 - [Anthropic prompt engineering overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview)
@@ -685,19 +680,10 @@ Then explain its meaning in one short sentence:
 
 See [OpenRouter pricing](https://openrouter.ai/pricing) for the live plan details.
 
-{panel(
-    "CLASS BUDGET",
-    "Use a <b>:free</b> route whenever possible. If the instructor authorises "
-    "a paid hosted route, stay inside the class allowance of <b>US$1</b>; do "
-    "not add credit or enable a paid fallback unless instructed.",
-    "info",
-)}
-
 ### Select the vision model
 
 1. In **Manage Language Models**, make **Gemma 4 26B A4B** visible, then select it from the Chat model picker. Its OpenRouter ID is [`google/gemma-4-26b-a4b-it`](https://openrouter.ai/google/gemma-4-26b-a4b-it).
 2. Choose the arrow beside the model name and set **Thinking Effort → Medium**.
-3. If classroom credit is authorised, the normal hosted route produces a small non-zero cost. Otherwise select **Gemma 4 26B A4B (free)** when available; its activity cost should be $0, but popular free routes can be busy or rate-limited.
 
 <div style='background:#F8FAFC;border:1px solid #D0D5DD;border-radius:12px;padding:12px;margin:12px 0;max-width:100%;box-sizing:border-box;text-align:center'>
 <img src='../data/notebook1/Screenshot%202026-02-23%20145127.png' alt='Vision experiment source image' style='display:block;width:min(100%,480px);height:auto;margin:0 auto;border-radius:8px'>

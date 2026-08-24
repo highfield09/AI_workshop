@@ -39,14 +39,21 @@ def readme_quiz():
     question = widgets.HTML(_question("info"))
     choices = widgets.RadioButtons(
         options=[
-            ("Memorising Python syntax before making anything", "syntax"),
+            ("Memorise Python syntax first", "syntax"),
             (
-                "Finding files, describing a target, making and opening a result, then refining it",
+                "Find files, describe a target, make a result, then refine it",
                 "workflow",
             ),
-            ("Putting every workshop file into one folder", "one-folder"),
+            ("Put every file into one folder", "one-folder"),
         ],
         value=None,
+        layout=widgets.Layout(
+            width="100%",
+            min_width="0",
+            min_height="96px",
+            margin="10px 0 12px 0",
+            overflow="visible",
+        ),
     )
     submit = widgets.Button(
         description="Submit answer",

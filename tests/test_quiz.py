@@ -15,6 +15,8 @@ def test_wrong_answer_turns_quiz_red():
 
 def test_correct_answer_turns_quiz_green_and_reveals_widget_note():
     quiz = readme_quiz()
+    assert quiz.children[1].layout.min_height == "96px"
+    assert quiz.children[1].layout.overflow == "visible"
     quiz.children[1].value = "workflow"
 
     quiz.children[2].click()
