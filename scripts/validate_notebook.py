@@ -16,11 +16,33 @@ NOTEBOOK = ROOT / "notebooks" / "01_start_here.ipynb"
 EFFORT_REPORT = ROOT / "Resources" / "2026 Agentic Coding Trends Report.pdf"
 CATALOGUE_DATA = ROOT / "data" / "notebook1"
 CATALOGUE_CSV = CATALOGUE_DATA / "products.csv"
+VISION_IMAGE = CATALOGUE_DATA / "Screenshot 2026-02-23 145127.png"
 EXPECTED_MISSING_IMAGE = "ice-harbour-jacket.png"
+EXPECTED_MESSY_ID_ORDER = [
+    "NB014",
+    "NB006",
+    "NB015",
+    "NB018",
+    "NB002",
+    "NB005",
+    "NB003",
+    "NB011",
+    "NB008",
+    "NB007",
+    "NB016",
+    "NB013",
+    "NB017",
+    "NB001",
+    "NB004",
+    "NB012",
+    "NB009",
+    "NB010",
+]
+EXPECTED_MERGED_ROW_ID = "NB012"
 REQUIRED_HEADINGS = [
-    "## Stage 1 — Find your way around",
-    "## Stage 2 — Choose an AI helper",
-    "## Stage 3 — Ask, compare, and question",
+    "## Find your way around",
+    "## Choose an AI helper and prompt deliberately",
+    "## Try the AI interfaces",
     "## Main task — Build and refine a shopping catalogue",
     "## Orientation complete",
 ]
@@ -33,6 +55,14 @@ REQUIRED_SNIPPETS = [
     "PROMPTING RESOURCES",
     "Google AI Mode",
     "Read the icons at the end of each model option",
+    "HuggingChat models: read the card and the icons",
+    "ONE-TIME SETUP · CONNECT OPENROUTER",
+    "google/gemma-4-26b-a4b-it",
+    "OpenRouter Activity",
+    "Screenshot 2026-02-23 145127.png",
+    "Thinking Effort → Medium",
+    "KEY CONCEPT · TRACE THE PROVIDER",
+    "EXPERIMENT 5",
     "moonshotai/Kimi-K3",
     "Gemini 3.5 Flash-Lite",
     "Gemini 3.6 Flash",
@@ -41,12 +71,15 @@ REQUIRED_SNIPPETS = [
     "KEY CONCEPT · REITERATION LOOP",
     "PROMPT → BUILD → OPEN → INSPECT → REQUEST ONE CHANGE → VERIFY AGAIN",
     "CONTROLLED MESSY DATA",
+    "DATA REPAIR BEFORE REDESIGN",
+    "Do not prematurely read the notebook requirements and go beyond what is requested in this prompt",
+    "change the mode to **Ask** and change the model to **Auto**",
     "18 product records",
     "**CSV** means comma-separated values",
     "**HTML** is the file type",
     "Ctrl</kbd> + <kbd>Alt</kbd>",
     "Chat: Open Chat",
-    "appropriate fallback message or icon",
+    "appropriate message or icon if its image is missing",
     "country_of_origin",
     "release_date",
     "data/notebook1/products.csv",
@@ -54,9 +87,9 @@ REQUIRED_SNIPPETS = [
     "### Round 1 requirements",
     "ONE-TIME SETUP · INSTALL LIVE SERVER",
     "Open with Live Server",
-    "QUESTION S2-Q1",
+    "QUESTION 2 · Prompt-and-token mini-check",
     "Always know where your output is going",
-    "tasks/stage3_answers.json",
+    "tasks/workbook_answers.json",
 ]
 FORBIDDEN_SNIPPETS = [
     "it is no longer a clickable link",
@@ -86,23 +119,12 @@ FORBIDDEN_SNIPPETS = [
     "tasks/notebook1/catalogue.html",
     "answer_label=",
     "observation_label=",
+    "PROVIDER / FASTEST / CHEAPEST",
+    "QUESTION S1-",
+    "QUESTION S2-",
+    "stage3_",
 ]
-EXPECTED_QUESTION_LABELS = [
-    "QUESTION S1-Q1",
-    "QUESTION S2-Q1",
-    "QUESTION S3-E1-Q1",
-    "QUESTION S3-E1-Q2",
-    "QUESTION S3-E2-Q1",
-    "QUESTION S3-E2-Q2",
-    "QUESTION S3-E2-Q3",
-    "QUESTION S3-E3-Q1",
-    "QUESTION S3-E3-Q2",
-    "QUESTION S3-E3-Q3",
-    "QUESTION S3-E3-Q4",
-    "QUESTION S3-E3-Q5",
-    "QUESTION MAIN-Q1",
-    "QUESTION MAIN-Q2",
-]
+EXPECTED_QUESTION_LABELS = [f"QUESTION {number} ·" for number in range(1, 17)]
 
 SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
@@ -150,8 +172,8 @@ def validate_catalogue_data() -> None:
     expected_ids = {f"NB{number:03d}" for number in range(1, 19)}
     if set(ids) != expected_ids:
         raise SystemExit("Catalogue IDs must contain NB001 through NB018 once each")
-    if ids == sorted(ids):
-        raise SystemExit("Catalogue IDs must remain deliberately out of order")
+    if ids != EXPECTED_MESSY_ID_ORDER:
+        raise SystemExit("Catalogue rows must remain in the deliberately mixed order")
 
     images = [row["image"] for row in rows]
     if len(set(images)) != len(images):
@@ -168,9 +190,24 @@ def validate_catalogue_data() -> None:
     type_counts = Counter(row["type"] for row in rows)
     if set(type_counts.values()) != {3} or len(type_counts) != 6:
         raise SystemExit("Catalogue must contain three variants of six product types")
+    tail_fields = ("sizes", "country_of_origin", "designer")
+    malformed_rows = [
+        row for row in rows if any(row[field] is None for field in tail_fields)
+    ]
+    if [row["id"] for row in malformed_rows] != [EXPECTED_MERGED_ROW_ID]:
+        raise SystemExit("Catalogue must contain one controlled merged-column row")
+    merged_row = malformed_rows[0]
+    if (
+        len(merged_row["release_date"]) < 100
+        or "separators disappeared" not in merged_row["release_date"]
+    ):
+        raise SystemExit("Merged row must retain its unusually long combined field")
+
     for row in rows:
+        if row["id"] == EXPECTED_MERGED_ROW_ID:
+            continue
         date.fromisoformat(row["release_date"])
-        for field in ("colour", "sizes", "country_of_origin", "designer"):
+        for field in ("colour", *tail_fields):
             if not row[field].strip():
                 raise SystemExit(f"Catalogue field {field!r} cannot be blank")
 
@@ -183,19 +220,21 @@ def main() -> None:
         cell.source for cell in notebook.cells if cell.cell_type == "markdown"
     )
     missing = [heading for heading in REQUIRED_HEADINGS if heading not in markdown]
+    all_sources = "\n".join(cell.source for cell in notebook.cells)
     if missing:
         raise SystemExit(f"Missing workshop sections: {', '.join(missing)}")
 
-    missing_snippets = [text for text in REQUIRED_SNIPPETS if text not in markdown]
+    missing_snippets = [text for text in REQUIRED_SNIPPETS if text not in all_sources]
     if missing_snippets:
         raise SystemExit(
             f"Missing workshop concepts: {', '.join(missing_snippets)}"
         )
 
-    all_sources = "\n".join(cell.source for cell in notebook.cells)
     forbidden = [text for text in FORBIDDEN_SNIPPETS if text in all_sources]
     if forbidden:
         raise SystemExit(f"Removed workshop text returned: {', '.join(forbidden)}")
+    if re.search(r"\bstages?\b", all_sources, re.I):
+        raise SystemExit("Notebook must use a directions flow without stage labels")
 
     if markdown.index("EXPERIMENT 1") > markdown.index(
         "Read the icons at the end of each model option"
@@ -203,17 +242,33 @@ def main() -> None:
         raise SystemExit("Experiment 1 must appear before the HuggingChat icon guide")
     if "KEY TIP" in markdown:
         raise SystemExit("Post-question Key Tips must not be visible in markdown cells")
+    if not (
+        markdown.index("EXPERIMENT 1")
+        < markdown.index("HuggingChat models: read the card and the icons")
+        < markdown.index("EXPERIMENT 2")
+    ):
+        raise SystemExit("Model-card guidance must sit with HuggingChat selection")
+    if not (
+        all_sources.index("QUESTION 9 ·")
+        < all_sources.index("### Match effort to the task")
+        < all_sources.index("EXPERIMENT 4")
+    ):
+        raise SystemExit("Effort guidance must sit directly before the Gemini exercise")
 
     if not EFFORT_REPORT.is_file():
         raise SystemExit(
             f"Missing student reference: {EFFORT_REPORT.relative_to(ROOT)}"
+        )
+    if not VISION_IMAGE.is_file():
+        raise SystemExit(
+            f"Missing vision exercise image: {VISION_IMAGE.relative_to(ROOT)}"
         )
 
     if "<abbr title='Probabilistic" not in markdown:
         raise SystemExit("Probabilistic definition must use a hover-only abbreviation")
 
     thumbnails = re.findall(
-        r"src='../data/notebook1/([^']+\.png)'",
+        r"src='../data/notebook1/(?!Screenshot%20)([^']+\.png)'",
         markdown,
     )
     if len(thumbnails) != 18 or len(set(thumbnails)) != 18:
@@ -222,6 +277,8 @@ def main() -> None:
         raise SystemExit("Catalogue preview thumbnails must remain compact")
 
     validate_catalogue_data()
+    if markdown.count("Screenshot%202026-02-23%20145127.png") != 1:
+        raise SystemExit("Vision image must appear exactly once at a compact width")
 
     setup_cells = [
         (index, cell)
@@ -236,7 +293,7 @@ def main() -> None:
         "from pathlib import Path",
         "from IPython.display import HTML, display",
         "from llm_workshop.prompt_card import copyable_prompt",
-        "from llm_workshop.quiz import stage1_quiz",
+        "from llm_workshop.quiz import readme_quiz",
         "from llm_workshop.worksheet import worksheet_box",
     ]
     missing_imports = [
@@ -268,9 +325,9 @@ def main() -> None:
         for index, cell in enumerate(notebook.cells)
         if cell.cell_type == "code" and "worksheet_box(" in cell.source
     ]
-    if len(worksheet_cells) != 12:
+    if len(worksheet_cells) != 14:
         raise SystemExit(
-            "Notebook must contain twelve independently saved worksheet questions; "
+            "Notebook must contain fourteen independently saved worksheet questions; "
             f"found {[index for index, _ in worksheet_cells]}"
         )
     for index, cell in worksheet_cells:

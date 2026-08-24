@@ -8,5 +8,5 @@ __pycache__/
 .DS_Store
 *.tar.gz
 **/state/
-tasks/stage3_answers.json
+tasks/workbook_answers.json
 outputs/notebook1/catalogue.html

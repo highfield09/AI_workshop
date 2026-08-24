@@ -1,19 +1,19 @@
 id,name,image,price,brand,type,colour,release_date,sizes,country_of_origin,designer
 NB014,Sunset Hoodie,sunset-hoodie.png,59.90,Common Thread,Hoodie,Coral Orange,2025-09-12,S|M|L|XL,Portugal,Amara Vale
-NB003,Ocean Hoodie,ocean-hoodie.png,62.50,Common Thread,Hoodie,Cobalt Blue,2026-01-24,XS|S|M|L,Vietnam,Theo Mercer
-NB017,Berry Hoodie,berry-hoodie.png,57.95,Common Thread,Hoodie,Berry Plum,2025-11-07,S|M|L,Turkey,Priya Nordin
 NB006,Midnight Sneakers,midnight-sneakers.png,74.50,After Hours,Sneakers,Navy and Teal,2025-08-30,36|37|38|39|40,Indonesia,Luca Ward
-NB011,Citrus Sneakers,citrus-sneakers.png,77.00,After Hours,Sneakers,Orange and Yellow,2026-03-14,37|38|39|40|41,Indonesia,Lia Okafor
-NB001,Cloud Sneakers,cloud-sneakers.png,72.25,After Hours,Sneakers,Silver and Sky,2025-12-05,36|37|38|39|40,China,Jun Park
 NB015,Moss Cap,moss-cap.png,24.00,Moss and Main,Cap,Moss Green,2025-05-18,One Size,United Kingdom,Ellis Rowe
-NB008,Cherry Cap,cherry-cap.png,25.50,Moss and Main,Cap,Cherry Burgundy,2025-10-03,One Size,South Korea,Min Seo
-NB004,Ocean Cap,ocean-cap.png,22.95,Moss and Main,Cap,Ocean Blue,2026-02-21,One Size,Canada,Robin Hart
 NB018,Golden Tote,golden-tote.png,32.75,Daylight Goods,Tote Bag,Mustard Gold,2025-06-27,One Size,India,Anika Rao
-NB007,Coral Tote,coral-tote.png,34.25,Daylight Goods,Tote Bag,Coral Pink,2025-11-22,One Size,Mexico,Sofia Marin
-NB012,Indigo Tote,indigo-tote.png,31.50,Daylight Goods,Tote Bag,Indigo,2026-01-10,One Size,Japan,Ren Ito
 NB002,Lavender Day Dress,lavender-dress.png,68.00,Violet Lane,Dress,Lavender,2025-04-19,XS|S|M|L,France,Camille Laurent
-NB016,Emerald Day Dress,emerald-dress.png,71.50,Violet Lane,Dress,Emerald Green,2025-09-26,S|M|L|XL,Ireland,Niamh Quinn
-NB009,Peach Day Dress,peach-dress.png,66.75,Violet Lane,Dress,Peach Pink,2026-02-07,XS|S|M|L,Italy,Giulia Serra
 NB005,Teal Harbour Jacket,teal-jacket.png,89.95,Harbour Studio,Jacket,Teal and Navy,2025-07-11,S|M|L|XL,Singapore,Maya Tan
+NB003,Ocean Hoodie,ocean-hoodie.png,62.50,Common Thread,Hoodie,Cobalt Blue,2026-01-24,XS|S|M|L,Vietnam,Theo Mercer
+NB011,Citrus Sneakers,citrus-sneakers.png,77.00,After Hours,Sneakers,Orange and Yellow,2026-03-14,37|38|39|40|41,Indonesia,Lia Okafor
+NB008,Cherry Cap,cherry-cap.png,25.50,Moss and Main,Cap,Cherry Burgundy,2025-10-03,One Size,South Korea,Min Seo
+NB007,Coral Tote,coral-tote.png,34.25,Daylight Goods,Tote Bag,Coral Pink,2025-11-22,One Size,Mexico,Sofia Marin
+NB016,Emerald Day Dress,emerald-dress.png,71.50,Violet Lane,Dress,Emerald Green,2025-09-26,S|M|L|XL,Ireland,Niamh Quinn
 NB013,Ember Harbour Jacket,ember-jacket.png,92.50,Harbour Studio,Jacket,Burnt Orange,2025-12-19,XS|S|M|L,Spain,Lucia Vega
+NB017,Berry Hoodie,berry-hoodie.png,57.95,Common Thread,Hoodie,Berry Plum,2025-11-07,S|M|L,Turkey,Priya Nordin
+NB001,Cloud Sneakers,cloud-sneakers.png,72.25,After Hours,Sneakers,Silver and Sky,2025-12-05,36|37|38|39|40,China,Jun Park
+NB004,Ocean Cap,ocean-cap.png,22.95,Moss and Main,Cap,Ocean Blue,2026-02-21,One Size,Canada,Robin Hart
+NB012,Indigo Tote,indigo-tote.png,31.50,Daylight Goods,Tote Bag,Indigo,2026-01-10 One Size Japan Ren Ito designed this practical indigo tote for everyday carrying and these details were accidentally merged when the separators disappeared
+NB009,Peach Day Dress,peach-dress.png,66.75,Violet Lane,Dress,Peach Pink,2026-02-07,XS|S|M|L,Italy,Giulia Serra
 NB010,Ice Harbour Jacket,ice-harbour-jacket.png,87.25,Harbour Studio,Jacket,Ice Blue,2026-03-02,S|M|L|XL,Norway,Erik Solberg

@@ -2,7 +2,7 @@
 
 This is the workshop's growing take-home reference. Open it from the VS Code Explorer at any time. You can keep it in your repository, download it from GitHub, or save your own copy after the workshop.
 
-## Stage 1 — Know your workspace
+## Know your workspace
 
 **Key concept: know where files live before you run or change anything.**
 
@@ -15,7 +15,7 @@ This is the workshop's growing take-home reference. Open it from the VS Code Exp
 - `scripts/` and Python modules contain reusable instructions.
 - Run a notebook cell with the ▶ play button or `Shift + Enter`.
 
-## Stage 2 — Choose deliberately
+## Choose deliberately
 
 **Key concept: read the model card and choose a model that fits the input and task.**
 
@@ -53,22 +53,23 @@ Use a six-point prompt check: set the objective, be clear, add only useful conte
 
 References: [Claude effort controls](https://platform.claude.com/docs/en/build-with-claude/effort) and the local [2026 Agentic Coding Trends Report](Resources/2026%20Agentic%20Coding%20Trends%20Report.pdf).
 
-## Stage 3 — Question, compare, and trace outputs
+## Question, compare, and trace outputs
 
 **Key concept: always know where your output is going and where to find it.**
 
 - HuggingChat's image badge identifies a vision or multimodal model.
 - A model without an image badge is usually text-first; check its card.
 - The hammer badge means tool calling.
-- Provider badges describe where or how the model runs, not a new skill.
 - LLM outputs are probabilistic: wording can vary even when the intended meaning is similar.
 - HuggingChat's free allowance for this workshop is 20 questions; Experiment 2 deliberately uses two.
 - Compare the answer itself; a larger model is not automatically correct.
+- A vision-capable model can inspect an attached image; a plain path in a prompt does not always attach the image itself.
+- When VS Code uses an OpenRouter key, trace model, tokens, and cost in OpenRouter Activity.
 - Clear-looking wording can hide assumptions. Ask what must be physically present or true for the target outcome to happen.
 - A more explicit target can improve a lightweight model's answer without increasing model size or reasoning effort.
 - Use a troubleshooting loop: run, read the last error line, make one repair, and rerun.
-- In Stage 3, **Submit & save** triggers the instructions in `llm_workshop/worksheet.py`.
-- Stage 3 worksheet output is written to `tasks/stage3_answers.json`; the button does not choose that destination automatically.
+- **Submit & save** triggers the instructions in `llm_workshop/worksheet.py`.
+- Worksheet output is written to `tasks/workbook_answers.json`; the button does not choose that destination automatically.
 
 ## Notebook 1 main task — Build and refine a catalogue
 
@@ -79,14 +80,16 @@ References: [Claude effort controls](https://platform.claude.com/docs/en/build-w
 - Target: a responsive shopping grid whose cards come from the CSV.
 - Ask GitHub Copilot Chat to return the code; create the HTML file and paste the code yourself.
 - Serve the page with Live Server and verify both appearance and CSV-to-image mapping.
-- Begin with the core card fields: image, name, brand, type, and price.
+- Repair malformed source rows and broken file references before asking HTML or CSS to disguise them.
+- Ask an AI to report suspicious rows and evidence first; make and verify the source edit yourself.
+- Choose consumer-relevant card fields after inspecting the CSV; do not display every field automatically.
 - Treat colour, release date, sizes, country of origin, and designer as optional details that can be shown or hidden for a purpose.
 - Use a reiteration loop: prompt, build, open, inspect, request one change, and verify again.
 - Keep each follow-up prompt small enough that you can identify what changed.
 - Useful later requests include sorting by price or release date, filtering by type, and adding a details toggle.
-- Do not assume that IDs arrive in order or that every file reference is valid.
-- Keep an imperfect product row visible by providing a useful missing-image fallback.
-- Choose and test sorting deliberately: original row order, numerical ID, price, and release date answer different questions.
+- Do not assume that source row order, numerical ID order, or any automatic sort is useful to a shopper.
+- State a primary and secondary display order explicitly, such as type then name, newest first, or price low-to-high.
+- Keep a useful missing-image fallback in the HTML even after repairing the supplied filename.
 
 ## Before accepting any AI-assisted result
 
@@ -98,4 +101,4 @@ References: [Claude effort controls](https://platform.claude.com/docs/en/build-w
 - Did I verify the result instead of trusting confident wording?
 - Could I ask the same useful question with less unnecessary context?
 
-More stage concepts will be added as the six sandbox tasks are built.
+More concepts will be added as the six sandbox tasks are built.

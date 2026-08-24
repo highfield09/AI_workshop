@@ -8,7 +8,7 @@ from pathlib import Path
 import ipywidgets as widgets
 
 
-DEFAULT_ANSWERS_PATH = Path("tasks") / "stage3_answers.json"
+DEFAULT_ANSWERS_PATH = Path("tasks") / "workbook_answers.json"
 
 
 def _read_answers(path: Path) -> dict:

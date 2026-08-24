@@ -25,22 +25,26 @@ def _message(content: str, tone: str) -> str:
 def _question(tone: str) -> str:
     return _message(
         "<div style='font-size:0.78rem;letter-spacing:0.04em;margin-bottom:6px'>"
-        "<b>QUESTION S1-Q1 · FILE LOCATION</b></div>"
-        "<b>A task gives you a small CSV file that several exercises will use. "
-        "Where should you keep it?</b>",
+        "<b>QUESTION 1 · READ THE WELCOME PAGE</b></div>"
+        "<b>According to <code>README.md</code>, what is this workshop mainly "
+        "asking you to practise?</b><br><small>Hint: the answer is somewhere "
+        "inside the README file at the root of the directory tree.</small>",
         tone,
     )
 
 
-def stage1_quiz():
+def readme_quiz():
     """Return an MCQ whose visual state changes after submission."""
 
     question = widgets.HTML(_question("info"))
     choices = widgets.RadioButtons(
         options=[
-            ("In notebooks/", "notebooks"),
-            ("In data/", "data"),
-            ("Inside .git/", "git"),
+            ("Memorising Python syntax before making anything", "syntax"),
+            (
+                "Finding files, describing a target, making and opening a result, then refining it",
+                "workflow",
+            ),
+            ("Putting every workshop file into one folder", "one-folder"),
         ],
         value=None,
     )
@@ -65,11 +69,17 @@ def stage1_quiz():
     )
 
     def check_answer(_button) -> None:
-        if choices.value == "data":
+        if choices.value == "workflow":
             question.value = _question("success")
             feedback.value = _message(
                 "<div style='font-size:1.05rem'>🎉 <b>Correct!</b> "
-                "Shared source files belong in <b>data/</b>.</div>"
+                "The workshop is about a clear make–inspect–refine workflow, "
+                "not memorising syntax.</div>"
+                "<div style='margin-top:10px;padding-top:10px;"
+                "border-top:1px solid #ABEFC6'><b>KEY TIP · READ THE README "
+                "FIRST</b><br><small>A README is the project's welcome page. "
+                "Check it before starting: it explains the purpose, setup, "
+                "folder map, and first actions.</small></div>"
                 "<div style='margin-top:10px;padding-top:10px;"
                 "border-top:1px solid #ABEFC6'>"
                 "<code>widgets.RadioButtons(...) + widgets.Button(...)</code><br>"
@@ -94,7 +104,8 @@ def stage1_quiz():
         else:
             question.value = _question("error")
             feedback.value = _message(
-                "<b>Not quite.</b> Look at the workshop map and try again.",
+                "<b>Not quite.</b> Open <code>README.md</code> in the Explorer, "
+                "read the opening paragraph, and try again.",
                 "error",
             )
             panel.layout.border = "2px solid #F04438"

@@ -20,10 +20,10 @@ If the notebook asks for a kernel, choose **Python (Vibe Workshop)**. Someone ru
 
 The first notebook contains:
 
-- **Stage 1:** a friendly VS Code and directory-tree orientation with an interactive quiz;
-- **Stage 2:** AI links, a visual model-card guide, token efficiency, model-effort controls, and prompting references;
-- **Stage 3:** Google AI Mode fact retrieval, HuggingChat model selection, Gemini reasoning comparisons, locally saved worksheets, and an AI-assisted repair challenge;
-- **Main task:** a prompt-and-reiteration exercise that turns an 18-row CSV and original pixel-art apparel into a browser catalogue, then changes which fields are shown or hidden.
+- **Workspace directions:** a friendly VS Code and directory-tree orientation with a README-based interactive quiz;
+- **Prompt directions:** AI links, token efficiency, and practical prompting references;
+- **Experiments:** Google AI Mode retrieval, HuggingChat model cards, OpenRouter vision inside VS Code, Gemini effort comparisons, saved worksheets, and an AI-assisted repair challenge;
+- **Main task:** a prompt-and-reiteration exercise that diagnoses a messy 18-row CSV, repairs two source defects, and turns the data plus original pixel-art apparel into an intentionally ordered browser catalogue.
 
 Open [KEY_CONCEPTS.md](KEY_CONCEPTS.md) for the growing student take-home reference.
 

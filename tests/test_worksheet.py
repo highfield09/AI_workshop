@@ -26,7 +26,7 @@ def test_invalid_answer_file_is_treated_as_empty(tmp_path):
 
 def test_long_worksheet_label_is_shown_above_field(tmp_path):
     path = tmp_path / "answers.json"
-    label = "QUESTION S3-E2-Q3 · Compare Answer A with Answer B"
+    label = "QUESTION 7 · Compare Answer A with Answer B"
 
     box = worksheet_box(
         "reflection",

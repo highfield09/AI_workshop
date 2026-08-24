@@ -185,7 +185,7 @@ This short notebook helps you get comfortable in VS Code, find the course files,
 
 {panel(
     "IMPORTANT",
-    "<b>Run each cell from top to bottom.</b> Nothing in Stages 1 or 2 "
+    "<b>Run each cell from top to bottom.</b> Nothing in the opening directions "
     "sends data to an API.<br><br><b>Using GitHub Codespaces?</b> Python "
     "runs inside the online workspace, so you do not need it installed on "
     "your laptop. If prompted for a kernel, select "
@@ -202,7 +202,7 @@ from pathlib import Path
 from IPython.display import HTML, display
 
 from llm_workshop.prompt_card import copyable_prompt
-from llm_workshop.quiz import stage1_quiz
+from llm_workshop.quiz import readme_quiz
 from llm_workshop.worksheet import worksheet_box
 """,
             "setup",
@@ -232,7 +232,7 @@ You do not need to memorize commands. The aim is to learn where things live and 
         ),
         markdown(
             f"""
-## Stage 1 — Find your way around
+## Find your way around
 
 ### Five friendly terms
 
@@ -309,7 +309,7 @@ for item in sorted(workspace.iterdir(), key=lambda path: (not path.is_dir(), pat
         markdown(
             f"""
 {panel(
-    "QUESTION S1-Q1 · QUICK CHECK",
+    "QUESTION 1 · QUICK CHECK",
     "Choose an answer and press <b>Submit answer</b>. The question panel "
     "turns green for a correct answer and red when you should try again.",
     "task",
@@ -318,14 +318,14 @@ for item in sorted(workspace.iterdir(), key=lambda path: (not path.is_dir(), pat
         ),
         code(
             """
-stage1_quiz()
+readme_quiz()
 """,
             "interactive",
         ),
         markdown(
             f"""
 {panel(
-    "STAGE 1 CHECKPOINT",
+    "READY TO CONTINUE",
     "<ul style='margin:0;padding-left:20px'>"
     "<li>find the <b>Explorer</b>, <b>editor</b>, and <b>terminal</b>;</li>"
     "<li>point to the <b>notebooks</b>, <b>tasks</b>, <b>data</b>, and "
@@ -339,7 +339,7 @@ stage1_quiz()
         ),
         markdown(
             f"""
-## Stage 2 — Choose an AI helper
+## Choose an AI helper and prompt deliberately
 
 Use any interface available to you. These links open the official web experiences in a browser:
 
@@ -355,24 +355,6 @@ Use any interface available to you. These links open the official web experience
     "IMPORTANT",
     "Access can depend on your account, organization, or region. It is "
     "fine if the class uses a mixture of tools.",
-    "info",
-)}
-"""
-        ),
-        markdown(
-            f"""
-### Read the model card before choosing
-
-An **LLM card** is the model's label and short information page. Use three signals instead of choosing by name alone:
-
-{model_card_diagram()}
-
-{panel(
-    "PARAMETERS ARE NOT TOKENS",
-    "<b>Parameters</b> are learned values inside a model; they give a rough "
-    "sense of scale. <b>Tokens</b> are pieces of the text and other content "
-    "processed during each request. A larger parameter count can bring more "
-    "capability, but it does not guarantee the best answer for every task.",
     "info",
 )}
 """
@@ -403,39 +385,6 @@ An **LLM card** is the model's label and short information page. Use three signa
 
 See [Hugging Face pricing and billing](https://huggingface.co/docs/inference-providers/en/pricing) for an example of how one service handles credits and pay-as-you-go use.
 
-### Match effort to the task
-
-{panel(
-    "KEY CONCEPT · MODEL EFFORT",
-    "Some interfaces provide an <b>Effort</b> control. It signals the model "
-    "to spend less or more of its response budget on reasoning and checking. "
-    "More effort can help on difficult, multi-step work, but it usually takes "
-    "longer and may use more output or reasoning tokens. It does not guarantee "
-    "a better answer.<br><br><b>Not every model or provider exposes this "
-    "control.</b> Others use a fixed or automatic reasoning level.",
-    "task",
-)}
-
-| Effort level | Compute / token use | Best fit |
-|---|---|---|
-| **Low** | Usually the smallest response and reasoning budget | Quick factual lookups, routing, and high-volume simple work. |
-| **Medium** | A balanced, moderate budget | Routine editing, summaries, and tightly scoped tasks. |
-| **High (often default)** | A larger reasoning and checking budget | Complex engineering, nuanced analysis, and difficult multi-step tasks. |
-| **Max / XHigh** | The largest available budget; can be much more expensive | Long agentic work, large refactors, and difficult multi-file debugging. Availability varies. |
-
-{panel(
-    "IMPORTANT",
-    "Effort is a <b>signal, not a strict token budget</b>. The same setting "
-    "can use different amounts on different questions, models, or providers. "
-    "High or Max is not automatically the most token-efficient choice.",
-    "info",
-)}
-
-Student references:
-
-- [Claude: optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence)
-- [Claude effort controls — current documentation](https://platform.claude.com/docs/en/build-with-claude/effort)
-- [2026 Agentic Coding Trends Report](../Resources/2026%20Agentic%20Coding%20Trends%20Report.pdf) — a broader reference on increasingly complex, long-running coding agents.
 
 ### A six-point prompt check
 
@@ -486,47 +435,50 @@ Student references:
 )}
 
 {panel(
-    "STAGE 2 KEY CONCEPT",
-    "Choose a model by its <b>description</b>, <b>parameter scale</b>, and "
-    "<b>supported input types</b>. Then use tokens deliberately: enough "
-    "context to do the job, without unnecessary material.",
+    "KEY CONCEPT · PROMPT DELIBERATELY",
+    "State the objective, add only useful context, request an appropriate "
+    "format and length, then inspect the answer before asking again. Clear "
+    "prompts protect both attention and tokens.",
     "success",
 )}
 """
         ),
         markdown(
             f"""
-### QUESTION S2-Q1 · Model-selection mini-check
+### QUESTION 2 · Prompt-and-token mini-check
 
-Before choosing a model, which four controls or clues should you check?
+Which prompt is likely to be more token-efficient while still giving a useful answer?
+
+- **A:** “Tell me everything about oceans.”
+- **B:** “In five bullets for a 12-year-old, explain why oceans matter to Earth.”
 
 <details>
 <summary>Show the suggested answer</summary>
 
-Check the model's description, parameter scale, supported input types, and whether an Effort control is available and appropriate for the task.
+**B** gives the model an audience, subject and useful output length. It is more likely to return a focused answer without unnecessary material.
 
 </details>
 
 {panel(
-    "STAGE 2 CHECKPOINT",
-    "Check the model card and match the model and effort level to the task. "
-    "Then ask in a clear, token-efficient way.",
+    "READY TO EXPERIMENT",
+    "Keep the objective clear, provide only relevant context, and request a "
+    "useful answer length. You will inspect model cards and effort controls when each becomes relevant.",
     "success",
 )}
 """
         ),
         markdown(
             f"""
-## Stage 3 — Ask, compare, and question
+## Try the AI interfaces
 
 {panel(
     "IMPORTANT",
-    "Stage 3 moves between Google AI Mode, Hugging Face and Gemini so you "
+    "The experiments move between Google AI Mode, Hugging Face, VS Code and Gemini so you "
     "can see how the interface, model and prompt affect an answer.<br><br>"
     "<b>HuggingChat allowance:</b> free accounts have <b>20 questions</b>. "
     "Experiment 2 uses two of them.<br><br>"
     "<b>Your submitted worksheet:</b> each <b>Submit & save</b> button writes "
-    "its labelled answer to <b>tasks → stage3_answers.json</b>. The file is "
+    "its labelled answer to <b>tasks → workbook_answers.json</b>. The file is "
     "ignored by Git, so personal answers are not committed. The instructions "
     "inside <b>llm_workshop/worksheet.py</b> explicitly choose that path; the "
     "button only runs those instructions.<br><br>"
@@ -558,22 +510,37 @@ Answer in one sentence and include one source link."""
         ),
         code(
             '''worksheet_box(
-    "stage3_e1_answer",
-    question_label="QUESTION S3-E1-Q1 · Record the AI answer",
+    "google_fact_answer",
+    question_label="QUESTION 3 · Record the AI answer",
     response_label="Paste Google AI Mode’s answer:",
 )''',
             "interactive",
         ),
         code(
             '''worksheet_box(
-    "stage3_e1_source",
-    question_label="QUESTION S3-E1-Q2 · Check the fact and source",
+    "google_fact_source",
+    question_label="QUESTION 4 · Check the fact and source",
     response_label="What percentage did it give, and which source did it cite?",
 )''',
             "interactive",
         ),
         markdown(
             f"""
+### HuggingChat models: read the card and the icons
+
+An **LLM card** is the model's label and short information page. Use three signals instead of choosing by name alone:
+
+{model_card_diagram()}
+
+{panel(
+    "PARAMETERS ARE NOT TOKENS",
+    "<b>Parameters</b> are learned values inside a model; they give a rough "
+    "sense of scale. <b>Tokens</b> are pieces of the text and other content "
+    "processed during each request. A larger parameter count can bring more "
+    "capability, but it does not guarantee the best answer for every task.",
+    "info",
+)}
+
 ### Read the icons at the end of each model option
 
 Open [HuggingChat Models](https://huggingface.co/chat/models). A model row may show small capability icons at its right-hand end. Hover over an icon in HuggingChat to see its own label.
@@ -588,7 +555,6 @@ Open [HuggingChat Models](https://huggingface.co/chat/models). A model row may s
 | {chip("NO IMAGE ICON")} | Usually text-first: use it for natural-language tasks unless its card says otherwise. |
 | {chip("🖼 IMAGE")} | Multimodal: it can inspect image inputs as well as read text. |
 | {chip("🔨 HAMMER")} | Tool calling: it can ask connected tools or functions to do an action. |
-| {chip("PROVIDER / FASTEST / CHEAPEST")} | Where the model runs, or which service route is selected—not a new model skill. |
 | {chip("⚙ SETTINGS")} | Opens controls for that model; it is not a capability badge. |
 
 {panel(
@@ -636,8 +602,8 @@ Then explain its meaning in one short sentence:
         ),
         code(
             '''worksheet_box(
-    "stage3_e2_answer_a",
-    question_label="QUESTION S3-E2-Q1 · Answer A — small model",
+    "sanskrit_small_answer",
+    question_label="QUESTION 5 · Answer A — small model",
     response_label="Write the exact Model A name, then paste Answer A:",
     response_height="150px",
 )''',
@@ -645,8 +611,8 @@ Then explain its meaning in one short sentence:
         ),
         code(
             '''worksheet_box(
-    "stage3_e2_answer_b",
-    question_label="QUESTION S3-E2-Q2 · Answer B — moonshotai/Kimi-K3",
+    "sanskrit_large_answer",
+    question_label="QUESTION 6 · Answer B — moonshotai/Kimi-K3",
     response_label="Paste Answer B from moonshotai/Kimi-K3:",
     response_height="150px",
 )''',
@@ -654,8 +620,8 @@ Then explain its meaning in one short sentence:
         ),
         code(
             f'''worksheet_box(
-    "stage3_e2_comparison",
-    question_label="QUESTION S3-E2-Q3 · Compare Answer A with Answer B",
+    "sanskrit_comparison",
+    question_label="QUESTION 7 · Compare Answer A with Answer B",
     response_label="Which answer seems more well put together or informative, and why?",
     reveal_html={panel(
         "CHECKPOINT",
@@ -670,6 +636,158 @@ Then explain its meaning in one short sentence:
             f"""
 {panel(
     "EXPERIMENT 3",
+    "<b>Vision inside VS Code.</b> Connect a vision-capable OpenRouter model "
+    "to Copilot Chat, attach the supplied image, and trace what the request cost.",
+    "task",
+)}
+
+{panel(
+    "OPEN COPILOT CHAT INSIDE VS CODE",
+    "On Windows or Linux press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + "
+    "<kbd>I</kbd>; on macOS press <kbd>Control</kbd> + <kbd>Command</kbd> + "
+    "<kbd>I</kbd>.<br><br>Fallback: open the Command Palette with "
+    "<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> on Windows/Linux or "
+    "<kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> on macOS, then run "
+    "<b>Chat: Open Chat</b> or <b>Chat: Focus on Chat View</b>.",
+    "keyword",
+)}
+
+{panel(
+    "ONE-TIME SETUP · CONNECT OPENROUTER",
+    "<ol style='margin:0;padding-left:22px'>"
+    "<li>Create a free <a href='https://openrouter.ai/'>OpenRouter</a> account, "
+    "then open <a href='https://openrouter.ai/workspaces/default/keys'>"
+    "OpenRouter Keys</a> and create a key.</li>"
+    "<li>In the Chat model picker, choose <b>Other Models</b>, then the "
+    "<b>Manage Language Models</b> gear icon.</li>"
+    "<li>Select <b>Add Models → OpenRouter</b>. Enter a group name if asked, "
+    "then paste the key into VS Code's secure API-key prompt and press Enter.</li>"
+    "<li>To replace it later, return to the gear icon, choose the OpenRouter "
+    "provider, and select <b>Update API Key</b>.</li>"
+    "</ol>",
+    "info",
+)}
+
+{panel(
+    "KEEP THE KEY PRIVATE",
+    "Paste the key only into VS Code's secure API-key prompt. Never put it in "
+    "this notebook, a chat message, <code>.env</code>, a screenshot, or a "
+    "committed file.",
+    "task",
+)}
+
+| OpenRouter free-account limit | Allowance |
+|---|---|
+| Free-model requests per day | **50** |
+| Requests per minute | **20** |
+| Token charge on models ending in `:free` | **$0** |
+| Free models available | **25+** |
+
+See [OpenRouter pricing](https://openrouter.ai/pricing) for the live plan details.
+
+{panel(
+    "CLASS BUDGET",
+    "Use a <b>:free</b> route whenever possible. If the instructor authorises "
+    "a paid hosted route, stay inside the class allowance of <b>US$1</b>; do "
+    "not add credit or enable a paid fallback unless instructed.",
+    "info",
+)}
+
+### Select the vision model
+
+1. In **Manage Language Models**, make **Gemma 4 26B A4B** visible, then select it from the Chat model picker. Its OpenRouter ID is [`google/gemma-4-26b-a4b-it`](https://openrouter.ai/google/gemma-4-26b-a4b-it).
+2. Choose the arrow beside the model name and set **Thinking Effort → Medium**.
+3. If classroom credit is authorised, the normal hosted route produces a small non-zero cost. Otherwise select **Gemma 4 26B A4B (free)** when available; its activity cost should be $0, but popular free routes can be busy or rate-limited.
+
+<div style='background:#F8FAFC;border:1px solid #D0D5DD;border-radius:12px;padding:12px;margin:12px 0;max-width:100%;box-sizing:border-box;text-align:center'>
+<img src='../data/notebook1/Screenshot%202026-02-23%20145127.png' alt='Vision experiment source image' style='display:block;width:min(100%,480px);height:auto;margin:0 auto;border-radius:8px'>
+<div style='font-size:0.75rem;color:#667085;margin-top:7px'>SOURCE IMAGE · data/notebook1/Screenshot 2026-02-23 145127.png</div>
+</div>
+
+### Attach the image and ask
+
+1. In the Explorer, right-click **Screenshot 2026-02-23 145127.png** and choose **Copy Path**.
+2. In Copilot Chat, use **Add Context → Files & Folders** and select or paste that path. You can also drag the image from the Explorer into Chat.
+3. Confirm that an image/file chip appears in the Chat box. A path written as plain text does not always send the image itself.
+4. Send the prompt below.
+"""
+        ),
+        code(
+            '''copyable_prompt(
+    """Describe what is shown in this image."""
+)''',
+            "interactive",
+        ),
+        code(
+            '''worksheet_box(
+    "vision_description",
+    question_label="QUESTION 8 · Record the vision answer",
+    response_label="Paste Gemma 4 26B A4B’s description of the image:",
+    response_height="150px",
+)''',
+            "interactive",
+        ),
+        code(
+            '''worksheet_box(
+    "vision_cost",
+    question_label="QUESTION 9 · Trace the vision request",
+    response_label="From OpenRouter Activity, record the route, input/output tokens if shown, cost, and whether it was free or paid:",
+)''',
+            "interactive",
+        ),
+        markdown(
+            f"""
+### Check the cost where it was charged
+
+Open [OpenRouter Activity](https://openrouter.ai/activity) and select the request to inspect its model route, tokens and cost. OpenRouter BYOK usage is charged by OpenRouter and does **not** use a Copilot request allowance.
+
+For GitHub-provided Copilot usage, open [GitHub Billing and licensing](https://github.com/settings/billing), then choose **AI usage**, or check **Copilot settings → Usage**. The current Copilot Free plan includes up to **2,000 inline code completions per month**; Chat uses a limited monthly GitHub AI Credits allowance and Auto model selection. Read the [current Copilot plan details](https://docs.github.com/en/copilot/get-started/plans) rather than assuming an older fixed number of chats.
+
+{panel(
+    "KEY CONCEPT · TRACE THE PROVIDER",
+    "The interface and the model provider are not always the same. VS Code "
+    "displayed this chat, OpenRouter routed and measured the inference, and "
+    "your selected model interpreted the image. Check the activity page that "
+    "belongs to the provider holding the key.",
+    "success",
+)}
+
+### Match effort to the task
+
+{panel(
+    "KEY CONCEPT · MODEL EFFORT",
+    "Some interfaces provide an <b>Effort</b> control. It signals the model "
+    "to spend less or more of its response budget on reasoning and checking. "
+    "More effort can help on difficult, multi-step work, but it usually takes "
+    "longer and may use more output or reasoning tokens. It does not guarantee "
+    "a better answer.<br><br><b>Not every model or provider exposes this "
+    "control.</b> Others use a fixed or automatic reasoning level.",
+    "task",
+)}
+
+| Effort level | Compute / token use | Best fit |
+|---|---|---|
+| **Low** | Usually the smallest response and reasoning budget | Quick factual lookups, routing, and high-volume simple work. |
+| **Medium** | A balanced, moderate budget | Routine editing, summaries, and tightly scoped tasks. |
+| **High (often default)** | A larger reasoning and checking budget | Complex engineering, nuanced analysis, and difficult multi-step tasks. |
+| **Max / XHigh** | The largest available budget; can be much more expensive | Long agentic work, large refactors, and difficult multi-file debugging. Availability varies. |
+
+{panel(
+    "IMPORTANT",
+    "Effort is a <b>signal, not a strict token budget</b>. The same setting "
+    "can use different amounts on different questions, models, or providers. "
+    "High or Max is not automatically the most token-efficient choice.",
+    "info",
+)}
+
+Student references:
+
+- [Claude: optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence)
+- [Claude effort controls — current documentation](https://platform.claude.com/docs/en/build-with-claude/effort)
+- [2026 Agentic Coding Trends Report](../Resources/2026%20Agentic%20Coding%20Trends%20Report.pdf) — a broader reference on increasingly complex, long-running coding agents.
+
+{panel(
+    "EXPERIMENT 4",
     "<b>The nearby car-wash test.</b> Compare a fast lightweight model with "
     "a stronger model using extended thinking, then improve the prompt and "
     "test the lightweight model again.",
@@ -691,8 +809,8 @@ Open [Google Gemini](https://gemini.google.com/app) and sign in with a Google ac
         ),
         code(
             '''worksheet_box(
-    "stage3_e3_answer_a",
-    question_label="QUESTION S3-E3-Q1 · Answer A — Gemini 3.5 Flash-Lite",
+    "carwash_answer_a",
+    question_label="QUESTION 10 · Answer A — Gemini 3.5 Flash-Lite",
     response_label="Paste the original Flash-Lite answer:",
     response_height="140px",
 )''',
@@ -700,8 +818,8 @@ Open [Google Gemini](https://gemini.google.com/app) and sign in with a Google ac
         ),
         code(
             '''worksheet_box(
-    "stage3_e3_answer_b",
-    question_label="QUESTION S3-E3-Q2 · Answer B — Gemini 3.6 Flash with extended thinking",
+    "carwash_answer_b",
+    question_label="QUESTION 11 · Answer B — Gemini 3.6 Flash with extended thinking",
     response_label="Paste the original extended-thinking answer:",
     response_height="140px",
 )''',
@@ -709,8 +827,8 @@ Open [Google Gemini](https://gemini.google.com/app) and sign in with a Google ac
         ),
         code(
             f'''worksheet_box(
-    "stage3_e3_logic",
-    question_label="QUESTION S3-E3-Q3 · Compare the logic",
+    "carwash_logic",
+    question_label="QUESTION 12 · Compare the logic",
     response_label="Does either answer contain a logic flaw? Which assumption did it make?",
     reveal_html={panel(
         "REVEAL · THE HIDDEN ASSUMPTION",
@@ -746,8 +864,8 @@ Return to **Gemini 3.5 Flash-Lite** in a fresh tab or chat and send this revised
         ),
         code(
             '''worksheet_box(
-    "stage3_e3_clear_answer",
-    question_label="QUESTION S3-E3-Q4 · Record the clearer-prompt answer",
+    "carwash_clear_answer",
+    question_label="QUESTION 13 · Record the clearer-prompt answer",
     response_label="Paste Gemini 3.5 Flash-Lite’s answer to the clearer prompt:",
     response_height="140px",
 )''',
@@ -755,8 +873,8 @@ Return to **Gemini 3.5 Flash-Lite** in a fresh tab or chat and send this revised
         ),
         code(
             f'''worksheet_box(
-    "stage3_e3_clear_observation",
-    question_label="QUESTION S3-E3-Q5 · Evaluate the clearer prompt",
+    "carwash_clear_observation",
+    question_label="QUESTION 14 · Evaluate the clearer prompt",
     response_label="Did the explicit target remove the logic flaw? What changed?",
     reveal_html={panel(
         "KEY TIP",
@@ -771,7 +889,7 @@ Return to **Gemini 3.5 Flash-Lite** in a fresh tab or chat and send this revised
         markdown(
             f"""
 {panel(
-    "EXPERIMENT 4",
+    "EXPERIMENT 5",
     "<b>Repair a broken HTML animation.</b> Run the next cell, copy its red "
     "error and the broken code, then write your own question to an LLM. "
     "Apply the suggested fix and rerun the cell.",
@@ -793,7 +911,7 @@ lights = "".join(
 )
 
 display(HTML(f"""
-<div class="disco-stage">
+<div class="disco-scene">
   <div class="disco-ball">🪩</div>
   <div class="stick-zone">
     <pre class="stick-pose pose-1">  O  \n ╱│╲ \n ╱ ╲ </pre>
@@ -806,7 +924,7 @@ display(HTML(f"""
   {lights}
 </div>
 <style>
-.disco-stage {{ position:relative; height:260px; overflow:hidden; border-radius:16px;
+.disco-scene {{ position:relative; height:260px; overflow:hidden; border-radius:16px;
   background:radial-gradient(circle at top, #312e81, #09090b 68%); color:white; }}
 .disco-ball {{ text-align:center; font-size:48px; animation:swing 1.2s ease-in-out infinite alternate; }}
 .stick-zone {{ position:absolute; z-index:2; left:50%; top:78px; width:130px; height:115px;
@@ -861,7 +979,7 @@ Python reports that `disco_colours` is not defined. The list was created as `dis
         markdown(
             f"""
 {panel(
-    "STAGE 3 CHECKPOINT",
+    "EXPERIMENT CHECKPOINT",
     "<ul style='margin:0;padding-left:20px'>"
     "<li>separate text-first models from vision or multimodal models;</li>"
     "<li>expect probabilistic wording while checking semantic meaning;</li>"
@@ -869,7 +987,7 @@ Python reports that `disco_colours` is not defined. The list was created as `dis
     "<li>check hidden assumptions before accepting a confident answer;</li>"
     "<li>make the target explicit before paying for more reasoning;</li>"
     "<li>use a short run–repair–rerun troubleshooting loop;</li>"
-    "<li>find saved work in <b>tasks/stage3_answers.json</b>.</li></ul>"
+    "<li>find saved work in <b>tasks/workbook_answers.json</b>.</li></ul>"
     "<p style='margin:10px 0 0'><b>Always know where your output is going "
     "and where to find it.</b></p>",
     "success",
@@ -912,9 +1030,10 @@ Python reports that `disco_colours` is not defined. The list was created as `dis
 
 {panel(
     "CONTROLLED MESSY DATA",
-    "The product IDs are deliberately out of order, and one image filename "
-    "does not match a file in the image folder. Keep every product row: your "
-    "catalogue should handle imperfect source data without hiding the item.",
+    "The product rows are deliberately mixed rather than grouped into a useful "
+    "shopping order. The CSV also contains <b>two controlled data-quality "
+    "problems</b>. Build the first version from what is present; the first "
+    "follow-up iteration will inspect and repair the source data.",
     "task",
 )}
 
@@ -936,7 +1055,9 @@ Copy this first-round specification into your Copilot message, then add any visu
 - Use plain HTML, CSS and JavaScript with no framework or package installation.
 - Show a friendly message if the CSV cannot be loaded.
 - Keep a product visible and show an appropriate message or icon if its image is missing.
-- Return one complete HTML document in chat; do not create or edit the file for me."""
+- Return one complete HTML document in chat; do not create or edit the file for me.
+
+Do not prematurely read the notebook requirements and go beyond what is requested in this prompt."""
 )''',
             "interactive",
         ),
@@ -944,23 +1065,12 @@ Copy this first-round specification into your Copilot message, then add any visu
             f"""
 {catalogue_preview()}
 
-The preview above is deliberately compact and follows CSV order: three colour
-variants of each product type sit together. It is an inventory glance, not the
-large shopping-card layout you are asking Copilot to build.
+The preview above is deliberately compact and follows the intentionally mixed
+CSV row order. It is an inventory glance, not the organised shopping-card
+layout you are asking Copilot to build.
 
 ### 2 · Write the first prompt and build
 
-{panel(
-    "QUICKLY OPEN COPILOT CHAT",
-    "Open Chat directly: on Windows or Linux press <kbd>Ctrl</kbd> + "
-    "<kbd>Alt</kbd> + <kbd>I</kbd>; on macOS press <kbd>Control</kbd> + "
-    "<kbd>Command</kbd> + <kbd>I</kbd>.<br><br>Fallback: open the Command "
-    "Palette with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> on "
-    "Windows or Linux, or <kbd>Command</kbd> + <kbd>Shift</kbd> + "
-    "<kbd>P</kbd> on macOS. Run <b>Chat: Open Chat</b>. Some VS Code "
-    "versions label the command <b>Chat: Focus on Chat View</b>.",
-    "keyword",
-)}
 {panel(
     "ONE-TIME SETUP · INSTALL LIVE SERVER",
     "An <b>extension</b> is a small add-on that gives VS Code an extra "
@@ -975,13 +1085,14 @@ large shopping-card layout you are asking Copilot to build.
     "info",
 )}
 
-1. In the Explorer, open `data/notebook1/products.csv`. Inspect its columns, image filenames and deliberately mixed ID order.
-2. Open **GitHub Copilot Chat** with one of the shortcuts above and use **Ask/Chat mode**, not an automatic file-editing mode.
-3. Explain the **data**, **output**, **target** and paste the copyable Round 1 requirements. Tell Copilot to return one complete HTML document in chat rather than editing files.
-4. Read its short plan. If it misunderstood a path or requirement, correct the instruction before accepting code.
-5. In the Explorer, create `outputs/notebook1/catalogue.html`, paste the returned HTML code into that file, and save it.
-6. Open `catalogue.html` in the editor. Right-click inside the editor and choose **Open with Live Server**.
-7. If that menu is missing, open the Command Palette and run **Live Server: Open With Live Server**. Codespaces will open or offer a forwarded browser tab. Keep Live Server running while you test changes.
+1. Close the vision experiment conversation, then open a fresh **GitHub Copilot Chat**.
+2. In the Chat box, change the mode to **Ask** and change the model to **Auto**.
+3. In the Explorer, open `data/notebook1/products.csv`. Inspect its columns, image filenames and deliberately mixed ID order.
+4. Explain the **data**, **output**, **target** and paste the copyable Round 1 requirements. Tell Copilot to return one complete HTML document in chat rather than editing files.
+5. Read its short plan. If it misunderstood a path or requirement, correct the instruction before accepting code.
+6. In the Explorer, create `outputs/notebook1/catalogue.html`, paste the returned HTML code into that file, and save it.
+7. Open `catalogue.html` in the editor. Right-click inside the editor and choose **Open with Live Server**.
+8. If that menu is missing, open the Command Palette and run **Live Server: Open With Live Server**. Codespaces will open or offer a forwarded browser tab. Keep Live Server running while you test changes.
 
 Do not open the HTML as a plain `file://` page: serving it with Live Server allows its JavaScript to load the CSV.
 
@@ -999,7 +1110,7 @@ Do not open the HTML as a plain `file://` page: serving it with Live Server allo
         code(
             '''worksheet_box(
     "catalogue_brief_prompt",
-    question_label="QUESTION MAIN-Q1 · Write the first Copilot instruction",
+    question_label="QUESTION 15 · Write the first Copilot instruction",
     response_label="Write the instruction you will send to GitHub Copilot:",
     response_height="150px",
 )''',
@@ -1008,24 +1119,47 @@ Do not open the HTML as a plain `file://` page: serving it with Live Server allo
         code(
             '''worksheet_box(
     "catalogue_brief_mismatch",
-    question_label="QUESTION MAIN-Q2 · Inspect the first catalogue",
+    question_label="QUESTION 16 · Inspect the first catalogue",
     response_label="After opening the first version, what is its most important mismatch?",
 )''',
             "interactive",
         ),
         markdown(
             f"""
-### 3 · Inspect before asking again
+### 3 · First iteration: inspect and repair the data
 
-Check the evidence in the preview before writing another prompt:
+{panel(
+    "DATA REPAIR BEFORE REDESIGN",
+    "Do not solve a source-data problem only with prettier HTML. Before changing "
+    "layout or sorting, find the two controlled defects in the CSV, repair the "
+    "source rows, then reload the catalogue.",
+    "task",
+)}
 
-- Did all 18 rows become catalogue entries, including the one with a missing image?
+1. Open `data/notebook1/products.csv` and compare each product row with the 11-column header.
+2. Ask Copilot in **Ask** mode to inspect that file and **report suspicious rows and evidence only**. It should not edit the file for you.
+3. Check every image filename against the files in `data/notebook1/`. Also look for a row whose separators no longer line up with the header.
+4. Correct only the two source-data problems in `products.csv`, save it, and reload the Live Server page.
+5. Confirm that all 18 records now have complete fields and valid images before requesting a new display order.
+
+<details style='background:#FFFAEB;border:1px solid #FEDF89;border-radius:10px;padding:12px'>
+<summary><b>Hint: what should the inspection count?</b></summary>
+
+The header defines **11 fields**. A healthy row therefore needs the same field structure. Missing commas can merge several values into one unusually long field and leave later fields empty. For images, compare the CSV filename character-for-character with the actual files in the folder.
+
+</details>
+
+### 4 · Inspect before asking again
+
+Check the evidence after the data repair:
+
+- Do all 18 rows have 11 complete fields and become 18 catalogue entries?
+- Do all 18 image filenames now point to real files?
 - Does the page show useful consumer information without displaying every CSV field?
-- Does the missing image show an appropriate fallback message or icon?
-- Did the out-of-order IDs accidentally control the display order?
-- Is the strongest problem a data problem, a layout problem, or a prompt problem?
+- Is the current row order useful to a shopper, or merely the messy source order?
+- What exact primary and secondary order would make the catalogue easier to browse?
 
-### 4 · Reiterate one change at a time
+### 5 · Reiterate one change at a time
 
 Use the same chat so Copilot has the current code, but make each request small.
 You may ask for one complete revised HTML document or the exact section to
@@ -1034,9 +1168,10 @@ replace; you still make the edit in `catalogue.html` yourself.
 1. **Visibility round:** add a **More details** control. It may reveal colour,
    release date, sizes, country of origin and designer, but those fields should
    remain hidden when the page first opens.
-2. **Sorting round:** add choices for original CSV order, ID number,
-   price low-to-high, price high-to-low, and newest release. Test whether
-   numerical ID sorting restores the expected sequence.
+2. **Sorting round:** name the exact default order you want—for example, type
+   then product name, newest release first, or price low-to-high. Ask for the
+   primary and secondary sort explicitly; do not assume numerical ID order is
+   useful simply because it is easy for code to produce.
 3. **Relevance round:** decide which optional details genuinely help a shopper.
    Ask to hide one unhelpful field, or reveal only the useful fields instead
    of displaying every available column.
@@ -1064,12 +1199,13 @@ A useful follow-up prompt contains four parts:
             f"""
 ### Final catalogue check
 
-- [ ] All 18 CSV rows become 18 catalogue entries.
-- [ ] The 17 valid image paths work, and the missing image has a useful fallback.
+- [ ] After repair, all 18 CSV rows have 11 complete fields and become 18 catalogue entries.
+- [ ] All 18 image paths work, while the HTML still contains a useful missing-image fallback.
 - [ ] Each entry shows information that is relevant to a potential consumer.
 - [ ] Optional metadata is hidden when the page first opens.
 - [ ] A deliberate control can reveal the optional details chosen as useful.
-- [ ] A sort control can order by ID number, price and release date.
+- [ ] The catalogue opens in the consumer-friendly order you specified.
+- [ ] Sort controls offer the useful alternatives you requested and use sensible tie-breakers.
 - [ ] Irrelevant fields remain hidden, and you can explain that choice.
 - [ ] The layout is neat, with no clipped text or sideways scrolling.
 - [ ] The result is saved at `outputs/notebook1/catalogue.html`.
