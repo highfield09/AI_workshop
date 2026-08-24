@@ -24,6 +24,8 @@ def _message(content: str, tone: str) -> str:
 
 def _question(tone: str) -> str:
     return _message(
+        "<div style='font-size:0.78rem;letter-spacing:0.04em;margin-bottom:6px'>"
+        "<b>QUESTION S1-Q1 · FILE LOCATION</b></div>"
         "<b>A task gives you a small CSV file that several exercises will use. "
         "Where should you keep it?</b>",
         tone,

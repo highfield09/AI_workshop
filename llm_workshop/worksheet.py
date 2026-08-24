@@ -91,23 +91,28 @@ def _worksheet_layout() -> widgets.Layout:
 def worksheet_box(
     question_id: str,
     *,
-    answer_label: str = "Paste the AI answer:",
-    observation_label: str = "What did you notice?",
+    question_label: str,
+    response_label: str = "Your response:",
+    response_height: str = "120px",
+    reveal_html: str | None = None,
     answers_path: str | Path = DEFAULT_ANSWERS_PATH,
 ):
-    """Return two text areas and a button that saves work locally."""
+    """Return one labelled response field with its own save action."""
 
     path = Path(answers_path)
     saved = _read_answers(path).get(question_id, {})
-    answer = _field(
-        answer_label,
-        saved.get("answer", ""),
-        height="110px",
+    if not isinstance(saved, dict):
+        saved = {}
+    response = _field(
+        response_label,
+        saved.get("response", saved.get("answer", "")),
+        height=response_height,
     )
-    observation = _field(
-        observation_label,
-        saved.get("observation", ""),
-        height="90px",
+    question = widgets.HTML(
+        "<div style='background:#EFF8FF;border:1px solid #B2DDFF;"
+        "border-radius:9px;padding:10px;color:#175CD3;font-weight:700;"
+        "letter-spacing:0.02em;overflow-wrap:anywhere'>"
+        f"{question_label}</div>"
     )
     save = widgets.Button(
         description="Submit & save",
@@ -115,210 +120,34 @@ def worksheet_box(
         icon="save",
     )
     status = widgets.HTML(_initial_status(path))
-    box = widgets.VBox([answer, observation, save, status], layout=_worksheet_layout())
-
-    def on_save(_button) -> None:
-        answers = _read_answers(path)
-        answers[question_id] = {
-            "answer": answer.children[1].value.strip(),
-            "observation": observation.children[1].value.strip(),
-        }
-        _write_answers(path, answers)
-        save.button_style = "success"
-        save.description = "Saved"
-        box.layout.border = "2px solid #12B76A"
-        status.value = _saved_status(path)
-
-    save.on_click(on_save)
-    return box
-
-
-def model_comparison_box(
-    question_id: str,
-    *,
-    observation_label: str = "What difference did you notice?",
-    model_a_heading: str = "First model",
-    model_a_placeholder: str = "Copy the first model name from HuggingChat",
-    model_b_heading: str = "Second model",
-    model_b_placeholder: str = "Copy the second model name from HuggingChat",
-    answers_path: str | Path = DEFAULT_ANSWERS_PATH,
-):
-    """Return side-by-side fields for comparing two model responses."""
-
-    path = Path(answers_path)
-    saved = _read_answers(path).get(question_id, {})
-    model_a = widgets.Text(
-        value=saved.get("model_a", ""),
-        description="Model A:",
-        placeholder=model_a_placeholder,
-        style={"description_width": "80px"},
-        layout=widgets.Layout(width="100%", max_width="100%", min_width="0"),
+    reveal = widgets.HTML(
+        value="",
+        layout=widgets.Layout(
+            display="none",
+            width="100%",
+            max_width="100%",
+            min_width="0",
+        ),
     )
-    answer_a = _field(
-        "Paste Answer A:",
-        saved.get("answer_a", ""),
-        height="110px",
-    )
-    model_b = widgets.Text(
-        value=saved.get("model_b", ""),
-        description="Model B:",
-        placeholder=model_b_placeholder,
-        style={"description_width": "80px"},
-        layout=widgets.Layout(width="100%", max_width="100%", min_width="0"),
-    )
-    answer_b = _field(
-        "Paste Answer B:",
-        saved.get("answer_b", ""),
-        height="110px",
-    )
-    observation = _field(
-        observation_label,
-        saved.get("observation", ""),
-        height="90px",
-    )
-    save = widgets.Button(
-        description="Submit & save",
-        button_style="primary",
-        icon="save",
-    )
-    status = widgets.HTML(_initial_status(path))
     box = widgets.VBox(
-        [
-            widgets.HTML(f"<b>{model_a_heading}</b>"),
-            model_a,
-            answer_a,
-            widgets.HTML(f"<b>{model_b_heading}</b>"),
-            model_b,
-            answer_b,
-            observation,
-            save,
-            status,
-        ],
+        [question, response, save, status, reveal],
         layout=_worksheet_layout(),
     )
 
     def on_save(_button) -> None:
         answers = _read_answers(path)
         answers[question_id] = {
-            "model_a": model_a.value.strip(),
-            "answer_a": answer_a.children[1].value.strip(),
-            "model_b": model_b.value.strip(),
-            "answer_b": answer_b.children[1].value.strip(),
-            "observation": observation.children[1].value.strip(),
+            "question": question_label,
+            "response": response.children[1].value.strip(),
         }
         _write_answers(path, answers)
         save.button_style = "success"
         save.description = "Saved"
         box.layout.border = "2px solid #12B76A"
         status.value = _saved_status(path)
-
-    save.on_click(on_save)
-    return box
-
-
-def effort_comparison_box(
-    question_id: str,
-    *,
-    model_name: str,
-    answers_path: str | Path = DEFAULT_ANSWERS_PATH,
-):
-    """Compare two effort settings while recording provider token counts."""
-
-    path = Path(answers_path)
-    saved = _read_answers(path).get(question_id, {})
-    low_saved = saved.get("low", {})
-    high_saved = saved.get("high", {})
-    if not isinstance(low_saved, dict):
-        low_saved = {}
-    if not isinstance(high_saved, dict):
-        high_saved = {}
-
-    def token_field(description: str, value: str):
-        return widgets.Text(
-            value=str(value),
-            description=description,
-            placeholder="Number or Not shown",
-            style={"description_width": "105px"},
-            layout=widgets.Layout(
-                flex="1 1 250px",
-                width="auto",
-                max_width="100%",
-                min_width="0",
-            ),
-        )
-
-    low_answer = _field(
-        "Paste the Low-effort answer:",
-        low_saved.get("answer", ""),
-        height="180px",
-    )
-    low_input = token_field("Input tokens:", low_saved.get("input_tokens", ""))
-    low_output = token_field("Output tokens:", low_saved.get("output_tokens", ""))
-    high_answer = _field(
-        "Paste the High-effort answer:",
-        high_saved.get("answer", ""),
-        height="180px",
-    )
-    high_input = token_field("Input tokens:", high_saved.get("input_tokens", ""))
-    high_output = token_field("Output tokens:", high_saved.get("output_tokens", ""))
-    observation = _field(
-        "Which answer obeyed more rules? Was the extra effort worth the time or tokens?",
-        saved.get("observation", ""),
-        height="100px",
-    )
-    count_layout = widgets.Layout(
-        display="flex",
-        flex_flow="row wrap",
-        width="100%",
-        max_width="100%",
-        min_width="0",
-    )
-    low_counts = widgets.HBox([low_input, low_output], layout=count_layout)
-    high_counts = widgets.HBox([high_input, high_output], layout=count_layout)
-    save = widgets.Button(
-        description="Submit & save",
-        button_style="primary",
-        icon="save",
-    )
-    status = widgets.HTML(_initial_status(path))
-    box = widgets.VBox(
-        [
-            widgets.HTML(f"<b>{model_name} · Low effort</b>"),
-            low_answer,
-            low_counts,
-            widgets.HTML(f"<b>{model_name} · High effort</b>"),
-            high_answer,
-            high_counts,
-            observation,
-            save,
-            status,
-        ],
-        layout=_worksheet_layout(),
-    )
-
-    def on_save(_button) -> None:
-        answers = _read_answers(path)
-        answers[question_id] = {
-            "model": model_name,
-            "low": {
-                "effort": "Low",
-                "answer": low_answer.children[1].value.strip(),
-                "input_tokens": low_input.value.strip(),
-                "output_tokens": low_output.value.strip(),
-            },
-            "high": {
-                "effort": "High",
-                "answer": high_answer.children[1].value.strip(),
-                "input_tokens": high_input.value.strip(),
-                "output_tokens": high_output.value.strip(),
-            },
-            "observation": observation.children[1].value.strip(),
-        }
-        _write_answers(path, answers)
-        save.button_style = "success"
-        save.description = "Saved"
-        box.layout.border = "2px solid #12B76A"
-        status.value = _saved_status(path)
+        if reveal_html:
+            reveal.value = reveal_html
+            reveal.layout.display = "block"
 
     save.on_click(on_save)
     return box

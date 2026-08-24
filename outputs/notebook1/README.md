@@ -3,7 +3,8 @@
 Create `catalogue.html` here during Notebook 1's main task. Ask GitHub Copilot
 Chat to return code, then create this file and paste the code yourself.
 
-Preview it with **Show Preview** in VS Code. The page should load
+Open `catalogue.html` in VS Code, right-click inside the editor, and choose
+**Open with Live Server**. Serving the page over HTTP lets it load
 `../../data/notebook1/products.csv` and resolve image filenames from
 `../../data/notebook1/`.
 

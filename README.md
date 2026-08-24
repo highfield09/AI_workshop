@@ -40,7 +40,7 @@ Open [KEY_CONCEPTS.md](KEY_CONCEPTS.md) for the growing student take-home refere
 
 The older deployment material remains in the repository for reference but is hidden from the default VS Code Explorer view.
 
-The Codespace also installs GitHub Copilot Chat and VS Code Live Preview. Copilot access depends on the GitHub account signed into VS Code.
+The Codespace also installs GitHub Copilot Chat and Live Server by Ritwick Dey. Copilot access depends on the GitHub account signed into VS Code.
 
 ## Local VS Code setup
 

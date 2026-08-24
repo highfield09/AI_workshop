@@ -43,10 +43,11 @@ def markdown(source: str):
 def code(source: str, *tags: str):
     cell = nbf.v4.new_code_cell(source.strip())
     cell_tags = list(tags)
-    if "worksheet_box(" in cell.source:
+    if any(marker in cell.source for marker in ("worksheet_box(", "copyable_prompt(")) or "hide-input" in cell_tags:
         cell.metadata["inputCollapsed"] = True
         cell.metadata["jupyter"] = {"source_hidden": True}
-        cell_tags.append("hide-input")
+        if "hide-input" not in cell_tags:
+            cell_tags.append("hide-input")
     if cell_tags:
         cell.metadata["tags"] = cell_tags
     return cell
@@ -193,6 +194,20 @@ This short notebook helps you get comfortable in VS Code, find the course files,
 )}
 """
         ),
+        code(
+            """
+import random
+from pathlib import Path
+
+from IPython.display import HTML, display
+
+from llm_workshop.prompt_card import copyable_prompt
+from llm_workshop.quiz import stage1_quiz
+from llm_workshop.worksheet import worksheet_box
+""",
+            "setup",
+            "hide-input",
+        ),
         markdown(
             f"""
 ### The simple workflow
@@ -282,8 +297,6 @@ You do not need to memorize commands. The aim is to learn where things live and 
         ),
         code(
             """
-from pathlib import Path
-
 workspace = Path.cwd()
 print(f"Current folder: {workspace}")
 print("\\nWorkshop items:")
@@ -296,7 +309,7 @@ for item in sorted(workspace.iterdir(), key=lambda path: (not path.is_dir(), pat
         markdown(
             f"""
 {panel(
-    "QUICK CHECK",
+    "QUESTION S1-Q1 · QUICK CHECK",
     "Choose an answer and press <b>Submit answer</b>. The question panel "
     "turns green for a correct answer and red when you should try again.",
     "task",
@@ -305,8 +318,6 @@ for item in sorted(workspace.iterdir(), key=lambda path: (not path.is_dir(), pat
         ),
         code(
             """
-from llm_workshop.quiz import stage1_quiz
-
 stage1_quiz()
 """,
             "interactive",
@@ -485,7 +496,7 @@ Student references:
         ),
         markdown(
             f"""
-### Stage 2 mini-check
+### QUESTION S2-Q1 · Model-selection mini-check
 
 Before choosing a model, which four controls or clues should you check?
 
@@ -513,12 +524,53 @@ Check the model's description, parameter scale, supported input types, and wheth
     "Stage 3 moves between Google AI Mode, Hugging Face and Gemini so you "
     "can see how the interface, model and prompt affect an answer.<br><br>"
     "<b>HuggingChat allowance:</b> free accounts have <b>20 questions</b>. "
-    "Experiment 2 uses two of them.",
+    "Experiment 2 uses two of them.<br><br>"
+    "<b>Your submitted worksheet:</b> each <b>Submit & save</b> button writes "
+    "its labelled answer to <b>tasks → stage3_answers.json</b>. The file is "
+    "ignored by Git, so personal answers are not committed. The instructions "
+    "inside <b>llm_workshop/worksheet.py</b> explicitly choose that path; the "
+    "button only runs those instructions.<br><br>"
+    "<b>Always know where your output is going—and where to find it.</b>",
     "info",
 )}
 
 LLMs are <abbr title='Probabilistic means the model chooses among likely next pieces of text; the same request can produce different wording.' style='text-decoration:underline dotted;cursor:help'><b>probabilistic</b></abbr>. In simple words, models choose from several likely next pieces of text rather than retrieving one fixed sentence. Two runs may therefore use different wording or detail. Ideally, the answers should remain **semantically similar**—their central meaning should agree—even when their phrasing varies.
 """
+        ),
+        markdown(
+            f"""
+{panel(
+    "EXPERIMENT 1",
+    "<b>Simple fact retrieval.</b> Open Google AI Mode, ask one factual "
+    "question, and inspect both the answer and its source.",
+    "task",
+)}
+
+Open [Google AI Mode](https://www.google.com/search?udm=50), then send the prompt below.
+"""
+        ),
+        code(
+            '''copyable_prompt(
+    """Approximately what percentage of Earth’s surface is covered by ocean?
+Answer in one sentence and include one source link."""
+)''',
+            "interactive",
+        ),
+        code(
+            '''worksheet_box(
+    "stage3_e1_answer",
+    question_label="QUESTION S3-E1-Q1 · Record the AI answer",
+    response_label="Paste Google AI Mode’s answer:",
+)''',
+            "interactive",
+        ),
+        code(
+            '''worksheet_box(
+    "stage3_e1_source",
+    question_label="QUESTION S3-E1-Q2 · Check the fact and source",
+    response_label="What percentage did it give, and which source did it cite?",
+)''',
+            "interactive",
         ),
         markdown(
             f"""
@@ -550,73 +602,6 @@ Open [HuggingChat Models](https://huggingface.co/chat/models). A model row may s
         ),
         markdown(
             f"""
-### Where your submitted work goes
-
-{panel(
-    "YOUR WORKSHEET",
-    "When you press <b>Submit & save</b>, look in the VS Code Explorer: "
-    "<b>tasks → stage3_answers.json</b>. The file is ignored by Git, so "
-    "personal answers are not committed.<br><br>The button does not "
-    "magically choose a destination. The Python instructions inside "
-    "<a href='../llm_workshop/worksheet.py'><b>llm_workshop/worksheet.py</b></a> "
-    "explicitly create the folder and "
-    "write the output to that path; clicking the button only triggers "
-    "those instructions.",
-    "info",
-)}
-
-{panel(
-    "STAGE 3 KEY CONCEPT",
-    "<b>Always know where your output is going—and where to find it.</b> "
-    "Before running or submitting anything, identify its destination in "
-    "the directory tree.",
-    "success",
-)}
-
-"""
-        ),
-        code(
-            """
-from llm_workshop.worksheet import (
-    effort_comparison_box,
-    model_comparison_box,
-    worksheet_box,
-)
-"""
-        ),
-        markdown(
-            f"""
-{panel(
-    "EXPERIMENT 1",
-    "<b>Simple fact retrieval.</b> Open Google AI Mode, ask one factual "
-    "question, and inspect the answer and source it provides.",
-    "task",
-)}
-
-Open [Google AI Mode](https://www.google.com/search?udm=50), then send the prompt below.
-"""
-        ),
-        code(
-            '''from llm_workshop.prompt_card import copyable_prompt
-
-copyable_prompt(
-    """Approximately what percentage of Earth's surface is covered by ocean?
-Answer in one sentence and include one source link."""
-)''',
-            "interactive",
-        ),
-        code(
-            """
-worksheet_box(
-    "simple_fact",
-    answer_label="Paste Google AI Mode's answer:",
-    observation_label="What figure did it give, and which source did it cite?",
-)
-""",
-            "interactive",
-        ),
-        markdown(
-            f"""
 {panel(
     "EXPERIMENT 2",
     "<b>Small model versus very large model.</b> Translate one Sanskrit "
@@ -627,9 +612,9 @@ worksheet_box(
 - [Browse text-generation model cards on Hugging Face](https://huggingface.co/models?pipeline_tag=text-generation&sort=trending)
 - [Open the model selector in HuggingChat](https://huggingface.co/chat/models)
 
-1. **Model A:** choose a text model whose card lists **10B parameters or fewer**. Availability changes, so record the exact name you find.
-2. **Model B:** use [moonshotai/Kimi-K3 in HuggingChat](https://huggingface.co/chat/models/moonshotai/Kimi-K3). Its card lists **2.8T total parameters** and **104B activated parameters**.
-3. Start a fresh chat for each model and use the identical prompt. Do not correct either model midway.
+1. **Answer A:** choose a text model whose card lists **10B parameters or fewer**. Record its exact name.
+2. **Answer B:** use [moonshotai/Kimi-K3 in HuggingChat](https://huggingface.co/chat/models/moonshotai/Kimi-K3). Its card lists **2.8T total parameters** and **104B activated parameters**.
+3. Start a fresh tab or chat for each model and use the identical prompt. Do not correct either model midway.
 
 {panel(
     "HYPOTHESIS, NOT A PROMISE",
@@ -641,9 +626,7 @@ worksheet_box(
 """
         ),
         code(
-            '''from llm_workshop.prompt_card import copyable_prompt
-
-copyable_prompt(
+            '''copyable_prompt(
     """Translate this Sanskrit sentence into clear English.
 Then explain its meaning in one short sentence:
 
@@ -651,140 +634,42 @@ Then explain its meaning in one short sentence:
 )''',
             "interactive",
         ),
-        markdown(
-            f"""
-
-{panel(
-    "CHECKPOINT",
-    "The literal idea is <b>Knowledge gives humility.</b> Notice whether "
-    "each model separates translation from interpretation.",
-    "success",
-)}
-"""
+        code(
+            '''worksheet_box(
+    "stage3_e2_answer_a",
+    question_label="QUESTION S3-E2-Q1 · Answer A — small model",
+    response_label="Write the exact Model A name, then paste Answer A:",
+    response_height="150px",
+)''',
+            "interactive",
         ),
         code(
-            """
-model_comparison_box(
-    "sanskrit_translation",
-    model_a_heading="Model A · small text model (10B or fewer)",
-    model_a_placeholder="Enter the small model's exact name",
-    model_b_heading="Model B · moonshotai/Kimi-K3",
-    model_b_placeholder="moonshotai/Kimi-K3",
-    observation_label="Which answer seems more well put together or informative?",
-)
-""",
+            '''worksheet_box(
+    "stage3_e2_answer_b",
+    question_label="QUESTION S3-E2-Q2 · Answer B — moonshotai/Kimi-K3",
+    response_label="Paste Answer B from moonshotai/Kimi-K3:",
+    response_height="150px",
+)''',
+            "interactive",
+        ),
+        code(
+            f'''worksheet_box(
+    "stage3_e2_comparison",
+    question_label="QUESTION S3-E2-Q3 · Compare Answer A with Answer B",
+    response_label="Which answer seems more well put together or informative, and why?",
+    reveal_html={panel(
+        "CHECKPOINT",
+        "The literal idea is <b>Knowledge gives humility.</b> Check whether "
+        "each model separated translation from interpretation.",
+        "success",
+    )!r},
+)''',
             "interactive",
         ),
         markdown(
             f"""
 {panel(
     "EXPERIMENT 3",
-    "<b>A harder logic-and-rules test.</b> Give Gemini 3.6 Flash the same "
-    "12×12 castle task once with Low thinking and once with High thinking. "
-    "Compare rule-following, self-checking and any token counts shown.",
-    "task",
-)}
-
-Open [Google AI Studio](https://aistudio.google.com/prompts/new_chat) and sign in with a Google account.
-
-1. Select **Gemini 3.6 Flash**, start a fresh chat, choose **Low** thinking, and send the prompt once.
-2. Start another fresh chat with **Gemini 3.6 Flash**, choose **High** thinking, and send the identical prompt once.
-3. Do not repair either answer. Paste both original results into the worksheet.
-4. Record exact input/output token counts only if the interface exposes them. Otherwise enter **Not shown**—a model cannot reliably audit its provider's billing counters.
-
-{panel(
-    "FAIR TEST",
-    "Keep the <b>model, prompt, and fresh-chat context identical</b>. Change "
-    "only Effort. This does not prove that High always wins; it tests whether "
-    "extra effort helped on this one structured task.",
-    "info",
-)}
-"""
-        ),
-        code(
-            '''from llm_workshop.prompt_card import copyable_prompt
-
-copyable_prompt(
-    """Create a 12x12 text grid called a Medieval Castle Logic Map.
-
-Follow every rule exactly:
-1. Output exactly 12 grid rows, each containing exactly 12 visible characters.
-2. The outer edge is W, except for two gates: G at (0,5) and G at (11,6).
-3. Put a tower C at each inner corner: (1,1), (1,10), (10,1), and (10,10).
-4. Put exactly four treasures T at (2,2), (4,4), (6,6), and (8,8).
-5. For every T at (row, column), place one key K at its horizontal mirror position (row, 11-column). Derive these four K coordinates yourself.
-6. On row 9, spell CROWN from left to right, placing exactly one ground dot between consecutive letters. Start C at column 1.
-7. No symbol may overwrite another. Fill every unused inner cell with a ground dot (.).
-8. Below the grid, list the 0-based coordinates of both G gates, all four tower C cells, all four T cells, all four K cells, and the five CROWN letters.
-9. Add a SELF-CHECK confirming: 12 rows; 12 characters per row; 42 border W cells; 2 gates; 4 towers; 4 treasures; 4 mirrored keys; CROWN order; and matching coordinates.
-
-Do not put row numbers, bullets, spaces, or Markdown fences inside the 12 grid rows. Double-check every rule before answering, but do not show hidden reasoning.
-
-Finish with a TOKEN REPORT. If the chat system gives you exact input and output token counts, report them. If those counts are not available to you, write "not available to the model". Never estimate or invent token counts."""
-)''',
-            "interactive",
-        ),
-        markdown(
-            f"""
-Use this quick comparison checklist:
-
-| Check | Low | High |
-|---|:---:|:---:|
-| Exactly 12 rows of 12 characters | ☐ | ☐ |
-| Border has 42 `W`s and the two gates are correct | ☐ | ☐ |
-| Four towers and four treasures are correctly placed | ☐ | ☐ |
-| Four `K`s mirror the treasure columns using `11-column` | ☐ | ☐ |
-| `C.R.O.W.N` occupies row 9 from column 1 | ☐ | ☐ |
-| Every coordinate matches the grid | ☐ | ☐ |
-| Token report avoids invented numbers | ☐ | ☐ |
-
-{panel(
-    "TOKEN COUNT NOTE",
-    "The prompt asks for a token report to expose an important limitation: "
-    "the model may not have access to exact provider counters. Prefer numbers "
-    "shown by the interface. If none are shown, record <b>Not shown</b> and "
-    "compare response length and quality without pretending they are exact tokens.",
-    "success",
-)}
-"""
-        ),
-        code(
-            '''effort_comparison_box(
-    "castle_effort",
-    model_name="Gemini 3.6 Flash",
-)''',
-            "interactive",
-        ),
-        markdown(
-            f"""
-<details style='background:#F4F3FF;border:1px solid #D9D6FE;border-radius:10px;padding:12px'>
-<summary><b>Reveal one valid logic map only after recording both attempts</b></summary>
-
-This is the correctly assembled reference:
-
-<pre style='overflow:auto;max-width:100%;box-sizing:border-box'>WWWWWGWWWWWW
-WC........CW
-W.T......K.W
-W..........W
-W...T..K...W
-W..........W
-W....KT....W
-W..........W
-W..K....T..W
-WC.R.O.W.N.W
-WC........CW
-WWWWWWGWWWWW</pre>
-
-Gates: `(0,5)`, `(11,6)`<br>
-Towers: `(1,1)`, `(1,10)`, `(10,1)`, `(10,10)`<br>
-Treasures: `(2,2)`, `(4,4)`, `(6,6)`, `(8,8)`<br>
-Keys: `(2,9)`, `(4,7)`, `(6,5)`, `(8,3)`<br>
-CROWN: `C (9,1)`, `R (9,3)`, `O (9,5)`, `W (9,7)`, `N (9,9)`
-
-</details>
-
-{panel(
-    "EXPERIMENT 4",
     "<b>The nearby car-wash test.</b> Compare a fast lightweight model with "
     "a stronger model using extended thinking, then improve the prompt and "
     "test the lightweight model again.",
@@ -793,41 +678,53 @@ CROWN: `C (9,1)`, `R (9,3)`, `O (9,5)`, `W (9,7)`, `N (9,9)`
 
 Open [Google Gemini](https://gemini.google.com/app) and sign in with a Google account.
 
-1. Start a fresh chat with **Gemini 3.5 Flash-Lite** and send the prompt once.
-2. Start a fresh chat with **Gemini 3.6 Flash** using **High / extended thinking** and send the identical prompt once.
-3. Save both original answers. Do not add clarification yet.
+1. Start a fresh tab or chat with **Gemini 3.5 Flash-Lite** and send the prompt once.
+2. Start another fresh tab or chat with **Gemini 3.6 Flash** using **High / extended thinking** and send the identical prompt once.
+3. Save both original answers separately. Do not add clarification yet.
 """
         ),
         code(
-            '''from llm_workshop.prompt_card import copyable_prompt
-
-copyable_prompt(
+            '''copyable_prompt(
     """My car is dirty and needs to be washed. The car wash is only 100 metres from my home. Should I walk there or drive?"""
 )''',
             "interactive",
         ),
         code(
-            '''model_comparison_box(
-    "carwash_model_comparison",
-    model_a_heading="Answer A · Gemini 3.5 Flash-Lite",
-    model_a_placeholder="Gemini 3.5 Flash-Lite",
-    model_b_heading="Answer B · Gemini 3.6 Flash · High / extended thinking",
-    model_b_placeholder="Gemini 3.6 Flash · High thinking",
-    observation_label="Does either answer contain a logic flaw? Which assumption did it make?",
+            '''worksheet_box(
+    "stage3_e3_answer_a",
+    question_label="QUESTION S3-E3-Q1 · Answer A — Gemini 3.5 Flash-Lite",
+    response_label="Paste the original Flash-Lite answer:",
+    response_height="140px",
+)''',
+            "interactive",
+        ),
+        code(
+            '''worksheet_box(
+    "stage3_e3_answer_b",
+    question_label="QUESTION S3-E3-Q2 · Answer B — Gemini 3.6 Flash with extended thinking",
+    response_label="Paste the original extended-thinking answer:",
+    response_height="140px",
+)''',
+            "interactive",
+        ),
+        code(
+            f'''worksheet_box(
+    "stage3_e3_logic",
+    question_label="QUESTION S3-E3-Q3 · Compare the logic",
+    response_label="Does either answer contain a logic flaw? Which assumption did it make?",
+    reveal_html={panel(
+        "REVEAL · THE HIDDEN ASSUMPTION",
+        "The useful answer is to <b>drive the dirty car</b>, because the car "
+        "must reach the car wash. The prompt never explicitly says the car "
+        "must be physically present. Inferring that unstated requirement is "
+        "an everyday form of inductive or contextual reasoning.",
+        "info",
+    )!r},
 )''',
             "interactive",
         ),
         markdown(
             f"""
-<details style='background:#EFF8FF;border:1px solid #B2DDFF;border-radius:10px;padding:12px'>
-<summary><b>Reveal the hidden assumption after saving both answers</b></summary>
-
-The useful answer is to **drive the dirty car**, because the car itself must reach the car wash. Older language models sometimes focused on “100 metres is close” and recommended walking, while missing the goal of the trip.
-
-The prompt never explicitly says that the car must be physically present. The model has to infer that unstated requirement from context. This is an everyday form of **inductive or contextual reasoning** rather than a formal proof. Even clear-looking wording can hide assumptions that a model—or a person—may misunderstand.
-
-</details>
-
 {panel(
     "KEY CONCEPT · INFERENCE AND ASSUMPTIONS",
     "Clarity is not always as obvious as it feels to the writer. Stronger "
@@ -838,37 +735,43 @@ The prompt never explicitly says that the car must be physically present. The mo
 
 ### Repeat with the target made explicit
 
-Return to **Gemini 3.5 Flash-Lite** in a fresh chat and send this revised prompt:
+Return to **Gemini 3.5 Flash-Lite** in a fresh tab or chat and send this revised prompt:
 """
         ),
         code(
-            '''from llm_workshop.prompt_card import copyable_prompt
-
-copyable_prompt(
+            '''copyable_prompt(
     """My car is dirty and needs to be washed. The car wash is only 100 metres from my home. Should I walk there or drive? Consider what needs to be physically present at the destination for the task to be completed."""
 )''',
             "interactive",
         ),
         code(
             '''worksheet_box(
-    "carwash_clear_prompt",
-    answer_label="Paste Gemini 3.5 Flash-Lite's answer to the clearer prompt:",
-    observation_label="Did the explicit target remove the logic flaw? What changed?",
+    "stage3_e3_clear_answer",
+    question_label="QUESTION S3-E3-Q4 · Record the clearer-prompt answer",
+    response_label="Paste Gemini 3.5 Flash-Lite’s answer to the clearer prompt:",
+    response_height="140px",
+)''',
+            "interactive",
+        ),
+        code(
+            f'''worksheet_box(
+    "stage3_e3_clear_observation",
+    question_label="QUESTION S3-E3-Q5 · Evaluate the clearer prompt",
+    response_label="Did the explicit target remove the logic flaw? What changed?",
+    reveal_html={panel(
+        "KEY TIP",
+        "A well-keyed prompt with an explicit target and outcome can improve "
+        "response quality without switching to a larger model or activating "
+        "higher reasoning.",
+        "success",
+    )!r},
 )''',
             "interactive",
         ),
         markdown(
             f"""
 {panel(
-    "KEY TIP",
-    "A well-keyed prompt with an explicit target and outcome can improve "
-    "response quality without switching to a larger model or activating "
-    "higher reasoning.",
-    "success",
-)}
-
-{panel(
-    "EXPERIMENT 5",
+    "EXPERIMENT 4",
     "<b>Repair a broken HTML animation.</b> Run the next cell, copy its red "
     "error and the broken code, then write your own question to an LLM. "
     "Apply the suggested fix and rerun the cell.",
@@ -877,10 +780,7 @@ copyable_prompt(
 """
         ),
         code(
-            '''import random
-from IPython.display import HTML, display
-
-# A notebook-native disco scene (no desktop window needed).
+            '''# A notebook-native disco scene (no desktop window needed).
 rng = random.Random(7)
 disco_colors = ["#FF007F", "#00F0FF", "#FFDF00", "#7000FF", "#00FF66", "#FF00FF"]
 
@@ -965,9 +865,6 @@ Python reports that `disco_colours` is not defined. The list was created as `dis
     "<ul style='margin:0;padding-left:20px'>"
     "<li>separate text-first models from vision or multimodal models;</li>"
     "<li>expect probabilistic wording while checking semantic meaning;</li>"
-    "<li>change only one variable when comparing Low and High effort;</li>"
-    "<li>use provider token counts when shown—never invented estimates;</li>"
-    "<li>use the stated 20-question HuggingChat allowance deliberately;</li>"
     "<li>distinguish translation from interpretation;</li>"
     "<li>check hidden assumptions before accepting a confident answer;</li>"
     "<li>make the target explicit before paying for more reasoning;</li>"
@@ -1005,7 +902,7 @@ Python reports that `disco_colours` is not defined. The list was created as `dis
 
 <table style="width:100%;table-layout:fixed">
 <tr><td style="width:22%"><b>Data</b></td><td><code>data/notebook1/products.csv</code>: 18 product records and their image filenames, with columns including <code>release_date</code> and <code>country_of_origin</code>.</td></tr>
-<tr><td><b>Output</b></td><td>One file that you create yourself: <code>tasks/notebook1/catalogue.html</code>.</td></tr>
+<tr><td><b>Output</b></td><td>One file that you create yourself: <code>outputs/notebook1/catalogue.html</code>.</td></tr>
 <tr><td><b>Target</b></td><td>You need to build a simple shopping catalogue of the items listed in the <code>*.csv</code> file. The catalogue should be neat and organised and should display information that would be relevant to potential consumers. Inspect the CSV file to learn what information it contains.</td></tr>
 </table>
 
@@ -1021,17 +918,30 @@ Python reports that `disco_colours` is not defined. The list was created as `dis
     "task",
 )}
 
-The first version should:
+### Round 1 requirements
 
-- load `../../data/notebook1/products.csv` in the browser;
-- map each CSV image filename to `../../data/notebook1/<filename>`;
-- create one card per CSV row rather than hard-coding 18 cards;
-- use equal square image areas and consistent card heights;
-- format every price with two decimal places;
-- use plain HTML, CSS and JavaScript with no framework or package install;
-- show a friendly message if the CSV cannot be loaded;
-- show an appropriate message or icon if an individual image is missing.
+Copy this first-round specification into your Copilot message, then add any visual choices you want.
+"""
+        ),
+        code(
+            '''copyable_prompt(
+    """ROUND 1 REQUIREMENTS
 
+- Load ../../data/notebook1/products.csv in the browser.
+- Map every CSV image filename to ../../data/notebook1/<filename>.
+- Create one catalogue entry per CSV row instead of hard-coding 18 products.
+- Choose and show information that is relevant to a potential consumer.
+- Use equal square image areas and consistent entry heights.
+- Format every price with two decimal places.
+- Use plain HTML, CSS and JavaScript with no framework or package installation.
+- Show a friendly message if the CSV cannot be loaded.
+- Keep a product visible and show an appropriate message or icon if its image is missing.
+- Return one complete HTML document in chat; do not create or edit the file for me."""
+)''',
+            "interactive",
+        ),
+        markdown(
+            f"""
 {catalogue_preview()}
 
 The preview above is deliberately compact and follows CSV order: three colour
@@ -1051,13 +961,29 @@ large shopping-card layout you are asking Copilot to build.
     "versions label the command <b>Chat: Focus on Chat View</b>.",
     "keyword",
 )}
+{panel(
+    "ONE-TIME SETUP · INSTALL LIVE SERVER",
+    "An <b>extension</b> is a small add-on that gives VS Code an extra "
+    "ability.<ol style='margin:8px 0 0;padding-left:22px'>"
+    "<li>Open <b>Extensions</b> from the left sidebar, or press "
+    "<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd> on Windows/Linux "
+    "or <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd> on macOS.</li>"
+    "<li>Search for <b>Live Server</b>.</li>"
+    "<li>Select <b>Live Server</b> by <b>Ritwick Dey</b> and click "
+    "<b>Install</b>. If the button says Disable or Uninstall, it is already "
+    "ready.</li></ol>",
+    "info",
+)}
 
 1. In the Explorer, open `data/notebook1/products.csv`. Inspect its columns, image filenames and deliberately mixed ID order.
 2. Open **GitHub Copilot Chat** with one of the shortcuts above and use **Ask/Chat mode**, not an automatic file-editing mode.
-3. Explain the **data**, **output**, **target** and requirements above in your own words. Tell Copilot not to create or edit files; ask it to return one complete HTML document in chat.
+3. Explain the **data**, **output**, **target** and paste the copyable Round 1 requirements. Tell Copilot to return one complete HTML document in chat rather than editing files.
 4. Read its short plan. If it misunderstood a path or requirement, correct the instruction before accepting code.
-5. In the Explorer, create `tasks/notebook1/catalogue.html`, then copy the returned HTML code into that file and save it.
-6. Right-click `catalogue.html` and choose **Show Preview**. The Codespace includes VS Code Live Preview so the browser can load the CSV.
+5. In the Explorer, create `outputs/notebook1/catalogue.html`, paste the returned HTML code into that file, and save it.
+6. Open `catalogue.html` in the editor. Right-click inside the editor and choose **Open with Live Server**.
+7. If that menu is missing, open the Command Palette and run **Live Server: Open With Live Server**. Codespaces will open or offer a forwarded browser tab. Keep Live Server running while you test changes.
+
+Do not open the HTML as a plain `file://` page: serving it with Live Server allows its JavaScript to load the CSV.
 
 {panel(
     "KEY CONCEPT · ARTICULATE THE TARGET",
@@ -1072,9 +998,18 @@ large shopping-card layout you are asking Copilot to build.
         ),
         code(
             '''worksheet_box(
-    "catalogue_brief",
-    answer_label="Write the instruction you will send to GitHub Copilot:",
-    observation_label="After opening the first version, what is its most important mismatch?",
+    "catalogue_brief_prompt",
+    question_label="QUESTION MAIN-Q1 · Write the first Copilot instruction",
+    response_label="Write the instruction you will send to GitHub Copilot:",
+    response_height="150px",
+)''',
+            "interactive",
+        ),
+        code(
+            '''worksheet_box(
+    "catalogue_brief_mismatch",
+    question_label="QUESTION MAIN-Q2 · Inspect the first catalogue",
+    response_label="After opening the first version, what is its most important mismatch?",
 )''',
             "interactive",
         ),
@@ -1125,14 +1060,6 @@ A useful follow-up prompt contains four parts:
 )}
 """
         ),
-        code(
-            '''worksheet_box(
-    "catalogue_reiteration",
-    answer_label="Write one small follow-up prompt using evidence, one change, preserve and check:",
-    observation_label="What changed after you applied it, and what will you verify next?",
-)''',
-            "interactive",
-        ),
         markdown(
             f"""
 ### Final catalogue check
@@ -1145,7 +1072,7 @@ A useful follow-up prompt contains four parts:
 - [ ] A sort control can order by ID number, price and release date.
 - [ ] Irrelevant fields remain hidden, and you can explain that choice.
 - [ ] The layout is neat, with no clipped text or sideways scrolling.
-- [ ] The result is saved at `tasks/notebook1/catalogue.html`.
+- [ ] The result is saved at `outputs/notebook1/catalogue.html`.
 
 Do not judge only by appearance. Check the CSV-to-image mapping, try the
 controls, resize the preview, and confirm that a later change did not break
@@ -1161,7 +1088,7 @@ something that worked in the previous version.
     "You are ready when you can find the course folders, choose an AI "
     "interface, describe a target, and verify where its output belongs."
     "<br><br><b>Next action:</b> finish and preview "
-    "<b>tasks/notebook1/catalogue.html</b>.",
+    "<b>outputs/notebook1/catalogue.html</b>.",
     "success",
 )}
 """

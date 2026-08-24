@@ -14,4 +14,4 @@ This folder is the input for the main task in `notebooks/01_start_here.ipynb`.
 - ISO dates (`YYYY-MM-DD`) can be sorted without first changing their format.
 - The pixel-art images are original workshop assets generated for this exercise.
 
-The student's HTML output belongs at `tasks/notebook1/catalogue.html`.
+The student's HTML output belongs at `outputs/notebook1/catalogue.html`.

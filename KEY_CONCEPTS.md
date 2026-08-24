@@ -75,10 +75,10 @@ References: [Claude effort controls](https://platform.claude.com/docs/en/build-w
 **Key concept: express the data, output, target, and success checks before asking a coding agent for code.**
 
 - Data: 18 rows in `data/notebook1/products.csv` and their mapped pixel-art apparel images.
-- Output: `tasks/notebook1/catalogue.html`.
+- Output: `outputs/notebook1/catalogue.html`.
 - Target: a responsive shopping grid whose cards come from the CSV.
 - Ask GitHub Copilot Chat to return the code; create the HTML file and paste the code yourself.
-- Preview the page with VS Code Live Preview and verify both appearance and CSV-to-image mapping.
+- Serve the page with Live Server and verify both appearance and CSV-to-image mapping.
 - Begin with the core card fields: image, name, brand, type, and price.
 - Treat colour, release date, sizes, country of origin, and designer as optional details that can be shown or hidden for a purpose.
 - Use a reiteration loop: prompt, build, open, inspect, request one change, and verify again.

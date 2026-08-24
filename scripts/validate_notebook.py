@@ -36,7 +36,6 @@ REQUIRED_SNIPPETS = [
     "moonshotai/Kimi-K3",
     "Gemini 3.5 Flash-Lite",
     "Gemini 3.6 Flash",
-    "TOKEN COUNT NOTE",
     "KEY CONCEPT · INFERENCE AND ASSUMPTIONS",
     "KEY CONCEPT · ARTICULATE THE TARGET",
     "KEY CONCEPT · REITERATION LOOP",
@@ -47,11 +46,15 @@ REQUIRED_SNIPPETS = [
     "**HTML** is the file type",
     "Ctrl</kbd> + <kbd>Alt</kbd>",
     "Chat: Open Chat",
-    "appropriate message or icon",
+    "appropriate fallback message or icon",
     "country_of_origin",
     "release_date",
     "data/notebook1/products.csv",
-    "tasks/notebook1/catalogue.html",
+    "outputs/notebook1/catalogue.html",
+    "### Round 1 requirements",
+    "ONE-TIME SETUP · INSTALL LIVE SERVER",
+    "Open with Live Server",
+    "QUESTION S2-Q1",
     "Always know where your output is going",
     "tasks/stage3_answers.json",
 ]
@@ -69,7 +72,38 @@ FORBIDDEN_SNIPPETS = [
     "show three columns on a laptop",
     "Do the cards remain even when product names have different lengths?",
     "Does resizing produce three, then two, then one column",
+    "Medieval Castle Logic Map",
+    "castle_effort",
+    "Use this quick comparison checklist",
+    "effort_comparison_box(",
+    "model_comparison_box(",
+    "catalogue_reiteration",
+    "use the stated 20-question HuggingChat allowance deliberately",
+    "Where your submitted work goes",
+    "from llm_workshop.worksheet import (",
+    "Show Preview",
+    "VS Code Live Preview",
+    "tasks/notebook1/catalogue.html",
+    "answer_label=",
+    "observation_label=",
 ]
+EXPECTED_QUESTION_LABELS = [
+    "QUESTION S1-Q1",
+    "QUESTION S2-Q1",
+    "QUESTION S3-E1-Q1",
+    "QUESTION S3-E1-Q2",
+    "QUESTION S3-E2-Q1",
+    "QUESTION S3-E2-Q2",
+    "QUESTION S3-E2-Q3",
+    "QUESTION S3-E3-Q1",
+    "QUESTION S3-E3-Q2",
+    "QUESTION S3-E3-Q3",
+    "QUESTION S3-E3-Q4",
+    "QUESTION S3-E3-Q5",
+    "QUESTION MAIN-Q1",
+    "QUESTION MAIN-Q2",
+]
+
 SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
     re.compile(r"(api[_-]?key\s*[=:]\s*)['\"][^'\"]{12,}['\"]", re.I),
@@ -141,49 +175,6 @@ def validate_catalogue_data() -> None:
                 raise SystemExit(f"Catalogue field {field!r} cannot be blank")
 
 
-def validate_castle_reference(markdown: str) -> None:
-    match = re.search(
-        r"Reveal one valid logic map.*?<pre[^>]*>(.*?)</pre>",
-        markdown,
-        re.DOTALL,
-    )
-    if not match:
-        raise SystemExit("Missing hidden castle reference grid")
-    rows = match.group(1).strip().splitlines()
-    if len(rows) != 12 or any(len(row) != 12 for row in rows):
-        raise SystemExit("Castle reference must be exactly 12 by 12")
-
-    expected = {
-        (0, 5): "G",
-        (11, 6): "G",
-        (1, 1): "C",
-        (1, 10): "C",
-        (10, 1): "C",
-        (10, 10): "C",
-        (2, 2): "T",
-        (4, 4): "T",
-        (6, 6): "T",
-        (8, 8): "T",
-        (2, 9): "K",
-        (4, 7): "K",
-        (6, 5): "K",
-        (8, 3): "K",
-    }
-    expected.update(
-        {(9, column): letter for column, letter in zip((1, 3, 5, 7, 9), "CROWN")}
-    )
-    wrong = [
-        f"{position}={rows[position[0]][position[1]]!r}"
-        for position, symbol in expected.items()
-        if rows[position[0]][position[1]] != symbol
-    ]
-    if wrong:
-        raise SystemExit(f"Castle reference violates fixed positions: {', '.join(wrong)}")
-    border = rows[0] + rows[-1] + "".join(row[0] + row[-1] for row in rows[1:-1])
-    if border.count("W") != 42 or border.count("G") != 2:
-        raise SystemExit("Castle reference border must contain 42 walls and two gates")
-
-
 def main() -> None:
     notebook = nbformat.read(NOTEBOOK, as_version=4)
     nbformat.validate(notebook)
@@ -206,6 +197,13 @@ def main() -> None:
     if forbidden:
         raise SystemExit(f"Removed workshop text returned: {', '.join(forbidden)}")
 
+    if markdown.index("EXPERIMENT 1") > markdown.index(
+        "Read the icons at the end of each model option"
+    ):
+        raise SystemExit("Experiment 1 must appear before the HuggingChat icon guide")
+    if "KEY TIP" in markdown:
+        raise SystemExit("Post-question Key Tips must not be visible in markdown cells")
+
     if not EFFORT_REPORT.is_file():
         raise SystemExit(
             f"Missing student reference: {EFFORT_REPORT.relative_to(ROOT)}"
@@ -224,7 +222,35 @@ def main() -> None:
         raise SystemExit("Catalogue preview thumbnails must remain compact")
 
     validate_catalogue_data()
-    validate_castle_reference(markdown)
+
+    setup_cells = [
+        (index, cell)
+        for index, cell in enumerate(notebook.cells)
+        if "setup" in cell.get("metadata", {}).get("tags", [])
+    ]
+    if len(setup_cells) != 1:
+        raise SystemExit(f"Notebook must contain one setup cell; found {setup_cells}")
+    setup_index, setup_cell = setup_cells[0]
+    setup_imports = [
+        "import random",
+        "from pathlib import Path",
+        "from IPython.display import HTML, display",
+        "from llm_workshop.prompt_card import copyable_prompt",
+        "from llm_workshop.quiz import stage1_quiz",
+        "from llm_workshop.worksheet import worksheet_box",
+    ]
+    missing_imports = [
+        statement for statement in setup_imports if statement not in setup_cell.source
+    ]
+    if missing_imports:
+        raise SystemExit(f"Setup cell is missing imports: {missing_imports}")
+    setup_metadata = setup_cell.get("metadata", {})
+    if (
+        setup_cell.get("execution_count") is None
+        or not setup_metadata.get("inputCollapsed")
+        or not setup_metadata.get("jupyter", {}).get("source_hidden")
+    ):
+        raise SystemExit(f"Setup cell {setup_index} must be pre-executed and hidden")
 
     expected_error_cells = [
         index
@@ -242,9 +268,9 @@ def main() -> None:
         for index, cell in enumerate(notebook.cells)
         if cell.cell_type == "code" and "worksheet_box(" in cell.source
     ]
-    if len(worksheet_cells) != 4:
+    if len(worksheet_cells) != 12:
         raise SystemExit(
-            "Notebook must contain four worksheet boxes; "
+            "Notebook must contain twelve independently saved worksheet questions; "
             f"found {[index for index, _ in worksheet_cells]}"
         )
     for index, cell in worksheet_cells:
@@ -289,6 +315,26 @@ def main() -> None:
         for text in searchable
     ):
         raise SystemExit("Notebook is missing the direct browser clipboard control")
+    combined_searchable = "\n".join(searchable)
+    missing_labels = [
+        label for label in EXPECTED_QUESTION_LABELS
+        if label not in combined_searchable
+    ]
+    if missing_labels:
+        raise SystemExit(f"Notebook questions are missing labels: {missing_labels}")
+
+    tip_cells = [
+        index
+        for index, cell in enumerate(notebook.cells)
+        if cell.cell_type == "code"
+        if "KEY TIP" in cell.source and "reveal_html=" in cell.source
+    ]
+    if len(tip_cells) != 1:
+        raise SystemExit(
+            "Notebook must contain one Key Tip revealed by worksheet submission; "
+            f"found {tip_cells}"
+        )
+
     for pattern in SECRET_PATTERNS:
         if any(pattern.search(text) for text in searchable):
             raise SystemExit(f"Possible credential matched {pattern.pattern!r}")

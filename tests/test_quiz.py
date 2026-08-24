@@ -20,6 +20,7 @@ def test_correct_answer_turns_quiz_green_and_reveals_widget_note():
     quiz.children[2].click()
 
     assert "#ECFDF3" in quiz.children[0].value
+    assert "QUESTION S1-Q1" in quiz.children[0].value
     assert "Correct" in quiz.children[3].value
     assert "ipywidgets" in quiz.children[3].value
     assert quiz.layout.border == "2px solid #12B76A"
