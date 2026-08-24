@@ -84,6 +84,9 @@ References: [Claude effort controls](https://platform.claude.com/docs/en/build-w
 - Use a reiteration loop: prompt, build, open, inspect, request one change, and verify again.
 - Keep each follow-up prompt small enough that you can identify what changed.
 - Useful later requests include sorting by price or release date, filtering by type, and adding a details toggle.
+- Do not assume that IDs arrive in order or that every file reference is valid.
+- Keep an imperfect product row visible by providing a useful missing-image fallback.
+- Choose and test sorting deliberately: original row order, numerical ID, price, and release date answer different questions.
 
 ## Before accepting any AI-assisted result
 

@@ -42,8 +42,13 @@ def markdown(source: str):
 
 def code(source: str, *tags: str):
     cell = nbf.v4.new_code_cell(source.strip())
-    if tags:
-        cell.metadata["tags"] = list(tags)
+    cell_tags = list(tags)
+    if "worksheet_box(" in cell.source:
+        cell.metadata["inputCollapsed"] = True
+        cell.metadata["jupyter"] = {"source_hidden": True}
+        cell_tags.append("hide-input")
+    if cell_tags:
+        cell.metadata["tags"] = cell_tags
     return cell
 
 
@@ -998,25 +1003,34 @@ Python reports that `disco_colours` is not defined. The list was created as `dis
 
 ### 1 · Inspect the data and define the first version
 
-| Part | What it means in this task |
-|---|---|
-| **Data** | `data/notebook1/products.csv`: 18 product records mapped to 18 PNG images. |
-| **Core card details** | Image, name, brand, type and price. These belong in the uncluttered first version. |
-| **Optional details** | Colour, `release_date`, sizes, `country_of_origin` and designer. Keep these available, but hidden until they serve a purpose. |
-| **Output** | One file that you create yourself: `tasks/notebook1/catalogue.html`. |
-| **Target** | A clean shopping catalogue: three equal cards per row on a laptop, each showing the mapped image, name, brand, type and price. |
+<table style="width:100%;table-layout:fixed">
+<tr><td style="width:22%"><b>Data</b></td><td><code>data/notebook1/products.csv</code>: 18 product records and their image filenames, with columns including <code>release_date</code> and <code>country_of_origin</code>.</td></tr>
+<tr><td><b>Output</b></td><td>One file that you create yourself: <code>tasks/notebook1/catalogue.html</code>.</td></tr>
+<tr><td><b>Target</b></td><td>You need to build a simple shopping catalogue of the items listed in the <code>*.csv</code> file. The catalogue should be neat and organised and should display information that would be relevant to potential consumers. Inspect the CSV file to learn what information it contains.</td></tr>
+</table>
+
+**CSV** means comma-separated values: a plain-text table where each row is one record and each column is one kind of information.
+
+**HTML** is the file type used to structure a webpage that a browser can open and display.
+
+{panel(
+    "CONTROLLED MESSY DATA",
+    "The product IDs are deliberately out of order, and one image filename "
+    "does not match a file in the image folder. Keep every product row: your "
+    "catalogue should handle imperfect source data without hiding the item.",
+    "task",
+)}
 
 The first version should:
 
 - load `../../data/notebook1/products.csv` in the browser;
 - map each CSV image filename to `../../data/notebook1/<filename>`;
 - create one card per CSV row rather than hard-coding 18 cards;
-- display only the five core card details at first;
 - use equal square image areas and consistent card heights;
-- show three columns on a laptop, two on a tablet and one on a narrow phone;
 - format every price with two decimal places;
 - use plain HTML, CSS and JavaScript with no framework or package install;
-- show a friendly message if the CSV cannot be loaded.
+- show a friendly message if the CSV cannot be loaded;
+- show an appropriate message or icon if an individual image is missing.
 
 {catalogue_preview()}
 
@@ -1026,8 +1040,20 @@ large shopping-card layout you are asking Copilot to build.
 
 ### 2 · Write the first prompt and build
 
-1. In the Explorer, open `data/notebook1/products.csv`. Notice which columns are core and which are optional.
-2. Open **GitHub Copilot Chat** in VS Code and use **Ask/Chat mode**, not an automatic file-editing mode.
+{panel(
+    "QUICKLY OPEN COPILOT CHAT",
+    "Open Chat directly: on Windows or Linux press <kbd>Ctrl</kbd> + "
+    "<kbd>Alt</kbd> + <kbd>I</kbd>; on macOS press <kbd>Control</kbd> + "
+    "<kbd>Command</kbd> + <kbd>I</kbd>.<br><br>Fallback: open the Command "
+    "Palette with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> on "
+    "Windows or Linux, or <kbd>Command</kbd> + <kbd>Shift</kbd> + "
+    "<kbd>P</kbd> on macOS. Run <b>Chat: Open Chat</b>. Some VS Code "
+    "versions label the command <b>Chat: Focus on Chat View</b>.",
+    "keyword",
+)}
+
+1. In the Explorer, open `data/notebook1/products.csv`. Inspect its columns, image filenames and deliberately mixed ID order.
+2. Open **GitHub Copilot Chat** with one of the shortcuts above and use **Ask/Chat mode**, not an automatic file-editing mode.
 3. Explain the **data**, **output**, **target** and requirements above in your own words. Tell Copilot not to create or edit files; ask it to return one complete HTML document in chat.
 4. Read its short plan. If it misunderstood a path or requirement, correct the instruction before accepting code.
 5. In the Explorer, create `tasks/notebook1/catalogue.html`, then copy the returned HTML code into that file and save it.
@@ -1058,10 +1084,10 @@ large shopping-card layout you are asking Copilot to build.
 
 Check the evidence in the preview before writing another prompt:
 
-- Did all 18 rows become cards with the correct images?
-- Are only image, name, brand, type and price visible?
-- Do the cards remain even when product names have different lengths?
-- Does resizing produce three, then two, then one column without sideways scrolling?
+- Did all 18 rows become catalogue entries, including the one with a missing image?
+- Does the page show useful consumer information without displaying every CSV field?
+- Does the missing image show an appropriate fallback message or icon?
+- Did the out-of-order IDs accidentally control the display order?
 - Is the strongest problem a data problem, a layout problem, or a prompt problem?
 
 ### 4 · Reiterate one change at a time
@@ -1073,8 +1099,9 @@ replace; you still make the edit in `catalogue.html` yourself.
 1. **Visibility round:** add a **More details** control. It may reveal colour,
    release date, sizes, country of origin and designer, but those fields should
    remain hidden when the page first opens.
-2. **Sorting round:** add a selector for price low-to-high, price high-to-low,
-   and newest release. Keep the original CSV order as a default option.
+2. **Sorting round:** add choices for original CSV order, ID number,
+   price low-to-high, price high-to-low, and newest release. Test whether
+   numerical ID sorting restores the expected sequence.
 3. **Relevance round:** decide which optional details genuinely help a shopper.
    Ask to hide one unhelpful field, or reveal only the useful fields instead
    of displaying every available column.
@@ -1110,14 +1137,14 @@ A useful follow-up prompt contains four parts:
             f"""
 ### Final catalogue check
 
-- [ ] All 18 CSV rows become 18 product cards in the initial CSV order.
-- [ ] Every card shows the correct mapped image and core product details.
+- [ ] All 18 CSV rows become 18 catalogue entries.
+- [ ] The 17 valid image paths work, and the missing image has a useful fallback.
+- [ ] Each entry shows information that is relevant to a potential consumer.
 - [ ] Optional metadata is hidden when the page first opens.
 - [ ] A deliberate control can reveal the optional details chosen as useful.
-- [ ] A sort control can order by price and release date.
+- [ ] A sort control can order by ID number, price and release date.
 - [ ] Irrelevant fields remain hidden, and you can explain that choice.
-- [ ] The laptop view has three equal columns with no sideways scrolling.
-- [ ] Narrower windows change to two columns and then one.
+- [ ] The layout is neat, with no clipped text or sideways scrolling.
 - [ ] The result is saved at `tasks/notebook1/catalogue.html`.
 
 Do not judge only by appearance. Check the CSV-to-image mapping, try the

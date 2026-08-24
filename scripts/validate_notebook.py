@@ -16,6 +16,7 @@ NOTEBOOK = ROOT / "notebooks" / "01_start_here.ipynb"
 EFFORT_REPORT = ROOT / "Resources" / "2026 Agentic Coding Trends Report.pdf"
 CATALOGUE_DATA = ROOT / "data" / "notebook1"
 CATALOGUE_CSV = CATALOGUE_DATA / "products.csv"
+EXPECTED_MISSING_IMAGE = "ice-harbour-jacket.png"
 REQUIRED_HEADINGS = [
     "## Stage 1 — Find your way around",
     "## Stage 2 — Choose an AI helper",
@@ -40,7 +41,13 @@ REQUIRED_SNIPPETS = [
     "KEY CONCEPT · ARTICULATE THE TARGET",
     "KEY CONCEPT · REITERATION LOOP",
     "PROMPT → BUILD → OPEN → INSPECT → REQUEST ONE CHANGE → VERIFY AGAIN",
+    "CONTROLLED MESSY DATA",
     "18 product records",
+    "**CSV** means comma-separated values",
+    "**HTML** is the file type",
+    "Ctrl</kbd> + <kbd>Alt</kbd>",
+    "Chat: Open Chat",
+    "appropriate message or icon",
     "country_of_origin",
     "release_date",
     "data/notebook1/products.csv",
@@ -57,6 +64,11 @@ FORBIDDEN_SNIPPETS = [
     "TROUBLESHOOTING LOOP",
     "I want to reproduce the attached example",
     "zai-org/GLM-5.2",
+    "| Part | What it means in this task |",
+    "display only the five core card details at first",
+    "show three columns on a laptop",
+    "Do the cards remain even when product names have different lengths?",
+    "Does resizing produce three, then two, then one column",
 ]
 SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
@@ -100,12 +112,24 @@ def validate_catalogue_data() -> None:
     if len(rows) != 18:
         raise SystemExit(f"Catalogue must contain 18 products; found {len(rows)}")
 
+    ids = [row["id"] for row in rows]
+    expected_ids = {f"NB{number:03d}" for number in range(1, 19)}
+    if set(ids) != expected_ids:
+        raise SystemExit("Catalogue IDs must contain NB001 through NB018 once each")
+    if ids == sorted(ids):
+        raise SystemExit("Catalogue IDs must remain deliberately out of order")
+
     images = [row["image"] for row in rows]
     if len(set(images)) != len(images):
         raise SystemExit("Every catalogue row must map to a different image")
     missing = [name for name in images if not (CATALOGUE_DATA / name).is_file()]
-    if missing:
-        raise SystemExit(f"Missing catalogue images: {', '.join(missing)}")
+    if missing != [EXPECTED_MISSING_IMAGE]:
+        raise SystemExit(
+            "Catalogue must contain exactly one controlled missing image: "
+            f"{EXPECTED_MISSING_IMAGE}"
+        )
+    if not (CATALOGUE_DATA / "ice-jacket.png").is_file():
+        raise SystemExit("The original Ice Harbour Jacket asset must remain available")
 
     type_counts = Counter(row["type"] for row in rows)
     if set(type_counts.values()) != {3} or len(type_counts) != 6:
@@ -212,6 +236,33 @@ def main() -> None:
             "Notebook must contain exactly one intentional repair cell; "
             f"found {expected_error_cells}"
         )
+
+    worksheet_cells = [
+        (index, cell)
+        for index, cell in enumerate(notebook.cells)
+        if cell.cell_type == "code" and "worksheet_box(" in cell.source
+    ]
+    if len(worksheet_cells) != 4:
+        raise SystemExit(
+            "Notebook must contain four worksheet boxes; "
+            f"found {[index for index, _ in worksheet_cells]}"
+        )
+    for index, cell in worksheet_cells:
+        metadata = cell.get("metadata", {})
+        if cell.get("execution_count") is None:
+            raise SystemExit(f"Worksheet cell {index} must be pre-executed")
+        if (
+            not metadata.get("inputCollapsed")
+            or not metadata.get("jupyter", {}).get("source_hidden")
+            or "hide-input" not in metadata.get("tags", [])
+        ):
+            raise SystemExit(f"Worksheet cell {index} must start with hidden input")
+        if not any(
+            "application/vnd.jupyter.widget-view+json"
+            in output.get("data", {})
+            for output in cell.get("outputs", [])
+        ):
+            raise SystemExit(f"Worksheet cell {index} is missing its widget output")
 
     unexpected_errors = [
         index

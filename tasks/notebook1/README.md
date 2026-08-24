@@ -7,6 +7,10 @@ Preview it with **Show Preview** in VS Code. The page should load
 `../../data/notebook1/products.csv` and resolve image filenames from
 `../../data/notebook1/`.
 
+The source is deliberately imperfect: IDs are out of numerical order and one
+CSV image reference does not match a file. Keep all 18 products visible and
+show a helpful fallback for the missing image rather than deleting the row.
+
 Start with only the core product details. Then use short follow-up prompts to
 add or remove metadata, introduce a details toggle, and sort the 18 products.
 Make one change at a time and preview after every change.
