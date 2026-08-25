@@ -105,6 +105,8 @@ REQUIRED_SNIPPETS = [
     "93.5 on GPQA Diamond",
     "58.7 on SciCode",
     "QUESTION 9 · FACT-CHECK THE EC NUMBERS",
+    "Knowledge retrieval and reasoning are different abilities",
+    "short-term working memory",
     "Statement B is wrong",
 ]
 FORBIDDEN_SNIPPETS = [

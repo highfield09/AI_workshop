@@ -752,7 +752,11 @@ If the reaction, name and candidate EC assignments cannot all simultaneously be 
     "warning",
 )}
 
-A model can reason well about the chemistry yet still carry a small identifier error into its final answer. Experts evaluate these systems with guardrails, checkpoints, and source inspection; we can do the same.
+**Knowledge retrieval and reasoning are different abilities.** A model may be excellent at redox chemistry and structural inference yet misremember a specific enzyme classification.
+
+Within a conversation, an LLM uses its current context like short-term working memory. In a very large context—or during a task with many internal reasoning steps—important details can become diluted, overlooked, or confused with nearby information.
+
+This is why a strong reasoning process can still end with a small identifier error. Experts evaluate these systems with guardrails, checkpoints, and source inspection; we can do the same.
 """
         ),
         code(
