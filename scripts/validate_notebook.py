@@ -63,10 +63,16 @@ REQUIRED_SNIPPETS = [
     "Screenshot 2026-02-23 145127.png",
     "Thinking Effort → Medium",
     "KEY CONCEPT · TRACE THE PROVIDER",
+    "VISION MODELS AND OCR",
+    "### Check where the vision request was charged",
+    "- **Route:**",
+    "START WITH A FRESH CONTEXT WINDOW",
+    "same Gemini 3.5 Flash-Lite model",
+    "Give me the smallest change",
     "EXPERIMENT 5",
     "moonshotai/Kimi-K3",
     "Gemini 3.5 Flash-Lite",
-    "Gemini 3.6 Flash",
+    "QUESTION 13 · Answer B — Gemini 3.5 Flash-Lite with extended thinking",
     "KEY CONCEPT · INFERENCE AND ASSUMPTIONS",
     "KEY CONCEPT · ARTICULATE THE TARGET",
     "KEY CONCEPT · REITERATION LOOP",
@@ -139,6 +145,8 @@ FORBIDDEN_SNIPPETS = [
     "More guides linked from the resource directory",
     "Python (Vibe Workshop)",
     "Experiment 2 uses two of them",
+    "Add Context → Files & Folders",
+    "Gemini 3.6 Flash",
 ]
 EXPECTED_QUESTION_LABELS = [f"QUESTION {number} ·" for number in range(1, 19)]
 
@@ -272,6 +280,13 @@ def main() -> None:
         < markdown.index("EXPERIMENT 2")
     ):
         raise SystemExit("Model-card guidance must sit with HuggingChat selection")
+    if not (
+        all_sources.index("### Check where the vision request was charged")
+        < all_sources.index("QUESTION 11 ·")
+        < all_sources.index("### Compare with GitHub-provided Copilot usage")
+    ):
+        raise SystemExit("OpenRouter Activity guidance must appear before Question 11")
+
     if not (
         all_sources.index("QUESTION 11 ·")
         < all_sources.index("### Match effort to the task")

@@ -49,6 +49,7 @@ Use a six-point prompt check: set the objective, be clear, add only useful conte
 - Max or XHigh can suit long agentic or coding work when the model supports it.
 - Effort is a signal, not a strict token budget or a guarantee of quality.
 - Compare effort settings fairly: keep the model, prompt, and fresh-chat context identical, and change only effort.
+- A context window is the token-measured amount of prompt, chat history, attachments, and output a model can consider at one time; a fresh chat prevents earlier answers from affecting a comparison.
 - Use exact token counts supplied by the interface or provider. If they are not shown, record **Not shown** rather than accepting an invented estimate.
 
 References: [Claude effort controls](https://platform.claude.com/docs/en/build-with-claude/effort) and the local [2026 Agentic Coding Trends Report](Resources/2026%20Agentic%20Coding%20Trends%20Report.pdf).
@@ -70,6 +71,7 @@ References: [Claude effort controls](https://platform.claude.com/docs/en/build-w
 - A visible thinking panel may be a reasoning summary rather than a model's complete private chain of thought. Compare only what the interface exposes.
 - Strong reasoning can coexist with a small factual or identifier error. Check authoritative databases before changing scientific annotations.
 - A vision-capable model can inspect an attached image; a plain path in a prompt does not always attach the image itself.
+- Vision models may struggle with unclear or obscure images, but can extract sufficiently clear text in a way similar to OCR (optical character recognition).
 - When VS Code uses an OpenRouter key, trace model, tokens, and cost in OpenRouter Activity.
 - Clear-looking wording can hide assumptions. Ask what must be physically present or true for the target outcome to happen.
 - A more explicit target can improve a lightweight model's answer without increasing model size or reasoning effort.
