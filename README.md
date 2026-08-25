@@ -9,14 +9,14 @@ A beginner-friendly workshop for learning how to reproduce a clear output with h
 1. Open the repository in GitHub Codespaces.
 2. Wait for the development container to finish rebuilding.
 3. Open notebooks/01_start_here.ipynb.
-4. Select **Python (Vibe Workshop)** if VS Code asks for a kernel.
+4. Select the Python kernel marked **.venv** (for example, **Python 3.12 (.venv)**) if VS Code asks for one.
 5. Run the notebook from the top.
 
 ### Do learners need Python on their laptops?
 
 No, not when they use GitHub Codespaces. Python, Jupyter, the extensions, and all course packages run inside the online Codespace.
 
-If the notebook asks for a kernel, choose **Python (Vibe Workshop)**. Someone running the project entirely on their own laptop will need Python 3.12; Codespaces users do not.
+If the notebook asks for a kernel, choose the Python interpreter marked **.venv**. Codespaces users do not need to install Python locally.
 
 The first notebook contains:
 
@@ -41,15 +41,6 @@ Open [KEY_CONCEPTS.md](KEY_CONCEPTS.md) for the growing student take-home refere
 The older deployment material remains in the repository for reference but is hidden from the default VS Code Explorer view.
 
 The Codespace also installs GitHub Copilot Chat and Live Server by Ritwick Dey. Copilot access depends on the GitHub account signed into VS Code.
-
-## Local VS Code setup
-
-From the repository root:
-
-    make install
-    make lab
-
-Use make check before committing an iteration. Use make execute-demo to rebuild the safe committed notebook outputs.
 
 ## Course design rule
 

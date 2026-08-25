@@ -61,8 +61,14 @@ References: [Claude effort controls](https://platform.claude.com/docs/en/build-w
 - A model without an image badge is usually text-first; check its card.
 - The hammer badge means tool calling.
 - LLM outputs are probabilistic: wording can vary even when the intended meaning is similar.
-- HuggingChat's free allowance for this workshop is 20 questions; Experiment 2 deliberately uses two.
+- HuggingChat's free allowance for this workshop is 20 questions; Experiment 2 deliberately uses four.
 - Compare the answer itself; a larger model is not automatically correct.
+- Some interfaces supply references automatically; others need an explicit request. Open the sources and inspect important claims.
+- JSON stores structured information as named keys and values. LLM applications commonly use it for API messages, tool calls, and structured outputs.
+- Many models accept multiple languages, but lower-resource languages may be less reliable and need stronger verification.
+- Larger models often require more inference compute and energy, so balance desired quality against speed and cost.
+- A visible thinking panel may be a reasoning summary rather than a model's complete private chain of thought. Compare only what the interface exposes.
+- Strong reasoning can coexist with a small factual or identifier error. Check authoritative databases before changing scientific annotations.
 - A vision-capable model can inspect an attached image; a plain path in a prompt does not always attach the image itself.
 - When VS Code uses an OpenRouter key, trace model, tokens, and cost in OpenRouter Activity.
 - Clear-looking wording can hide assumptions. Ask what must be physically present or true for the target outcome to happen.

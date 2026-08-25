@@ -28,7 +28,7 @@ def main() -> None:
     if "llm-workshop" not in kernels:
         raise SystemExit("The llm-workshop Jupyter kernel is not registered.")
 
-    print("Environment ready: Python (Vibe Workshop)")
+    print("Environment ready: Python (.venv)")
     print(f"Interpreter: {sys.executable}")
 
 

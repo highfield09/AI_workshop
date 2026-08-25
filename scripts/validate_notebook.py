@@ -12,6 +12,7 @@ import nbformat
 
 
 ROOT = Path(__file__).resolve().parents[1]
+README = ROOT / "README.md"
 NOTEBOOK = ROOT / "notebooks" / "01_start_here.ipynb"
 EFFORT_REPORT = ROOT / "Resources" / "2026 Agentic Coding Trends Report.pdf"
 CATALOGUE_DATA = ROOT / "data" / "notebook1"
@@ -90,6 +91,15 @@ REQUIRED_SNIPPETS = [
     "QUESTION 2 · Prompt-and-token mini-check",
     "Always know where your output is going",
     "tasks/workbook_answers.json",
+    "OPEN THE SAVED JSON FILE",
+    "CHECK REFERENCES AND CLAIMS",
+    "LANGUAGE CHOICE",
+    "MODEL SIZE, QUALITY AND COST",
+    "OBSERVE THE VISIBLE REASONING",
+    "93.5 on GPQA Diamond",
+    "58.7 on SciCode",
+    "QUESTION 9 · FACT-CHECK THE EC NUMBERS",
+    "Statement B is wrong",
 ]
 FORBIDDEN_SNIPPETS = [
     "it is no longer a clickable link",
@@ -127,8 +137,10 @@ FORBIDDEN_SNIPPETS = [
     "CLASS BUDGET",
     "If classroom credit is authorised",
     "More guides linked from the resource directory",
+    "Python (Vibe Workshop)",
+    "Experiment 2 uses two of them",
 ]
-EXPECTED_QUESTION_LABELS = [f"QUESTION {number} ·" for number in range(1, 17)]
+EXPECTED_QUESTION_LABELS = [f"QUESTION {number} ·" for number in range(1, 19)]
 
 SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
@@ -219,6 +231,14 @@ def validate_catalogue_data() -> None:
 def main() -> None:
     notebook = nbformat.read(NOTEBOOK, as_version=4)
     nbformat.validate(notebook)
+    readme = README.read_text(encoding="utf-8")
+    if "## Local VS Code setup" in readme:
+        raise SystemExit("README must remain focused on the Codespaces workflow")
+    if "Python (Vibe Workshop)" in readme:
+        raise SystemExit("README must point learners to the .venv Python kernel")
+    if "Python 3.12 (.venv)" not in readme:
+        raise SystemExit("README is missing the learner-facing .venv kernel example")
+
 
     markdown = "\n".join(
         cell.source for cell in notebook.cells if cell.cell_type == "markdown"
@@ -253,7 +273,7 @@ def main() -> None:
     ):
         raise SystemExit("Model-card guidance must sit with HuggingChat selection")
     if not (
-        all_sources.index("QUESTION 9 ·")
+        all_sources.index("QUESTION 11 ·")
         < all_sources.index("### Match effort to the task")
         < all_sources.index("EXPERIMENT 4")
     ):
@@ -329,9 +349,9 @@ def main() -> None:
         for index, cell in enumerate(notebook.cells)
         if cell.cell_type == "code" and "worksheet_box(" in cell.source
     ]
-    if len(worksheet_cells) != 14:
+    if len(worksheet_cells) != 16:
         raise SystemExit(
-            "Notebook must contain fourteen independently saved worksheet questions; "
+            "Notebook must contain sixteen independently saved worksheet questions; "
             f"found {[index for index, _ in worksheet_cells]}"
         )
     for index, cell in worksheet_cells:

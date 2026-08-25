@@ -33,6 +33,11 @@ PALETTES = {
         "border": "#ABEFC6",
         "accent": "#067647",
     },
+    "warning": {
+        "background": "#FEF3F2",
+        "border": "#FECDCA",
+        "accent": "#B42318",
+    },
 }
 
 
@@ -189,7 +194,7 @@ This short notebook helps you get comfortable in VS Code, find the course files,
     "sends data to an API.<br><br><b>Using GitHub Codespaces?</b> Python "
     "runs inside the online workspace, so you do not need it installed on "
     "your laptop. If prompted for a kernel, select "
-    "<b>Python (Vibe Workshop)</b>.",
+    "the Python interpreter marked <b>.venv</b>.",
     "info",
 )}
 """
@@ -471,7 +476,7 @@ Which prompt is likely to be more token-efficient while still giving a useful an
     "The experiments move between Google AI Mode, Hugging Face, VS Code and Gemini so you "
     "can see how the interface, model and prompt affect an answer.<br><br>"
     "<b>HuggingChat allowance:</b> free accounts have <b>20 questions</b>. "
-    "Experiment 2 uses two of them.<br><br>"
+    "Experiment 2 uses four of them.<br><br>"
     "<b>Your submitted worksheet:</b> each <b>Submit & save</b> button writes "
     "its labelled answer to <b>tasks → workbook_answers.json</b>. The file is "
     "ignored by Git, so personal answers are not committed. The instructions "
@@ -504,10 +509,26 @@ Answer in one sentence and include one source link."""
             "interactive",
         ),
         code(
-            '''worksheet_box(
+            f'''worksheet_box(
     "google_fact_answer",
     question_label="QUESTION 3 · Record the AI answer",
     response_label="Paste Google AI Mode’s answer:",
+    reveal_html={(panel(
+        "OPEN THE SAVED JSON FILE",
+        "In the VS Code Explorer, open <b>tasks → workbook_answers.json</b>. "
+        "<b>JSON</b> (JavaScript Object Notation) is a plain-text format that "
+        "stores structured information as named keys and values. It is commonly "
+        "used around modern LLM applications for API messages, tool calls and "
+        "structured outputs.",
+        "success",
+    ) + panel(
+        "CHECK REFERENCES AND CLAIMS",
+        "Some AI services provide references automatically; others need to be "
+        "asked. Even as many systems improve, an LLM can still hallucinate—give "
+        "a confident answer that is unsupported or incorrect. Ask for sources, "
+        "open them, and inspect important claims before relying on the output.",
+        "success",
+    ))!r},
 )''',
             "interactive",
         ),
@@ -605,11 +626,20 @@ Then explain its meaning in one short sentence:
             "interactive",
         ),
         code(
-            '''worksheet_box(
+            f'''worksheet_box(
     "sanskrit_large_answer",
     question_label="QUESTION 6 · Answer B — moonshotai/Kimi-K3",
     response_label="Paste Answer B from moonshotai/Kimi-K3:",
     response_height="150px",
+    reveal_html={panel(
+        "LANGUAGE CHOICE",
+        "Many models are trained on text in multiple languages, so you can often "
+        "communicate with an LLM in the language that is most comfortable for "
+        "you. Performance varies: lower-resource or less-documented languages may "
+        "be translated or understood less reliably. Verify important meaning with "
+        "a fluent speaker or a trusted reference.",
+        "success",
+    )!r},
 )''',
             "interactive",
         ),
@@ -618,10 +648,129 @@ Then explain its meaning in one short sentence:
     "sanskrit_comparison",
     question_label="QUESTION 7 · Compare Answer A with Answer B",
     response_label="Which answer seems more well put together or informative, and why?",
-    reveal_html={panel(
+    reveal_html={(panel(
         "CHECKPOINT",
         "The literal idea is <b>Knowledge gives humility.</b> Check whether "
         "each model separated translation from interpretation.",
+        "success",
+    ) + panel(
+        "MODEL SIZE, QUALITY AND COST",
+        "A larger parameter count usually means greater model capacity and often "
+        "comes with more training compute, which can support more refined answers. "
+        "It does <b>not</b> prove that the training data or every response is "
+        "better. Larger models also generally need more memory, computation and "
+        "energy during inference, so they tend to cost more. Choose by the quality "
+        "the task requires, then weigh that against speed and cost.",
+        "success",
+    ))!r},
+)''',
+            "interactive",
+        ),
+        markdown(
+            f"""
+### Challenge the same two models with an expert reasoning task
+
+Use the **same small model** chosen for Question 5 and **moonshotai/Kimi-K3** from Question 6. Start a fresh chat for each, send the identical prompt once, and let each model finish.
+
+{panel(
+    "OBSERVE THE VISIBLE REASONING",
+    "Some interfaces display a thinking panel or a short reasoning summary; "
+    "this is not necessarily the model’s complete private chain of thought. "
+    "Compare only what the interface actually shows and the final answer. "
+    "Do not paste either full response into this notebook.",
+    "info",
+)}
+
+While both models work, contemplate:
+
+1. Which model showed a longer visible reasoning process?
+2. Did either model fail, hang, repeat itself, or become lost in a reasoning loop?
+3. Did one visible reasoning trace contain more useful detail?
+4. Did either model insert special characters, equations, headings, or other formatting?
+"""
+        ),
+        code(
+            '''copyable_prompt(
+    """A fungal metabolic model contains the reaction
+cer1_26 + 2 H⁺ + 2 ferrocytochrome b5 + O₂ → cer2_26 + H₂O + 2 ferricytochrome b5
+
+Two candidate annotations are proposed:
+A. EC 1.14.19.17, a sphingolipid Δ4 desaturase whose canonical reaction produces 2 H₂O.
+B. EC 1.14.18.6, a sphingolipid C4 hydroxylase whose canonical reaction produces 1 H₂O.
+
+The product cer2_26 is named Ceramide 2 Phytosphingosine C26:0, while cer1_26 is Ceramide 1 Sphinganine C26:0.
+
+Determine which EC assignment is chemically and biologically most consistent. Do not rely on the metabolite names alone. Instead:
+
+1. infer the structural transformation implied by each enzyme class;
+2. account for O₂, proton, cytochrome-b5 and water stoichiometry;
+3. identify whether the encoded reaction itself is chemically balanced;
+4. explain whether a bad stoichiometric representation could cause the wrong EC to appear superficially correct;
+5. state what additional database evidence you would require before modifying the SBML annotation.
+
+If the reaction, name and candidate EC assignments cannot all simultaneously be correct, explicitly identify which fields are most likely wrong and give a corrected reaction hypothesis."""
+)''',
+            "interactive",
+        ),
+        code(
+            f'''worksheet_box(
+    "expert_reasoning_comparison",
+    question_label="QUESTION 8 · Compare the visible reasoning",
+    response_label="Record only your four observations; do not paste the full model responses:",
+    response_height="170px",
+    reveal_html={panel(
+        "BENCHMARK CONTEXT",
+        "Published benchmarks show meaningful capability differences on difficult "
+        "expert tasks. Moonshot AI’s model card reports <b>93.5 on GPQA Diamond</b> "
+        "and <b>58.7 on SciCode</b> for Kimi K3 at maximum reasoning effort, along "
+        "with long-context and software-engineering results. "
+        "<a href='https://github.com/MoonshotAI/Kimi-K3/blob/main/README.md'>"
+        "Open the Kimi K3 model card</a>. GPQA is a difficult graduate-level, "
+        "Google-proof science benchmark; "
+        "<a href='https://arxiv.org/abs/2311.12022'>read its paper</a>. These are "
+        "reported benchmark results, not a guarantee that one model will answer "
+        "this particular question correctly.",
+        "success",
+    )!r},
+)''',
+            "interactive",
+        ),
+        markdown(
+            f"""
+{panel(
+    "QUESTION 9 · FACT-CHECK THE EC NUMBERS",
+    "<b>The prompt deliberately contains a small annotation error.</b><br><br>"
+    "<b>A.</b> EC 1.14.19.17 — claimed to be a sphingolipid Δ4 desaturase "
+    "whose canonical reaction produces 2 H₂O.<br>"
+    "<b>B.</b> EC 1.14.18.6 — claimed to be a sphingolipid C4 hydroxylase "
+    "whose canonical reaction produces 1 H₂O.<br><br>"
+    "Open the authoritative entries: "
+    "<a href='https://enzyme.expasy.org/EC/1.14.18.6'>EC 1.14.18.6</a>, "
+    "<a href='https://enzyme.expasy.org/EC/1.14.19.17'>EC 1.14.19.17</a>, and "
+    "<a href='https://enzyme.expasy.org/EC/1.14.18.5'>EC 1.14.18.5</a>."
+    "<br><br><b>Which statement is wrong, and what should it say?</b>",
+    "warning",
+)}
+
+A model can reason well about the chemistry yet still carry a small identifier error into its final answer. Experts evaluate these systems with guardrails, checkpoints, and source inspection; we can do the same.
+"""
+        ),
+        code(
+            f'''worksheet_box(
+    "ec_number_fact_check",
+    question_label="QUESTION 9 · State the corrected EC assignment",
+    response_label="Which candidate statement is wrong? Write the correct EC number and enzyme name:",
+    reveal_html={panel(
+        "FACT-CHECK ANSWER",
+        "<b>Statement B is wrong.</b> EC 1.14.18.6 is a "
+        "<b>4-hydroxysphinganine ceramide fatty acyl 2-hydroxylase</b>, not the "
+        "sphingolipid C4 hydroxylase. The C4 enzyme is <b>EC 1.14.18.5, "
+        "sphingolipid C4-monooxygenase</b>; its canonical reaction forms a "
+        "phytoceramide and one H₂O. Statement A correctly identifies EC "
+        "1.14.19.17 as sphingolipid 4-desaturase, whose canonical reaction forms "
+        "two H₂O. Before editing SBML, still confirm metabolite structures, "
+        "database identifiers, atom/charge balance, organism evidence and the "
+        "original model source.",
         "success",
     )!r},
 )''',
@@ -707,7 +856,7 @@ See [OpenRouter pricing](https://openrouter.ai/pricing) for the live plan detail
         code(
             '''worksheet_box(
     "vision_description",
-    question_label="QUESTION 8 · Record the vision answer",
+    question_label="QUESTION 10 · Record the vision answer",
     response_label="Paste Gemma 4 26B A4B’s description of the image:",
     response_height="150px",
 )''',
@@ -716,7 +865,7 @@ See [OpenRouter pricing](https://openrouter.ai/pricing) for the live plan detail
         code(
             '''worksheet_box(
     "vision_cost",
-    question_label="QUESTION 9 · Trace the vision request",
+    question_label="QUESTION 11 · Trace the vision request",
     response_label="From OpenRouter Activity, record the route, input/output tokens if shown, cost, and whether it was free or paid:",
 )''',
             "interactive",
@@ -796,7 +945,7 @@ Open [Google Gemini](https://gemini.google.com/app) and sign in with a Google ac
         code(
             '''worksheet_box(
     "carwash_answer_a",
-    question_label="QUESTION 10 · Answer A — Gemini 3.5 Flash-Lite",
+    question_label="QUESTION 12 · Answer A — Gemini 3.5 Flash-Lite",
     response_label="Paste the original Flash-Lite answer:",
     response_height="140px",
 )''',
@@ -805,7 +954,7 @@ Open [Google Gemini](https://gemini.google.com/app) and sign in with a Google ac
         code(
             '''worksheet_box(
     "carwash_answer_b",
-    question_label="QUESTION 11 · Answer B — Gemini 3.6 Flash with extended thinking",
+    question_label="QUESTION 13 · Answer B — Gemini 3.6 Flash with extended thinking",
     response_label="Paste the original extended-thinking answer:",
     response_height="140px",
 )''',
@@ -814,7 +963,7 @@ Open [Google Gemini](https://gemini.google.com/app) and sign in with a Google ac
         code(
             f'''worksheet_box(
     "carwash_logic",
-    question_label="QUESTION 12 · Compare the logic",
+    question_label="QUESTION 14 · Compare the logic",
     response_label="Does either answer contain a logic flaw? Which assumption did it make?",
     reveal_html={panel(
         "REVEAL · THE HIDDEN ASSUMPTION",
@@ -851,7 +1000,7 @@ Return to **Gemini 3.5 Flash-Lite** in a fresh tab or chat and send this revised
         code(
             '''worksheet_box(
     "carwash_clear_answer",
-    question_label="QUESTION 13 · Record the clearer-prompt answer",
+    question_label="QUESTION 15 · Record the clearer-prompt answer",
     response_label="Paste Gemini 3.5 Flash-Lite’s answer to the clearer prompt:",
     response_height="140px",
 )''',
@@ -860,7 +1009,7 @@ Return to **Gemini 3.5 Flash-Lite** in a fresh tab or chat and send this revised
         code(
             f'''worksheet_box(
     "carwash_clear_observation",
-    question_label="QUESTION 14 · Evaluate the clearer prompt",
+    question_label="QUESTION 16 · Evaluate the clearer prompt",
     response_label="Did the explicit target remove the logic flaw? What changed?",
     reveal_html={panel(
         "KEY TIP",
@@ -1096,7 +1245,7 @@ Do not open the HTML as a plain `file://` page: serving it with Live Server allo
         code(
             '''worksheet_box(
     "catalogue_brief_prompt",
-    question_label="QUESTION 15 · Write the first Copilot instruction",
+    question_label="QUESTION 17 · Write the first Copilot instruction",
     response_label="Write the instruction you will send to GitHub Copilot:",
     response_height="150px",
 )''',
@@ -1105,7 +1254,7 @@ Do not open the HTML as a plain `file://` page: serving it with Live Server allo
         code(
             '''worksheet_box(
     "catalogue_brief_mismatch",
-    question_label="QUESTION 16 · Inspect the first catalogue",
+    question_label="QUESTION 18 · Inspect the first catalogue",
     response_label="After opening the first version, what is its most important mismatch?",
 )''',
             "interactive",
@@ -1219,7 +1368,7 @@ something that worked in the previous version.
 
     notebook = nbf.v4.new_notebook(cells=cells)
     notebook.metadata.kernelspec = {
-        "display_name": "Python (Vibe Workshop)",
+        "display_name": "Python (.venv)",
         "language": "python",
         "name": "llm-workshop",
     }
