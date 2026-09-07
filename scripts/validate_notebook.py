@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import re
+import sys
 from collections import Counter
 from datetime import date
 from pathlib import Path
@@ -12,8 +13,9 @@ import nbformat
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from llm_workshop.course import WORKBOOKS
 README = ROOT / "README.md"
-NOTEBOOK = ROOT / "notebooks" / "01_start_here.ipynb"
 EFFORT_REPORT = ROOT / "Resources" / "2026 Agentic Coding Trends Report.pdf"
 CATALOGUE_DATA = ROOT / "data" / "notebook1"
 CATALOGUE_CSV = CATALOGUE_DATA / "products.csv"
@@ -90,13 +92,13 @@ REQUIRED_SNIPPETS = [
     "country_of_origin",
     "release_date",
     "data/notebook1/products.csv",
-    "outputs/notebook1/catalogue.html",
+    "outputs/05_shopping_catalogue/catalogue.html",
     "### Round 1 requirements",
     "ONE-TIME SETUP · INSTALL LIVE SERVER",
     "Open with Live Server",
     "QUESTION 2 · Prompt-and-token mini-check",
     "Always know where your output is going",
-    "tasks/workbook_answers.json",
+    "tasks/01_start_here/answers.json",
     "OPEN THE SAVED JSON FILE",
     "CHECK REFERENCES AND CLAIMS",
     "LANGUAGE CHOICE",
@@ -239,8 +241,38 @@ def validate_catalogue_data() -> None:
 
 
 def main() -> None:
-    notebook = nbformat.read(NOTEBOOK, as_version=4)
-    nbformat.validate(notebook)
+    notebooks = []
+    for stem, _, questions in WORKBOOKS:
+        path = ROOT / "notebooks" / f"{stem}.ipynb"
+        book = nbformat.read(path, as_version=4)
+        nbformat.validate(book)
+        if book.metadata.get("workshop", {}).get("id") != stem:
+            raise SystemExit(f"Missing workbook identity: {stem}")
+        if len([c for c in book.cells if "setup" in c.metadata.get("tags", [])]) != 1:
+            raise SystemExit(f"Workbook must have its own setup: {stem}")
+        found_questions = set()
+        for cell in book.cells:
+            found_questions.update(int(n) for n in re.findall(r"QUESTION (\d+) ·", cell.source))
+            if cell.cell_type == "markdown" and 'class="workshop-reading"' not in cell.source:
+                raise SystemExit(f"Missing readable surface: {stem}")
+            if cell.cell_type == "code":
+                if cell.execution_count is None:
+                    raise SystemExit(f"Unexecuted cell in {stem}")
+                if "worksheet_box(" in cell.source and f"answers_path=answer_path({stem!r})" not in cell.source:
+                    raise SystemExit(f"Incorrect answer destination: {stem}")
+        expected = set(range(questions[0], questions[1] + 1)) if questions else set()
+        if found_questions != expected:
+            raise SystemExit(f"Wrong question boundaries in {stem}: {found_questions}, expected {expected}")
+        state = book.metadata.get("widgets", {}).get("application/vnd.jupyter.widget-state+json", {}).get("state", {})
+        for widget in state.values():
+            if widget.get("model_name") == "TextareaModel" and widget.get("state", {}).get("value"):
+                raise SystemExit(f"Learner answer found in distributed widget state: {stem}")
+        serialized = nbformat.writes(book)
+        for pattern in SECRET_PATTERNS:
+            if pattern.search(serialized):
+                raise SystemExit(f"Possible credential in {stem}")
+        notebooks.append(book)
+    notebook = nbformat.v4.new_notebook(cells=[c for book in notebooks for c in book.cells])
     readme = README.read_text(encoding="utf-8")
     if "## Local VS Code setup" in readme:
         raise SystemExit("README must remain focused on the Codespaces workflow")
@@ -326,9 +358,8 @@ def main() -> None:
         for index, cell in enumerate(notebook.cells)
         if "setup" in cell.get("metadata", {}).get("tags", [])
     ]
-    if len(setup_cells) != 1:
-        raise SystemExit(f"Notebook must contain one setup cell; found {setup_cells}")
-    setup_index, setup_cell = setup_cells[0]
+    if len(setup_cells) != len(WORKBOOKS):
+        raise SystemExit("Each workbook must contain its own setup cell")
     setup_imports = [
         "import random",
         "from pathlib import Path",
@@ -337,18 +368,19 @@ def main() -> None:
         "from llm_workshop.quiz import readme_quiz",
         "from llm_workshop.worksheet import worksheet_box",
     ]
-    missing_imports = [
-        statement for statement in setup_imports if statement not in setup_cell.source
-    ]
-    if missing_imports:
-        raise SystemExit(f"Setup cell is missing imports: {missing_imports}")
-    setup_metadata = setup_cell.get("metadata", {})
-    if (
-        setup_cell.get("execution_count") is None
-        or not setup_metadata.get("inputCollapsed")
-        or not setup_metadata.get("jupyter", {}).get("source_hidden")
-    ):
-        raise SystemExit(f"Setup cell {setup_index} must be pre-executed and hidden")
+    for setup_index, setup_cell in setup_cells:
+        missing_imports = [
+            statement for statement in setup_imports if statement not in setup_cell.source
+        ]
+        if missing_imports:
+            raise SystemExit(f"Setup cell is missing imports: {missing_imports}")
+        setup_metadata = setup_cell.get("metadata", {})
+        if (
+            setup_cell.get("execution_count") is None
+            or not setup_metadata.get("inputCollapsed")
+            or not setup_metadata.get("jupyter", {}).get("source_hidden")
+        ):
+            raise SystemExit(f"Setup cell {setup_index} must be pre-executed and hidden")
 
     expected_error_cells = [
         index
@@ -442,7 +474,7 @@ def main() -> None:
         for cell in notebook.cells
     )
     print(
-        f"Validated {NOTEBOOK.relative_to(ROOT)}: "
+        f"Validated {len(notebooks)} standalone workbooks: "
         f"{len(notebook.cells)} cells, {executed} executed code cells"
     )
 

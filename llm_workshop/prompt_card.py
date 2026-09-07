@@ -64,8 +64,8 @@ def copyable_prompt(prompt: str, *, title: str = "Copy this prompt"):
 
     if (copied) {{
       button.textContent = "✓ Copied";
-      button.style.background = "#12B76A";
-      button.style.borderColor = "#12B76A";
+      button.style.background = "#067647";
+      button.style.borderColor = "#067647";
       status.innerHTML = "<b style='color:#067647'>Copied.</b> Paste it into the AI chat.";
     }} else {{
       status.innerHTML = "<b>Prompt selected.</b> Press Ctrl+C (Windows/Linux) or Cmd+C (Mac).";

@@ -46,8 +46,14 @@ Important paths:
 
 - **README.md:** Codespaces-first learner entry point.
 - **KEY_CONCEPTS.md:** student take-home reference.
-- **notebooks/01_start_here.ipynb:** generated and pre-executed learner workbook.
-- **scripts/build_course_notebook.py:** canonical readable source for Notebook 1.
+- **notebooks/01_start_here.ipynb:** workspace, prompting and Google AI Mode, Q1–Q4.
+- **notebooks/02_models_and_reasoning.ipynb:** HuggingChat, translation and evidence, Q5–Q9.
+- **notebooks/03_vision_and_context.ipynb:** vision, costs and Gemini effort, Q10–Q16.
+- **notebooks/04_debugging.ipynb:** standalone broken-animation repair exercise.
+- **notebooks/05_shopping_catalogue.ipynb:** main catalogue task, Q17–Q18.
+- **scripts/build_course_notebook.py:** canonical readable lesson source and five-workbook builder.
+- **llm_workshop/course.py:** workbook identities and workspace-local answer destinations.
+- **llm_workshop/presentation.py:** shared, scoped high-contrast reading surfaces.
 - **scripts/execute_demo.py:** refreshes safe committed notebook outputs.
 - **scripts/validate_notebook.py:** structural, content, output, and secret-hygiene checks.
 - **llm_workshop/quiz.py:** interactive orientation quiz.
@@ -55,8 +61,8 @@ Important paths:
 - **llm_workshop/prompt_card.py:** browser-side copyable prompt cards.
 - **data/notebook1/products.csv:** intentionally messy 18-row catalogue input.
 - **data/notebook1/*.png:** catalogue images and a vision exercise screenshot.
-- **tasks/workbook_answers.json:** learner-generated, Git-ignored worksheet output.
-- **outputs/notebook1/catalogue.html:** learner-created catalogue target.
+- **tasks/<workbook-name>/answers.json:** learner-generated, Git-ignored worksheet output, created on first save.
+- **outputs/05_shopping_catalogue/catalogue.html:** learner-created catalogue target.
 - **tests/:** focused unit and data tests.
 
 ### Architecture and invariants
@@ -69,7 +75,7 @@ Important paths:
        make check
 
 3. Worksheet and prompt-card code cells must begin hidden and be pre-executed so students see the interface first.
-4. Learner answers must save to **tasks/workbook_answers.json** and must not be committed.
+4. Learner answers must save to **tasks/<workbook-name>/answers.json** and must not be committed. Workbook 4 has no written submission. Keep legacy **tasks/workbook_answers.json** untouched. Demo execution must use empty temporary answer storage, never personal answers; validate saved widget state before committing notebooks.
 5. Learner-facing content must fit the notebook width and remain readable on a laptop.
 6. Use plain, friendly language. Explain a technical term only when it helps the next activity.
 7. Preserve sequential question numbering and the current flow unless a requested change requires renumbering.
@@ -79,7 +85,7 @@ Important paths:
 11. Preserve intentional teaching defects in the catalogue data unless the task explicitly changes that exercise.
 12. Do not push, deploy, purchase credits, or change external services without explicit authorization.
 
-### Current Notebook 1 flow
+### Current course flow (five independently runnable workbooks)
 
 1. Workspace and README orientation.
 2. Prompting, tokens, AI interfaces, and model cards.
@@ -90,6 +96,8 @@ Important paths:
 7. Gemini 3.5 Flash-Lite comparison at default versus extended thinking in fresh contexts.
 8. Broken notebook-native HTML animation repaired with an AI assistant.
 9. Main task: inspect messy CSV data, build an HTML shopping catalogue, serve it with Live Server, and refine it.
+
+The split boundaries are Q1–Q4, Q5–Q9, Q10–Q16, debugging, and the catalogue task (Q17–Q18). Each workbook starts with its own setup cell and explicit output directions. Preserve global question numbers. Separate student Codespaces have separate filesystems, but shared sessions and deliberate Git pushes are not isolated per learner.
 
 ### Collaboration style
 
@@ -120,7 +128,7 @@ A completed change must:
 
 ### Initial Astra test mission
 
-Perform a **read-only classroom-readiness audit** of Notebook 1.
+Perform a **read-only classroom-readiness audit** of the five workbooks.
 
 Inspect the canonical builder, generated notebook, learner README, key concepts, widget modules, validator, and focused tests. Do not modify files during this first mission.
 

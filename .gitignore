@@ -10,3 +10,8 @@ __pycache__/
 **/state/
 tasks/workbook_answers.json
 outputs/notebook1/catalogue.html
+tasks/*/answers.json
+tasks/*/.answers-*.tmp
+tasks/stage3_answers.json
+outputs/**/*.html
+data/notebook1/*.html

@@ -3,14 +3,18 @@
 from __future__ import annotations
 
 import csv
+from copy import deepcopy
 from html import escape
 from pathlib import Path
+import sys
 
 import nbformat as nbf
 
 
 ROOT = Path(__file__).resolve().parents[1]
-NOTEBOOK = ROOT / "notebooks" / "01_start_here.ipynb"
+sys.path.insert(0, str(ROOT))
+from llm_workshop.course import WORKBOOKS
+from llm_workshop.presentation import readable_html
 CATALOGUE_CSV = ROOT / "data" / "notebook1" / "products.csv"
 PALETTES = {
     "info": {
@@ -168,7 +172,7 @@ def catalogue_preview() -> str:
     )
 
 
-def main() -> None:
+def build_lesson_cells():
     cells = [
         markdown(
             f"""
@@ -302,7 +306,7 @@ You do not need to memorize commands. The aim is to learn where things live and 
         ),
         code(
             """
-workspace = Path.cwd()
+workspace = WORKSHOP_ROOT
 print(f"Current folder: {workspace}")
 print("\\nWorkshop items:")
 for item in sorted(workspace.iterdir(), key=lambda path: (not path.is_dir(), path.name.lower())):
@@ -1402,15 +1406,101 @@ something that worked in the previous version.
         ),
     ]
 
-    notebook = nbf.v4.new_notebook(cells=cells)
-    notebook.metadata.kernelspec = {
-        "display_name": "Python (.venv)",
-        "language": "python",
-        "name": "llm-workshop",
-    }
-    notebook.metadata.language_info = {"name": "python", "version": "3.12"}
-    nbf.write(notebook, NOTEBOOK)
-    print(f"Built {NOTEBOOK.relative_to(ROOT)} with {len(cells)} cells")
+    return cells
+
+
+SETUP = '''from pathlib import Path
+import sys
+import random
+
+# Works when the kernel starts at the repository root or in notebooks/.
+WORKSHOP_ROOT = next(
+    folder for folder in (Path.cwd(), *Path.cwd().parents)
+    if (folder / "llm_workshop" / "worksheet.py").is_file()
+)
+if str(WORKSHOP_ROOT) not in sys.path:
+    sys.path.insert(0, str(WORKSHOP_ROOT))
+
+from IPython.display import HTML, display
+from llm_workshop.prompt_card import copyable_prompt
+from llm_workshop.quiz import readme_quiz
+from llm_workshop.worksheet import worksheet_box
+from llm_workshop.course import answer_path
+'''
+
+
+def build_workbooks():
+    """Split at explicit lesson boundaries; preserve the global question IDs."""
+    cells = build_lesson_cells()
+    markers = (
+        "### HuggingChat models: read the card and the icons",
+        "<b>Vision inside VS Code.</b>",
+        "<b>Repair a broken HTML animation.</b>",
+        "## Main task — Build and refine a shopping catalogue",
+    )
+    boundaries = [0] + [next(
+        index for index, cell in enumerate(cells)
+        if cell.cell_type == "markdown" and marker in cell.source
+    ) for marker in markers] + [len(cells)]
+    books = {}
+    for index, (stem, title, questions) in enumerate(WORKBOOKS):
+        question_text = (f"Questions {questions[0]}–{questions[1]}" if questions
+                         else "Hands-on repair · no written submission")
+        destination = (f"Submit & save writes to **tasks/{stem}/answers.json**."
+                       if questions else
+                       "Your result is the repaired cell and its animation. Save this notebook to keep your edit.")
+        heading = markdown(readable_html(
+            f"# Workbook {index + 1} · {title}\n\n{question_text}\n\n"
+            + panel("START HERE", "Select the <b>.venv</b> Python kernel. "
+                    "Run the setup cell below with <b>Shift + Enter</b> or its "
+                    "<b>▶ play button</b>, then run each activity cell in order. "
+                    "The setup code can stay collapsed. If a button does not respond "
+                    "after reopening or restarting, rerun setup and that question's cell.")
+            + "\n\n" + destination + "\n\n"
+            "These files stay in your own Codespace unless you choose to share them. "
+            "Use your own accounts and API keys for external AI services."
+        ))
+        section = [heading, code(SETUP, "setup", "hide-input")]
+        for cell in deepcopy(cells[boundaries[index]:boundaries[index + 1]]):
+            if "setup" in cell.metadata.get("tags", []):
+                continue
+            if cell.source.startswith("# Vibe Coding Workshop — Start Here"):
+                continue  # Replaced by the standalone workbook header.
+            cell.source = cell.source.replace(
+                "tasks/workbook_answers.json", f"tasks/{stem}/answers.json"
+            ).replace(
+                "tasks → workbook_answers.json", f"tasks → {stem} → answers.json"
+            ).replace("outputs/notebook1/", "outputs/05_shopping_catalogue/")
+            if stem == "05_shopping_catalogue":
+                cell.source = cell.source.replace("NOTEBOOK 1 · MAIN", "WORKBOOK 5 · MAIN")
+            if cell.cell_type == "code" and "worksheet_box(" in cell.source:
+                # Explicit per-call paths also prevent cross-talk if notebooks share a kernel.
+                cell.source = cell.source.replace(
+                    "    question_label=", f"    answers_path=answer_path({stem!r}),\n    question_label=", 1)
+            if cell.cell_type == "markdown":
+                cell.source = readable_html(cell.source)
+            section.append(cell)
+        if index < len(WORKBOOKS) - 1:
+            next_stem, next_title, _ = WORKBOOKS[index + 1]
+            section.append(markdown(readable_html(
+                f"## A good stopping point\n\nSave your work before moving on. "
+                f"Next: [Workbook {index + 2} · {next_title}]({next_stem}.ipynb)."
+            )))
+        notebook = nbf.v4.new_notebook(cells=section)
+        notebook.metadata.kernelspec = {
+            "display_name": "Python (.venv)", "language": "python", "name": "llm-workshop",
+        }
+        notebook.metadata.language_info = {"name": "python", "version": "3.12"}
+        notebook.metadata.workshop = {"id": stem, "questions": questions}
+        books[stem] = notebook
+    return books
+
+
+def main() -> None:
+    for stem, notebook in build_workbooks().items():
+        path = ROOT / "notebooks" / f"{stem}.ipynb"
+        nbf.write(notebook, path)
+        print(f"Built {path.relative_to(ROOT)} with {len(notebook.cells)} cells")
 
 
 if __name__ == "__main__":

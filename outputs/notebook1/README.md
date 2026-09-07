@@ -1,4 +1,8 @@
-# Notebook 1 main-task output
+# Earlier combined-workbook output
+
+The shopping task now lives in Workbook 5. New work should go to
+`outputs/05_shopping_catalogue/catalogue.html`. Existing files in this folder
+are left untouched. The notes below describe the previous location.
 
 Create `catalogue.html` here during Notebook 1's main task. Ask GitHub Copilot
 Chat to return code, then create this file and paste the code yourself.

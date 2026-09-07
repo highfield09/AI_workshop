@@ -1,5 +1,5 @@
-# Example outputs
+# Your workshop outputs
 
-Finished reference outputs and instructor examples belong here.
+Save the shopping catalogue at `05_shopping_catalogue/catalogue.html`.
 
-Learners should save each result in a clearly named subfolder here, such as `outputs/notebook1/`.
+Each Codespace has its own copy of this folder. Generated HTML files are ignored by Git, including differently named catalogue iterations. Download results you want to keep before deleting your Codespace.

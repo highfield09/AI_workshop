@@ -77,14 +77,15 @@ References: [Claude effort controls](https://platform.claude.com/docs/en/build-w
 - A more explicit target can improve a lightweight model's answer without increasing model size or reasoning effort.
 - Use a troubleshooting loop: run, read the last error line, make one repair, and rerun.
 - **Submit & save** triggers the instructions in `llm_workshop/worksheet.py`.
-- Worksheet output is written to `tasks/workbook_answers.json`; the button does not choose that destination automatically.
+- Worksheet output is written to `tasks/<workbook-name>/answers.json`; each workbook explicitly chooses its own destination.
+- Separate Codespaces have separate filesystems: your saved answers and local CSV repairs do not change another student's work. Do not share keys or push personal notebook outputs to the course repository.
 
-## Notebook 1 main task — Build and refine a catalogue
+## Workbook 5 main task — Build and refine a catalogue
 
 **Key concept: express the data, output, target, and success checks before asking a coding agent for code.**
 
 - Data: 18 rows in `data/notebook1/products.csv` and their mapped pixel-art apparel images.
-- Output: `outputs/notebook1/catalogue.html`.
+- Output: `outputs/05_shopping_catalogue/catalogue.html`.
 - Target: a responsive shopping grid whose cards come from the CSV.
 - Ask GitHub Copilot Chat to return the code; create the HTML file and paste the code yourself.
 - Serve the page with Live Server and verify both appearance and CSV-to-image mapping.

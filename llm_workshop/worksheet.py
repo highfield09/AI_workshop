@@ -3,9 +3,14 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 import ipywidgets as widgets
+
+from llm_workshop.course import answer_label
+from llm_workshop.presentation import readable_html
 
 
 DEFAULT_ANSWERS_PATH = Path("tasks") / "workbook_answers.json"
@@ -16,17 +21,25 @@ def _read_answers(path: Path) -> dict:
         return {}
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
-        return {}
-    return value if isinstance(value, dict) else {}
+    except (json.JSONDecodeError, OSError) as exc:
+        raise ValueError("The answer file could not be read. Your existing work has not been changed.") from exc
+    if not isinstance(value, dict):
+        raise ValueError("The answer file must contain a JSON object. Your existing work has not been changed.")
+    return value
 
 
 def _write_answers(path: Path, answers: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(answers, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    temporary = None
+    try:
+        with NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
+                                prefix=".answers-", suffix=".tmp", delete=False) as handle:
+            temporary = Path(handle.name)
+            handle.write(json.dumps(answers, ensure_ascii=False, indent=2) + "\n")
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
 
 def _field(label: str, value: str, *, height: str):
@@ -35,13 +48,14 @@ def _field(label: str, value: str, *, height: str):
     return widgets.VBox(
         [
             widgets.HTML(
-                "<div style='font-weight:600;color:#344054;margin:6px 0 4px;"
+                "<div style='font-weight:600;color:#344054;background:#FFFFFF;margin:6px 0 4px;"
                 "max-width:100%;overflow-wrap:anywhere'>"
                 f"{label}</div>"
             ),
             widgets.Textarea(
                 value=value,
                 description="",
+                style={"text_color": "#1D2939", "background": "#FFFFFF"},
                 layout=widgets.Layout(
                     width="100%",
                     max_width="100%",
@@ -55,23 +69,23 @@ def _field(label: str, value: str, *, height: str):
 
 
 def _initial_status(path: Path) -> str:
-    return (
+    return readable_html(
         "<div style='background:#EFF8FF;border:1px solid #B2DDFF;"
         "border-radius:8px;padding:9px;color:#344054'>"
         "<small>Submitting runs the save instructions in "
         "<b>llm_workshop/worksheet.py</b>. Output path: "
         f"<code style='white-space:normal;overflow-wrap:anywhere'>"
-        f"{path.as_posix()}</code>.</small></div>"
+        f"{answer_label(path)}</code>.</small></div>"
     )
 
 
 def _saved_status(path: Path) -> str:
-    return (
+    return readable_html(
         "<div style='background:#ECFDF3;border:1px solid #ABEFC6;"
         "border-radius:8px;padding:9px;color:#067647'>"
         "<b>Saved.</b> In the VS Code Explorer, open "
         f"<code style='white-space:normal;overflow-wrap:anywhere'>"
-        f"{path.as_posix()}</code> to see the output. "
+        f"{answer_label(path)}</code> to see the output. "
         "<small>The button triggered explicit file-writing instructions; "
         "it did not choose the destination automatically.</small></div>"
     )
@@ -100,7 +114,12 @@ def worksheet_box(
     """Return one labelled response field with its own save action."""
 
     path = Path(answers_path)
-    saved = _read_answers(path).get(question_id, {})
+    load_error = None
+    try:
+        saved = _read_answers(path).get(question_id, {})
+    except ValueError as exc:
+        saved = {}
+        load_error = str(exc)
     if not isinstance(saved, dict):
         saved = {}
     response = _field(
@@ -108,18 +127,21 @@ def worksheet_box(
         saved.get("response", saved.get("answer", "")),
         height=response_height,
     )
-    question = widgets.HTML(
+    question = widgets.HTML(readable_html(
         "<div style='background:#EFF8FF;border:1px solid #B2DDFF;"
         "border-radius:9px;padding:10px;color:#175CD3;font-weight:700;"
         "letter-spacing:0.02em;overflow-wrap:anywhere'>"
         f"{question_label}</div>"
-    )
+    ))
     save = widgets.Button(
         description="Submit & save",
         button_style="primary",
         icon="save",
+        style={"button_color": "#175CD3", "text_color": "#FFFFFF"},
     )
     status = widgets.HTML(_initial_status(path))
+    if load_error:
+        status.value = readable_html(f"<b>Not loaded.</b> {load_error} Open {answer_label(path)} to check it.")
     reveal = widgets.HTML(
         value="",
         layout=widgets.Layout(
@@ -133,20 +155,32 @@ def worksheet_box(
         [question, response, save, status, reveal],
         layout=_worksheet_layout(),
     )
+    box.add_class("workshop-widget")
 
     def on_save(_button) -> None:
-        answers = _read_answers(path)
-        answers[question_id] = {
-            "question": question_label,
-            "response": response.children[1].value.strip(),
-        }
-        _write_answers(path, answers)
+        try:
+            answers = _read_answers(path)
+            answers[question_id] = {
+                "question": question_label,
+                "response": response.children[1].value.strip(),
+            }
+            _write_answers(path, answers)
+        except (ValueError, OSError):
+            save.description = "Retry save"
+            save.button_style = "danger"
+            box.layout.border = "2px solid #B42318"
+            status.value = readable_html(
+                "<b>Not saved.</b> Check the JSON format and file permissions in "
+                f"<code>{answer_label(path)}</code>, then retry. "
+                "Keep your answer in this box while you check the file."
+            )
+            return
         save.button_style = "success"
         save.description = "Saved"
         box.layout.border = "2px solid #12B76A"
         status.value = _saved_status(path)
         if reveal_html:
-            reveal.value = reveal_html
+            reveal.value = readable_html(reveal_html)
             reveal.layout.display = "block"
 
     save.on_click(on_save)

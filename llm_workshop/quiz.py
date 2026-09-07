@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import ipywidgets as widgets
 
+from llm_workshop.presentation import readable_html
+
 
 COLORS = {
     "info": {"background": "#EFF8FF", "border": "#B2DDFF", "text": "#175CD3"},
@@ -15,7 +17,7 @@ COLORS = {
 
 def _message(content: str, tone: str) -> str:
     colors = COLORS[tone]
-    return (
+    return readable_html(
         f"<div style='background:{colors['background']};"
         f"border:1px solid {colors['border']};border-radius:10px;"
         f"padding:12px;color:#344054'>{content}</div>"
@@ -59,6 +61,7 @@ def readme_quiz():
         description="Submit answer",
         button_style="primary",
         icon="check",
+        style={"button_color": "#175CD3", "text_color": "#FFFFFF"},
     )
     feedback = widgets.HTML(
         _message("<small>Choose one answer, then submit it.</small>", "info")
@@ -74,6 +77,8 @@ def readme_quiz():
             overflow="hidden",
         ),
     )
+
+    panel.add_class("workshop-widget")
 
     def check_answer(_button) -> None:
         if choices.value == "workflow":

@@ -1,5 +1,14 @@
-# Sandbox tasks
+# Your saved answers
 
-Each vibe-coding challenge will live in its own numbered folder here.
+The notebook chooses its own output folder. **Submit & save** creates the JSON file the first time you save:
 
-Every task should include a target, small inputs, a starting prompt, run or open instructions, and a short comparison checklist.
+- `01_start_here/answers.json` — Q3–Q4.
+- `02_models_and_reasoning/answers.json` — Q5–Q9.
+- `03_vision_and_context/answers.json` — Q10–Q16.
+- `05_shopping_catalogue/answers.json` — Q17–Q18.
+
+Q1–Q2 are self-checks. Workbook 4 is a code-repair exercise; save that notebook to keep your fix, rather than submitting a written response.
+
+These files are local to your Codespace and Git-ignored. The names can be the same for every student because each student has a separate workspace. Use your own Codespace, not a shared session, for separate work.
+
+If you used the earlier combined workbook, its `workbook_answers.json` is left untouched. Open it to refer to your earlier responses; new workbooks do not silently migrate or overwrite it.
