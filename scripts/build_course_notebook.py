@@ -219,14 +219,7 @@ from llm_workshop.worksheet import worksheet_box
         ),
         markdown(
             f"""
-### The simple workflow
-
-1. **Look** at the result you want to recreate.
-2. **Describe** what should match.
-3. **Ask** an AI helper for the smallest useful next step.
-4. **Make** or change a file.
-5. **Open** the result and compare it with the target.
-6. **Refine** one thing at a time.
+## Find your way around
 
 You do not need to memorize commands. The aim is to learn where things live and how to ask for a clear outcome.
 
@@ -237,11 +230,6 @@ You do not need to memorize commands. The aim is to learn where things live and 
     + chip("CHECKPOINT", "success") + " shows progress.",
     "info",
 )}
-"""
-        ),
-        markdown(
-            f"""
-## Find your way around
 
 ### Five friendly terms
 
@@ -1172,6 +1160,15 @@ Python reports that `disco_colours` is not defined. The list was created as `dis
         markdown(
             f"""
 ## Main task — Build and refine a shopping catalogue
+
+### The simple workflow
+
+1. **Look** at the result you want to recreate.
+2. **Describe** what should match.
+3. **Ask** an AI helper for the smallest useful next step.
+4. **Make** or change a file.
+5. **Open** the result and compare it with the target.
+6. **Refine** one thing at a time.
 
 {panel(
     "NOTEBOOK 1 · MAIN VIBE-CODING TASK",

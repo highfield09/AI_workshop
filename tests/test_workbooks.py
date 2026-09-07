@@ -57,6 +57,25 @@ def test_workspaces_and_workbooks_do_not_share_answers(tmp_path, monkeypatch):
         assert saved["same-id"]["response"] == f"{path.parents[2].name}/{path.parent.name}"
 
 
+def test_workflow_moves_to_catalogue_and_orientation_stays_together():
+    books = build_workbooks()
+    first = books["01_start_here"]
+    catalogue = books["05_shopping_catalogue"]
+    assert "The simple workflow" not in "\n".join(c.source for c in first.cells)
+    orientation = [c for c in first.cells if "## Find your way around" in c.source]
+    assert len(orientation) == 1
+    for text in ("You do not need to memorize commands", "COLOUR KEY", "### Five friendly terms"):
+        assert text in orientation[0].source
+    assert "\n\n### Five friendly terms" in orientation[0].source
+    # The first lesson cell follows the workbook header and hidden setup.
+    opening = catalogue.cells[2].source
+    assert "### The simple workflow" in opening
+    for number, verb in enumerate(("Look", "Describe", "Ask", "Make", "Open", "Refine"), 1):
+        assert f"{number}. **{verb}**" in opening
+    assert opening.index("The simple workflow") < opening.index("WORKBOOK 5 · MAIN")
+    assert sum("The simple workflow" in c.source for book in books.values() for c in book.cells) == 1
+
+
 def test_demo_answers_ignore_existing_personal_work(tmp_path, monkeypatch):
     monkeypatch.setattr(course, "ROOT", tmp_path / "student")
     monkeypatch.delenv("WORKSHOP_DEMO_ANSWERS", raising=False)
