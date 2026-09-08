@@ -3,7 +3,7 @@
     "ms-python.python",
     "ms-toolsai.jupyter",
     "ms-toolsai.jupyter-renderers",
-    "ritwickdey.LiveServer"
+    "ritwickdey.LiveServer",
+    "Mescius.spreadjs-xlsx-editor"
   ]
 }
-

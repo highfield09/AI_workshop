@@ -8,10 +8,31 @@ __pycache__/
 .DS_Store
 *.tar.gz
 **/state/
+_for_STUDENT/tasks/workbook_answers.json
+_for_STUDENT/outputs/notebook1/catalogue.html
+_for_STUDENT/tasks/*/answers.json
+_for_STUDENT/tasks/*/.answers-*.tmp
+_for_STUDENT/tasks/stage3_answers.json
+_for_STUDENT/outputs/**/*.html
+_for_STUDENT/data/notebook1/*.html
+_for_STUDENT/data/notebook6/batch1_1/
+_for_STUDENT/data/notebook6/batch1_1.csv
+_for_STUDENT/outputs/06_receipt_ocr/*
+!_for_STUDENT/outputs/06_receipt_ocr/README.md
+_for_STUDENT/tasks/06_receipt_ocr/receipt_reader.py
+
+# Keep pre-reorganisation student work ignored in existing Codespaces too.
 tasks/workbook_answers.json
-outputs/notebook1/catalogue.html
+tasks/stage3_answers.json
 tasks/*/answers.json
 tasks/*/.answers-*.tmp
-tasks/stage3_answers.json
+tasks/06_receipt_ocr/receipt_reader.py
 outputs/**/*.html
+outputs/06_receipt_ocr/*
 data/notebook1/*.html
+data/notebook6/batch1_1/
+data/notebook6/batch1_1.csv
+
+# Private answer keys must live outside this repository; defence in depth.
+**/model_answers/
+**/PRIVATE_for_TRAINER/

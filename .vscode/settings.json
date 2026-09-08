@@ -7,6 +7,6 @@
   "notebook.output.textLineLimit": 200,
   "files.exclude": {
     "**/.ipynb_checkpoints": true,
-    "vibe_jupyterhub_vllm_sandbox": true
+    "_for_TRAINER/vibe_jupyterhub_vllm_sandbox": true
   }
 }

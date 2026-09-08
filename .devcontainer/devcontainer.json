@@ -1,7 +1,7 @@
 {
   "name": "Vibe Coding Workshop",
   "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bookworm",
-  "postCreateCommand": "./scripts/setup_environment.sh",
+  "postCreateCommand": "./_for_TRAINER/scripts/setup_environment.sh",
   "forwardPorts": [8888, 5500],
   "portsAttributes": {
     "5500": {
@@ -19,7 +19,8 @@
         "ms-toolsai.jupyter-renderers",
         "GitHub.copilot",
         "GitHub.copilot-chat",
-        "ritwickdey.LiveServer"
+        "ritwickdey.LiveServer",
+        "Mescius.spreadjs-xlsx-editor"
       ],
       "settings": {
         "jupyter.askForKernelRestart": false
