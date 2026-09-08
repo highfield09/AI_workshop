@@ -31,7 +31,7 @@ def show_receipt_preview(image_path=FIRST_IMAGE):
     )))
 
 
-def preview_spreadsheet(path=SPREADSHEET):
+def preview_spreadsheet(path=SPREADSHEET, sheet_name=None):
     # Never bake an instructor/student spreadsheet into the published notebooks.
     if os.environ.get("WORKSHOP_DEMO_ANSWERS") or not path.is_file():
         return display(HTML(readable_html(
@@ -44,7 +44,9 @@ def preview_spreadsheet(path=SPREADSHEET):
     try:
         workbook = load_workbook(path, read_only=True, data_only=False, keep_links=False)
         try:
-            rows = list(islice(workbook.active.iter_rows(values_only=True), 11))
+            sheet = workbook[sheet_name] if sheet_name else workbook.active
+            title = sheet.title
+            rows = list(islice(sheet.iter_rows(values_only=True), 11))
         finally:
             workbook.close()
     except (OSError, ValueError, KeyError, BadZipFile) as exc:
@@ -55,4 +57,4 @@ def preview_spreadsheet(path=SPREADSHEET):
             for value in row
         ) + "</tr>" for index, row in enumerate(rows)
     ) + "</table>"
-    return display(HTML(readable_html("<b>Your spreadsheet · first 10 data rows</b>" + table)))
+    return display(HTML(readable_html(f"<b>{escape(title)} · first 10 data rows</b>" + table)))

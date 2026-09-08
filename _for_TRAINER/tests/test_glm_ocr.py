@@ -65,3 +65,45 @@ def test_helper_keeps_inference_local_and_bounded():
     assert source.count('trust_remote_code=False') == 2
     for text in ['max_new_tokens=320', 'max_time=180', 'do_sample=False', 'torch.set_num_threads(4)', 'torch.float32']:
         assert text in source
+
+
+def test_full_text_limits_and_model_reuse_without_heavy_dependencies(tmp_path, monkeypatch):
+    from contextlib import nullcontext
+    from types import SimpleNamespace
+    import sys
+    module = helper()
+    image = tmp_path / 'image.jpg'
+    image.write_bytes(b'fixture')
+    (tmp_path / 'model.safetensors').write_bytes(b'fixture')
+    loads, generations = [], []
+    processor = SimpleNamespace(
+        image_processor=SimpleNamespace(size={}),
+        apply_chat_template=lambda *a, **k: {'input_ids': SimpleNamespace(shape=(1, 4))},
+        decode=lambda *a, **k: 'complete full text',
+    )
+    def generate(**kwargs):
+        generations.append(kwargs)
+        return [[1, 2, 3, 4, 5, 9]]
+    model = SimpleNamespace(generate=generate, generation_config=SimpleNamespace(eos_token_id=[9]))
+    model.eval = lambda: model
+    def load(*args, **kwargs):
+        loads.append(kwargs)
+        return model
+    monkeypatch.setitem(sys.modules, 'torch', SimpleNamespace(
+        float32='float32', set_num_threads=lambda n: None, inference_mode=nullcontext))
+    monkeypatch.setitem(sys.modules, 'transformers', SimpleNamespace(
+        AutoProcessor=SimpleNamespace(from_pretrained=lambda *a, **k: processor),
+        AutoModelForImageTextToText=SimpleNamespace(from_pretrained=load)))
+    monkeypatch.setattr(module, 'available_memory', lambda: 16 * 1024**3)
+    assert module.read_image(image, 'Text Recognition:', model_path=tmp_path, max_new_tokens=4096, max_time=600) == 'complete full text'
+    # Loading used memory; reusing an existing model must not recheck startup headroom.
+    monkeypatch.setattr(module, 'available_memory', lambda: 0)
+    assert module.read_image(image, 'Text Recognition:', model_path=tmp_path) == 'complete full text'
+    assert len(loads) == 1 and module._load_model.cache_info().hits == 1
+    assert generations[0]['max_new_tokens'] == 4096 and generations[0]['max_time'] == 600
+    for kwargs in ({'max_new_tokens':4097}, {'max_time':601}, {'max_new_tokens':True}):
+        with pytest.raises(ValueError):
+            module.read_image(image, 'Text Recognition:', model_path=tmp_path, **kwargs)
+    model.generate = lambda **k: [[1, 2, 3, 4, 5]]
+    with pytest.raises(RuntimeError, match='partial data'):
+        module.read_image(image, 'Text Recognition:', model_path=tmp_path)

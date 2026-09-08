@@ -29,7 +29,7 @@ If the notebook asks for a kernel, choose the Python interpreter marked **.venv*
 | [3 · Vision and context](_for_STUDENT/notebooks/03_vision_and_context.ipynb) | Vision in Copilot, request costs and Gemini effort comparisons | Q10–Q16 |
 | [4 · Debugging](_for_STUDENT/notebooks/04_debugging.ipynb) | Ask for a small repair, rerun and inspect | Repaired cell and animation |
 | [5 · Shopping catalogue](_for_STUDENT/notebooks/05_shopping_catalogue.ipynb) | Build HTML from messy CSV data; repair, sort and refine | Q17–Q18 and your catalogue |
-| [6 · Receipt OCR](_for_STUDENT/notebooks/06_receipt_ocr.ipynb) | Read one invoice with local OCR and check its Excel row | Q19–Q20 and your spreadsheet |
+| [6 · Receipt OCR](_for_STUDENT/notebooks/06_receipt_ocr.ipynb) | Full text → checked item tables → 20 receipts → chart | Q19–Q24, spreadsheets and chart |
 
 Open [KEY_CONCEPTS.md](_for_STUDENT/KEY_CONCEPTS.md) for the growing student take-home reference.
 
@@ -56,7 +56,17 @@ four-thread CPU sample took about 47 seconds and peaked at 6.6 GiB RAM; hardware
 and prompts affect results. An 8 GB default Codespace may not have enough
 headroom. The notebook documents setup and cites the model and Kaggle uploader.
 
-Use your coding agent to create `_for_STUDENT/tasks/06_receipt_ocr/receipt_reader.py`. Its first version reads **only `batch1-0001.jpg`** and writes `_for_STUDENT/outputs/06_receipt_ocr/first_receipt.xlsx`. This is a student exercise, so a completed extraction script is not supplied.
+Use your coding agent to build `_for_STUDENT/tasks/06_receipt_ocr/receipt_reader.py`
+in four iterations. First transcribe the whole `batch1-0001.jpg` image into
+`raw/batch1-0001.txt`, then create `first_receipt.xlsx` with separate **Items**
+and **Receipts** sheets. Next process the first 20 filenames into `receipts_20.xlsx`
+and `batch_run.csv`. Finally save `item_quantity_summary.csv` and
+`item_quantities.png`. All outputs go under `_for_STUDENT/outputs/06_receipt_ocr/`.
+The supplied documents are JPGs, not PDFs; PDF conversion is not part of this lesson.
+Allow roughly 40 minutes or longer for a fresh 20-page CPU run; reuse saved text
+when refining Excel or charts. The model helper supports longer full-text responses
+and reuses one loaded model sequentially. Matplotlib is included in the optional
+Workbook 6 setup. This is a student exercise, so a completed pipeline is not supplied.
 
 To view Excel files, install **SpreadJS XLSX Editor** by **MESCIUS** from Extensions, or use Workbook 6's built-in read-only spreadsheet preview. The script, spreadsheet, raw model response and written answers are Git-ignored. No Microsoft Excel installation is needed.
 

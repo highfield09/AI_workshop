@@ -1,32 +1,37 @@
-# Workbook 6 · Build your receipt reader
+# Workbook 6 · Build your receipt pipeline in four iterations
 
-Use your coding agent to create `receipt_reader.py` in this folder. There is deliberately no completed extraction script supplied: describing, running and checking that script is your task.
+Create and refine `receipt_reader.py` with your coding agent. Implement one
+iteration at a time; a completed pipeline is deliberately not provided.
 
-Start with only `_for_STUDENT/data/notebook6/batch1_1/batch1-0001.jpg`. Use
-[GLM-OCR](https://huggingface.co/zai-org/GLM-OCR) through the provided
-`model/glm_reader.py`. Import `read_image` from `model.glm_reader`, then call
-`read_image(image_path, prompt)` with a prompt containing a JSON schema.
-See [model setup](model/README.md): 16 GB RAM recommended, 2.66 GB model download,
-CPU-only inference, no API key. Do not edit the provided model helper.
+1. **Full text:** read `batch1-0001.jpg`, save `raw/batch1-0001.txt` unchanged,
+   and compare it with the image. These are JPG invoices, not PDF files.
+2. **Excel:** reuse that text to create `first_receipt.xlsx`: one **Items** row
+   per purchased line, including numeric quantity, and one **Receipts** summary
+   row per document. Convert decimal commas carefully; preserve IDs/dates as
+   text. Use `review_status` and `review_note` to record checks and uncertainty.
+3. **Batch:** select exactly the first 20 JPG filenames in sorted order, ending
+   at `batch1-0020.jpg`. Process sequentially, cache raw text, avoid duplicate
+   item rows, preserve human reviews, and account for all files in `batch_run.csv`.
+   Save combined tables in `receipts_20.xlsx`; do not overwrite the first example.
+4. **Analysis:** use checked item rows from Excel, not another OCR call. Sum
+   quantity by item description; save `item_quantity_summary.csv` and a labelled
+   bar chart `item_quantities.png`. Explain exclusions and sample limitations.
 
-The agent should anchor paths to the script's location, not assume a particular terminal folder. Request these outputs:
+Source directory: `_for_STUDENT/data/notebook6/batch1_1/`.
+All generated files belong under `_for_STUDENT/outputs/06_receipt_ocr/` and are
+Git-ignored. Source JPGs and reference CSV must remain unchanged. The CSV is only
+for checking afterwards, never a substitute for reading the images.
 
-- `_for_STUDENT/outputs/06_receipt_ocr/first_receipt.xlsx` — one extracted invoice row.
-- `_for_STUDENT/outputs/06_receipt_ocr/first_receipt_ocr.txt` — raw model response for checking mistakes.
+Use [GLM-OCR](https://huggingface.co/zai-org/GLM-OCR) through the supplied helper:
 
-Columns: `source_file`, `invoice_number`, `invoice_date`, `seller_name`, `tax_total`, `grand_total`, `currency_mark`, `review_note`.
-
-Keep uncertain or missing values blank and explain them in `review_note`. Read the image, not the provided reference CSV, to produce the extracted row. The CSV is for checking afterwards; match on `File Name`, not row position.
-
-Request the final SUMMARY row's Net worth, VAT and Gross worth, not a Tax Id.
-Map VAT to `tax_total` and Gross worth to `grand_total`, and check net + tax =
-total. Validate JSON and missing fields; flag any date normalisation. Never
-invent an omitted currency symbol. Structured output still needs inspection.
-
-Run from the repository root:
-
-```bash
-python _for_STUDENT/tasks/06_receipt_ocr/receipt_reader.py
+```python
+from model.glm_reader import read_image
+text = read_image(image_path, "Text Recognition:", max_new_tokens=4096, max_time=600)
 ```
 
-The student-created script, spreadsheet, raw text and worksheet answers are Git-ignored. They stay in your own Codespace unless you choose to share them.
+See [model setup](model/README.md). Use a 16 GB environment; allow roughly 40
+minutes or longer for 20 uncached pages. The helper reuses one model in the same
+process. Do not edit it or start parallel model copies. Ask your agent to anchor
+file paths to the script rather than the terminal's current folder.
+
+Q19–Q24 in the notebook each save separately to this workbook's `answers.json`.

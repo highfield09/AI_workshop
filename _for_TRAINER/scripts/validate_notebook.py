@@ -155,7 +155,7 @@ FORBIDDEN_SNIPPETS = [
     "Add Context → Files & Folders",
     "Gemini 3.6 Flash",
 ]
-EXPECTED_QUESTION_LABELS = [f"QUESTION {number} ·" for number in range(1, 21)]
+EXPECTED_QUESTION_LABELS = [f"QUESTION {number} ·" for number in range(1, 25)]
 
 SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
@@ -402,9 +402,9 @@ def main() -> None:
         for index, cell in enumerate(notebook.cells)
         if cell.cell_type == "code" and "worksheet_box(" in cell.source
     ]
-    if len(worksheet_cells) != 18:
+    if len(worksheet_cells) != 22:
         raise SystemExit(
-            "Course must contain eighteen independently saved worksheet questions; "
+            "Course must contain twenty-two independently saved worksheet questions; "
             f"found {[index for index, _ in worksheet_cells]}"
         )
     for index, cell in worksheet_cells:

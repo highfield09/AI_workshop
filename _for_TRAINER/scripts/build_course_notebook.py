@@ -1463,7 +1463,7 @@ def build_workbooks():
         "<b>Vision inside VS Code.</b>",
         "<b>Repair a broken HTML animation.</b>",
         "## Main task — Build and refine a shopping catalogue",
-        "## Read one invoice into an Excel row",
+        "## From invoice images to a checked chart",
     )
     boundaries = [0] + [next(
         index for index, cell in enumerate(cells)

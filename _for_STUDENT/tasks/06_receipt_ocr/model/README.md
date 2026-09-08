@@ -40,7 +40,15 @@ from model.glm_reader import read_image
 raw_response = read_image(image_path, prompt_with_json_schema)
 ```
 
-The student script still supplies a schema, saves the raw response, checks JSON,
-maps fields and writes Excel. Responses may contain Markdown fences, omit keys,
+For full-page text, use `read_image(image_path, "Text Recognition:", max_new_tokens=4096, max_time=600)`.
+The default 320-token/180-second limits remain suitable for small field schemas;
+full-page transcription needs the larger allowance. The helper caches one loaded
+model for sequential calls in the same process, not across separate script runs.
+Do not start parallel workers. Restart the kernel/process to release the model.
+
+The student script saves the raw response, builds item and receipt tables,
+validates numbers, batches the first 20 inputs, and charts checked data.
+An intermediate JSON schema is optional for structuring, not required for full
+transcription. Responses may contain Markdown fences, omit keys,
 normalise dates or misread values. Missing fields should remain blank and be
 flagged, not filled by guessing. A cleaner format is not proof of correct data.

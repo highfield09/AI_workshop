@@ -9,13 +9,15 @@ from scripts.check_receipt_assets import check_assets
 from scripts.prepare_receipt_data import EXPECTED_IMAGES, REMOTE_IMAGES, REMOTE_CSV, prepare
 
 
-def test_ocr_lesson_is_one_image_and_has_attribution_and_hints():
+def test_ocr_lesson_has_four_iterations_and_traceable_outputs():
     book = build_workbooks()["06_receipt_ocr"]
     source = "\n".join(c.source for c in book.cells)
     assert "osama hosam Abdellatif" in source
     assert "version 3" in source and "Database: Open Database" in source
     assert "499 images in batch1_1" in source
-    assert "exactly one data row" in source
+    assert "seven item rows" in source and "one receipt row" in source
+    for text in ['Iteration 1', 'Iteration 2', 'Iteration 3', 'Iteration 4', 'first 20', 'quantity', 'receipts_20.xlsx', 'batch_run.csv', 'item_quantities.png', 'histogram', 'not PDFs', 'Text Recognition:', 'max_new_tokens=4096']:
+        assert text in source
     assert "receipt_reader.py" in source and "first_receipt.xlsx" in source
     assert "<details>" in source and "Hint · Build your prompt" in source
     assert "Do not process the whole folder yet" in source
@@ -84,6 +86,26 @@ def test_preview_handles_missing_receipt_without_downloading(tmp_path, monkeypat
 
 def test_glm_lesson_documents_local_runtime_and_validation():
     source = '\n'.join(c.source for c in build_workbooks()['06_receipt_ocr'].cells)
-    for required in ['GLM-OCR', '16 GB RAM', 'setup_glm_ocr.sh', 'model.glm_reader', 'JSON schema', 'Tax Id', 'normalise dates']:
+    for required in ['GLM-OCR', '16 GB RAM', 'setup_glm_ocr.sh', 'model.glm_reader', 'JSON schema', 'Tax Id']:
         assert required in source
     assert 'tesserocr' not in source and 'Tesseract' not in source
+
+
+def test_excel_preview_can_select_each_sheet(tmp_path, monkeypatch):
+    from openpyxl import Workbook
+    path = tmp_path / 'first_receipt.xlsx'
+    book = Workbook()
+    book.active.title = 'Items'
+    book.active.append(['quantity'])
+    book.active.append([3])
+    book.create_sheet('Receipts').append(['grand_total'])
+    book.save(path)
+    shown = []
+    monkeypatch.delenv('WORKSHOP_DEMO_ANSWERS', raising=False)
+    monkeypatch.setattr(receipt_support, 'display', lambda content: shown.append(content.data))
+    receipt_support.preview_spreadsheet(path, sheet_name='Items')
+    assert 'quantity' in shown[-1] and 'Items' in shown[-1]
+    receipt_support.preview_spreadsheet(path, sheet_name='Receipts')
+    assert 'grand_total' in shown[-1] and 'Receipts' in shown[-1]
+    receipt_support.preview_spreadsheet(path, sheet_name='Missing')
+    assert 'Could not open' in shown[-1]

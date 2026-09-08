@@ -102,6 +102,12 @@ References: [Claude effort controls](https://platform.claude.com/docs/en/build-w
 
 ## Workbook 6 · OCR with traceable outputs
 
+- Iterate in stages: full text → item/receipt tables → a checked 20-file batch → analysis. Reuse saved text; changing a chart should not trigger OCR again.
+- Define what one row means. Quantities belong to item rows; invoice totals belong to receipt rows and must not be repeatedly summed.
+- Decimal commas represent numbers, not disposable punctuation. Store quantities and money numerically; preserve raw text as evidence.
+- Account for every batch input, including failures, and preserve review decisions on reruns.
+- Sum quantities rather than merely counting rows. Explain exclusions and grouping choices; the first 20 filenames are not a representative sales sample.
+
 - GLM-OCR is a vision-language model: it reads document images and can propose structured fields. Your script validates those fields and builds a spreadsheet.
 - Start with one image and check every value before expanding to a folder of images.
 - Keep the source filename and raw model response so an extracted value can be traced back to evidence.
