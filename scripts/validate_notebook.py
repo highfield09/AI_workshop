@@ -45,7 +45,8 @@ EXPECTED_MERGED_ROW_ID = "NB012"
 REQUIRED_HEADINGS = [
     "## Find your way around",
     "## Choose an AI helper and prompt deliberately",
-    "## Try the AI interfaces",
+    "## Try the AI interface · Google AI Mode",
+    "## Try the AI interface · HuggingChat",
     "## Main task — Build and refine a shopping catalogue",
     "## Orientation complete",
 ]
@@ -459,9 +460,9 @@ def main() -> None:
         if cell.cell_type == "code"
         if "KEY TIP" in cell.source and "reveal_html=" in cell.source
     ]
-    if len(tip_cells) != 1:
+    if len(tip_cells) != 2:
         raise SystemExit(
-            "Notebook must contain one Key Tip revealed by worksheet submission; "
+            "Course must contain two Key Tips revealed by worksheet submission; "
             f"found {tip_cells}"
         )
 

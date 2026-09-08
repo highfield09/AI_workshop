@@ -132,6 +132,25 @@ def model_card_diagram() -> str:
     )
 
 
+def interface_intro(name: str, guidance: str, extra: str = ""):
+    """Introduce one resource with consistent save-location guidance."""
+    return markdown(
+        f"## Try the AI interface · {name}\n\n"
+        + panel(
+            "IMPORTANT",
+            guidance + "<br><br>"
+            "<b>Your submitted worksheet:</b> each <b>Submit & save</b> button writes "
+            "its labelled answer to <b>tasks → workbook_answers.json</b>. "
+            "This answer file is ignored by Git. The instructions inside "
+            "<b>llm_workshop/worksheet.py</b> explicitly choose the path; "
+            "the button only runs those instructions.<br><br>"
+            "<b>Always know where your output is going—and where to find it.</b>",
+            "info",
+        )
+        + ("\n\n" + extra if extra else "")
+    )
+
+
 def catalogue_preview() -> str:
     """Return a compact CSV-ordered preview of all catalogue products."""
 
@@ -459,27 +478,11 @@ Which prompt is likely to be more token-efficient while still giving a useful an
 )}
 """
         ),
-        markdown(
-            f"""
-## Try the AI interfaces
-
-{panel(
-    "IMPORTANT",
-    "The experiments move between Google AI Mode, Hugging Face, VS Code and Gemini so you "
-    "can see how the interface, model and prompt affect an answer.<br><br>"
-    "<b>HuggingChat allowance:</b> free accounts have <b>20 questions</b>. "
-    "Experiment 2 uses four of them.<br><br>"
-    "<b>Your submitted worksheet:</b> each <b>Submit & save</b> button writes "
-    "its labelled answer to <b>tasks → workbook_answers.json</b>. The file is "
-    "ignored by Git, so personal answers are not committed. The instructions "
-    "inside <b>llm_workshop/worksheet.py</b> explicitly choose that path; the "
-    "button only runs those instructions.<br><br>"
-    "<b>Always know where your output is going—and where to find it.</b>",
-    "info",
-)}
-
-LLMs are <abbr title='Probabilistic means the model chooses among likely next pieces of text; the same request can produce different wording.' style='text-decoration:underline dotted;cursor:help'><b>probabilistic</b></abbr>. In simple words, models choose from several likely next pieces of text rather than retrieving one fixed sentence. Two runs may therefore use different wording or detail. Ideally, the answers should remain **semantically similar**—their central meaning should agree—even when their phrasing varies.
-"""
+        interface_intro(
+            "Google AI Mode",
+            "Use <b>Google AI Mode</b> for this workbook's fact-retrieval activity. "
+            "Ask one focused question, then inspect the answer and the source "
+            "behind it. If no source is given, ask for a citation or source link.",
         ),
         markdown(
             f"""
@@ -525,12 +528,34 @@ Answer in one sentence and include one source link."""
             "interactive",
         ),
         code(
-            '''worksheet_box(
+            f'''worksheet_box(
     "google_fact_source",
     question_label="QUESTION 4 · Check the fact and source",
     response_label="What percentage did it give, and which source did it cite?",
+    reveal_html={panel(
+        "KEY TIP · ASK FOR A CITATION",
+        "Make source checking a habit whenever you ask an AI to retrieve a "
+        "fact, figure or other data. Ask for a citation or source link if one "
+        "is missing, then open it and check that it actually supports the "
+        "answer. A citation can be incorrect or invented too—check the original "
+        "source rather than trusting the link alone.",
+        "success",
+    )!r},
 )''',
             "interactive",
+        ),
+        interface_intro(
+            "HuggingChat",
+            "Use <b>HuggingChat</b> to try different models, and <b>Hugging Face "
+            "model cards</b> to find out what each model is designed to do. "
+            "Compare the responses to the same prompt.<br><br>"
+            "<b>HuggingChat allowance:</b> free accounts have <b>20 questions</b>. "
+            "Experiment 2 uses four of them.",
+            "LLMs are <abbr title='Probabilistic means the model chooses among likely next pieces of text; the same request can produce different wording.' style='text-decoration:underline dotted;cursor:help'><b>probabilistic</b></abbr>. "
+            "In simple words, models choose from several likely next pieces of text rather "
+            "than retrieving one fixed sentence. Two runs may therefore use different wording "
+            "or detail. Ideally, the answers should remain **semantically similar**—their "
+            "central meaning should agree—even when their phrasing varies.",
         ),
         markdown(
             f"""
@@ -1430,7 +1455,7 @@ def build_workbooks():
     """Split at explicit lesson boundaries; preserve the global question IDs."""
     cells = build_lesson_cells()
     markers = (
-        "### HuggingChat models: read the card and the icons",
+        "## Try the AI interface · HuggingChat",
         "<b>Vision inside VS Code.</b>",
         "<b>Repair a broken HTML animation.</b>",
         "## Main task — Build and refine a shopping catalogue",

@@ -92,6 +92,35 @@ def test_demo_answers_ignore_existing_personal_work(tmp_path, monkeypatch):
     assert str(tmp_path) not in box.children[3].value
 
 
+def test_resource_introductions_are_in_the_matching_workbook():
+    books = build_workbooks()
+    first = "\n".join(c.source for c in books["01_start_here"].cells)
+    second = "\n".join(c.source for c in books["02_models_and_reasoning"].cells)
+    assert "## Try the AI interface · Google AI Mode" in first
+    assert "HuggingChat allowance" not in first
+    assert "20 questions" not in first
+    assert "## Try the AI interface · HuggingChat" in second
+    assert "HuggingChat allowance" in second
+    assert second.index("## Try the AI interface") < second.index("### HuggingChat models")
+    assert "tasks → 02_models_and_reasoning → answers.json" in second
+
+
+def test_q4_reveals_source_checking_tip_only_after_save(tmp_path):
+    book = build_workbooks()["01_start_here"]
+    cell = next(c for c in book.cells if c.cell_type == "code" and '"google_fact_source"' in c.source)
+    destination = tmp_path / "answers.json"
+    box = eval(cell.source, {"worksheet_box": worksheet_box, "answer_path": lambda _: destination})
+    assert box.children[4].value == ""
+    assert box.children[4].layout.display == "none"
+    box.children[1].children[1].value = "About 71%; checked the original source."
+    box.children[2].click()
+    assert destination.is_file()
+    assert box.children[4].layout.display == "block"
+    assert "KEY TIP · ASK FOR A CITATION" in box.children[4].value
+    assert "open it and check" in box.children[4].value
+    assert "#ECFDF3" in box.children[4].value
+
+
 def test_unknown_workbook_cannot_escape_answer_root():
     with pytest.raises(ValueError):
         course.answer_path("../../someone-else")
