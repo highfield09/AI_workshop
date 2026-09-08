@@ -20,6 +20,7 @@ _for_STUDENT/data/notebook6/batch1_1.csv
 _for_STUDENT/outputs/06_receipt_ocr/*
 !_for_STUDENT/outputs/06_receipt_ocr/README.md
 _for_STUDENT/tasks/06_receipt_ocr/receipt_reader.py
+_for_STUDENT/tasks/06_receipt_ocr/model/glm-ocr/
 
 # Keep pre-reorganisation student work ignored in existing Codespaces too.
 tasks/workbook_answers.json

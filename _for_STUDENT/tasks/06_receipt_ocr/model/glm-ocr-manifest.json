@@ -1,0 +1,46 @@
+{
+  "model": "zai-org/GLM-OCR",
+  "revision": "ca5d8b3e287e52589e37c28385d9655ee4372f9d",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 8277,
+      "sha256": "e8e84b75857428ba5c152b561b5af0e607c991240ecf8dfa31cb616f8a1c61ff"
+    },
+    {
+      "path": "chat_template.jinja",
+      "bytes": 4606,
+      "sha256": "062e7ee4cc8defa88a5938b5d456dc60366ffd80647f918946ee747bf09ddc7c"
+    },
+    {
+      "path": "config.json",
+      "bytes": 1570,
+      "sha256": "4e1daf0d8a3f63e58960ac14bcb58b7be96758cad231fb7a1e5fec60f42dcd8c"
+    },
+    {
+      "path": "generation_config.json",
+      "bytes": 165,
+      "sha256": "4e2a3412f65b2a21d315d928986c55723d3e60dfb92c3982a5b9fd56835b0aa5"
+    },
+    {
+      "path": "model.safetensors",
+      "bytes": 2650579464,
+      "sha256": "a16eb0de98d199293371c560f95f83130d2a2c9612449df16839f08ff9498815"
+    },
+    {
+      "path": "preprocessor_config.json",
+      "bytes": 367,
+      "sha256": "02cc50c36240882ae35e8cd4077a25a379664108185d728d261cb785aefeccff"
+    },
+    {
+      "path": "tokenizer.json",
+      "bytes": 6838609,
+      "sha256": "aa0fd058c73a5718bb191f6672dc16d122ee0147b20c123d1726514298f9968a"
+    },
+    {
+      "path": "tokenizer_config.json",
+      "bytes": 1066,
+      "sha256": "23404f517abeb2893f1c175c6d7c539f733f6fca287414a2ce9ab569d99a1c06"
+    }
+  ]
+}

@@ -10,13 +10,10 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "_for_TRAINER"))
 from scripts.prepare_receipt_data import DATA, HANDLE, EXPECTED_IMAGES, sha256
-
-MODEL_SHA256 = "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
-
+from scripts.prepare_glm_ocr import verify_snapshot
 
 def check_assets(require_data=False):
-    model = ROOT / "_for_STUDENT/tasks/06_receipt_ocr/model/tessdata/eng.traineddata"
-    assert sha256(model) == MODEL_SHA256, "OCR model differs from the pinned snapshot"
+    verify_snapshot()  # Optional download: do not fetch weights during course checks.
     manifest = json.loads((DATA / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["dataset"] == HANDLE
     expected_paths = {"batch1_1.csv"} | {f"batch1_1/{name}" for name in EXPECTED_IMAGES}

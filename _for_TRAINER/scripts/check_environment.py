@@ -11,7 +11,7 @@ from jupyter_client.kernelspec import KernelSpecManager
 
 ROOT = Path(__file__).resolve().parents[2]
 EXPECTED_ENV = (ROOT / ".venv").resolve()
-REQUIRED_MODULES = ["ipykernel", "ipywidgets", "nbformat", "tesserocr", "PIL", "openpyxl", "kagglehub"]
+REQUIRED_MODULES = ["ipykernel", "ipywidgets", "nbformat", "PIL", "openpyxl", "kagglehub"]
 
 
 def main() -> None:

@@ -27,6 +27,7 @@ def test_current_and_legacy_student_outputs_stay_git_ignored():
         '_for_STUDENT/outputs/06_receipt_ocr/first_receipt.xlsx',
         '_for_STUDENT/outputs/05_shopping_catalogue/catalogue.html',
         '_for_STUDENT/data/notebook6/batch1_1.csv',
+        '_for_STUDENT/tasks/06_receipt_ocr/model/glm-ocr/model.safetensors',
         'tasks/01_start_here/answers.json', 'outputs/notebook1/catalogue.html',
         'data/notebook6/batch1_1.csv',
     ]

@@ -1,13 +1,46 @@
-# Local OCR model snapshot
+# GLM-OCR · local vision-language model
 
-- Model: **Tesseract tessdata_fast English**, an integer LSTM text-recognition model.
-- Maintainer: [tesseract-ocr](https://github.com/tesseract-ocr/tessdata_fast).
-- Pinned revision: `87416418657359cb625c412a48b6e1d6d41c29bd`.
-- [Original model file](https://github.com/tesseract-ocr/tessdata_fast/blob/87416418657359cb625c412a48b6e1d6d41c29bd/eng.traineddata).
-- Local file: `tessdata/eng.traineddata` — **4,113,088 bytes**.
-- SHA-256: `7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2`.
-- Licence: **Apache-2.0**, reproduced unchanged in [LICENSE](LICENSE).
+[GLM-OCR by Z.ai](https://huggingface.co/zai-org/GLM-OCR) reads document images
+and can produce text or structured fields. It combines vision and language,
+rather than only recognising individual printed characters. It is specialised
+for document tasks, not a general-purpose chat assistant.
 
-This is an OCR model, not a chat LLM. It recognises text; your script still needs to identify fields such as the invoice date and total. The model is distributed unchanged and does not download weights at runtime.
+- Official snapshot: `zai-org/GLM-OCR` at `ca5d8b3e287e52589e37c28385d9655ee4372f9d`.
+- Local snapshot directory: `glm-ocr/` (downloaded, Git-ignored).
+- Weight file: **2,650,579,464 bytes**; snapshot including tokenizer about **2.66 GB**.
+- Provenance/checksums: [glm-ocr-manifest.json](glm-ocr-manifest.json).
+- Model licence: **MIT**, as stated in the [official model card](https://huggingface.co/zai-org/GLM-OCR#license).
+  Its unchanged upstream README is included in the downloaded snapshot.
+- Tested runtime: Python 3.12 on Linux, PyTorch 2.14.0 CPU, Torchvision 0.29.0 CPU, Transformers 5.16.1.
+- [Official Transformers documentation](https://huggingface.co/docs/transformers/model_doc/glm_ocr).
 
-The workshop's Linux/Python 3.12 environment uses the `tesserocr` binary wheel with Tesseract 5.5.1. Use `PyTessBaseAPI(path=..., lang="eng", oem=OEM.LSTM_ONLY)` and point `path` at this `tessdata` folder. Do not use the legacy OCR engine with this model. See the [tesserocr API example](https://github.com/sirfz/tesserocr#usage).
+From the repository root:
+
+```bash
+sh _for_TRAINER/scripts/setup_glm_ocr.sh
+```
+
+Allow **at least 6 GB of spare disk** for model/runtime installation (extra
+package cache space may be needed), and use a **16 GB RAM environment**.
+In Codespaces, that memory belongs to the cloud machine, not your laptop.
+The supplied CPU helper refuses to start when Linux reports less than 8 GiB
+available. No GPU, API key, inference credits, server or remote model code is needed.
+Installation/download needs internet; inference uses local files only.
+
+Our first-invoice test on Linux/AMD EPYC, limited to four CPU threads, took about
+47 seconds for inference and peaked at 6.6 GiB RAM. This is not a laptop-speed
+guarantee. The helper limits image resolution and answer length to keep one
+receipt manageable; do not launch several model processes at once.
+
+`glm_reader.py` is provided support code; students do not need to edit it.
+From `receipt_reader.py` in the parent folder:
+
+```python
+from model.glm_reader import read_image
+raw_response = read_image(image_path, prompt_with_json_schema)
+```
+
+The student script still supplies a schema, saves the raw response, checks JSON,
+maps fields and writes Excel. Responses may contain Markdown fences, omit keys,
+normalise dates or misread values. Missing fields should remain blank and be
+flagged, not filled by guessing. A cleaner format is not proof of correct data.

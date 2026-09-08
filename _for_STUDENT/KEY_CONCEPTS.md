@@ -102,9 +102,11 @@ References: [Claude effort controls](https://platform.claude.com/docs/en/build-w
 
 ## Workbook 6 · OCR with traceable outputs
 
-- OCR reads printed text from pixels; a separate part of your script selects fields and builds a spreadsheet.
+- GLM-OCR is a vision-language model: it reads document images and can propose structured fields. Your script validates those fields and builds a spreadsheet.
 - Start with one image and check every value before expanding to a folder of images.
-- Keep the source filename and raw OCR text so an extracted value can be traced back to evidence.
+- Keep the source filename and raw model response so an extracted value can be traced back to evidence.
+- Valid JSON does not prove correct data: a model can confuse tax amounts with identifiers, omit keys, or normalise dates. Check the image and arithmetic, and flag missing values.
+- Small for a VLM is not tiny: GLM-OCR needs a multi-gigabyte download and memory headroom. Use the documented 16 GB environment and run one receipt at a time.
 - Use the supplied reference CSV only to check results afterwards. Match by filename, not row position.
 - A local model snapshot lets you repeat the task without cloud inference; record its source, version and licence.
 - Missing or uncertain values should be left blank and marked for review, not guessed.

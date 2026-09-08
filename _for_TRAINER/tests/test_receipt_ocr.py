@@ -82,14 +82,8 @@ def test_preview_handles_missing_receipt_without_downloading(tmp_path, monkeypat
     assert "prepare_receipt_data.py" in shown[-1]
 
 
-def test_local_ocr_to_excel_smoke_on_first_real_invoice(tmp_path, monkeypatch):
-    """Check runtime availability without publishing a field-extraction solution."""
-    from tesserocr import PyTessBaseAPI, OEM
-    image = receipt_support.FIRST_IMAGE
-    if not image.is_file():
-        pytest.skip("Optional 499-image dataset has not been downloaded")
-    model = ROOT / "_for_STUDENT/tasks/06_receipt_ocr/model/tessdata"
-    with PyTessBaseAPI(path=str(model), lang="eng", oem=OEM.LSTM_ONLY) as api:
-        api.SetImageFile(str(image))
-        text = api.GetUTF8Text()
-    assert len(text.split()) > 20
+def test_glm_lesson_documents_local_runtime_and_validation():
+    source = '\n'.join(c.source for c in build_workbooks()['06_receipt_ocr'].cells)
+    for required in ['GLM-OCR', '16 GB RAM', 'setup_glm_ocr.sh', 'model.glm_reader', 'JSON schema', 'Tax Id', 'normalise dates']:
+        assert required in source
+    assert 'tesserocr' not in source and 'Tesseract' not in source

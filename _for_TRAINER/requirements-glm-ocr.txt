@@ -1,0 +1,4 @@
+# Optional Workbook 6 runtime. Install CPU torch/torchvision using setup_glm_ocr.sh.
+transformers==5.16.1
+huggingface-hub==1.30.0
+numpy==2.5.3

@@ -19,13 +19,26 @@ def receipt_lesson_cells(markdown, code, panel):
     "coding agent, run its script, and compare every extracted value with the image.", "task")}
 
 **OCR** means optical character recognition: reading printed text from an image.
-We will use the small **Tesseract English** model locally on the Codespace CPU.
-Its 4.1 MB snapshot is in `_for_STUDENT/tasks/06_receipt_ocr/model/tessdata/eng.traineddata`.
-No OCR API key, paid inference or GPU is needed. See the
-[model source](https://github.com/tesseract-ocr/tessdata_fast) and its local licence notes.
+We will use [**GLM-OCR by Z.ai**](https://huggingface.co/zai-org/GLM-OCR), a small
+**vision-language model (VLM)**: it combines reading an image with language
+processing to return text or structured fields. It is specialised for documents.
+The official model is MIT-licensed; its source and checksums are recorded locally.
 
-**Recognising text is not the same as understanding fields.** OCR may read the page
-but mix up the order of columns. Your script must still identify the seller, date and totals.
+Its downloaded snapshot is in `_for_STUDENT/tasks/06_receipt_ocr/model/glm-ocr/`.
+No OCR API key, paid inference or GPU is needed. Once downloaded, inference runs locally.
+
+{panel("BEFORE YOU START", "Use a <b>16 GB RAM</b> laptop environment or Codespace, "
+    "and allow <b>at least 6 GB of spare disk</b> for the model and runtime (package "
+    "caches may need more). The model snapshot is about <b>2.66 GB</b>. "
+    "Our four-CPU-thread test used about <b>6.6 GiB RAM</b> and took about "
+    "<b>47 seconds</b> for one extraction; your speed may differ. "
+    "Codespaces uses the cloud machine's memory, not your laptop's. "
+    "Run one receipt at a time; if the memory check stops you, use a suitable "
+    "classroom environment rather than repeatedly rerunning the cell.")}
+
+**Structured output is not verified output.** The model may confuse tax with a
+tax ID, change the date format or leave out a field. Your script must check its
+JSON response and you must compare the values with the invoice.
 
 ### 1 · Get the data and inspect one image
 
@@ -33,10 +46,13 @@ In the terminal at the repository root, run this once (it may take a few minutes
 
 ```bash
 source .venv/bin/activate
+sh _for_TRAINER/scripts/setup_glm_ocr.sh
 python _for_TRAINER/scripts/prepare_receipt_data.py
 ```
 
-The script downloads only the requested 499 images and matching CSV. Rerunning it
+The setup installs the CPU runtime and downloads the pinned model snapshot.
+It stays in your project folder, but the large weights are not committed to Git.
+The data script downloads only the requested 499 images and matching CSV. Rerunning it
 reuses downloaded files and checks their recorded hashes. If Kaggle requests login,
 use your own [Kaggle API token](https://www.kaggle.com/settings/api) through a Codespaces
 secret named `KAGGLE_API_TOKEN`; do not paste the key into a notebook or chat.
@@ -61,9 +77,9 @@ Use the public classroom images only; do not upload private customer invoices to
 |---|---|
 | Input | Only `_for_STUDENT/data/notebook6/batch1_1/batch1-0001.jpg` |
 | Script | `_for_STUDENT/tasks/06_receipt_ocr/receipt_reader.py` |
-| Model | Local Tesseract English, using the installed `tesserocr` package |
+| Model | Local GLM-OCR, using the provided `model/glm_reader.py` helper |
 | Output | `_for_STUDENT/outputs/06_receipt_ocr/first_receipt.xlsx`, with a header and exactly one data row |
-| Evidence | Save raw recognised text to `_for_STUDENT/outputs/06_receipt_ocr/first_receipt_ocr.txt` |
+| Evidence | Save the raw model response to `_for_STUDENT/outputs/06_receipt_ocr/first_receipt_ocr.txt` |
 
 Include these Excel columns:
 
@@ -71,10 +87,11 @@ Include these Excel columns:
 `grand_total`, `currency_mark`, `review_note`.
 
 - Keep invoice numbers as text so leading zeros are not lost.
-- Keep dates as printed for this first version; do not guess an ambiguous date format.
+- Keep the returned date as text and compare it with the printed date; flag a changed format rather than pretending it was copied exactly.
 - Distinguish **tax** from the **grand total**, and handle amounts such as `6 204,19`.
 - A printed `$` is a currency mark, not proof of a particular country's currency.
 - Leave uncertain fields blank and explain them in `review_note`; never invent a value.
+- Check that the response is valid JSON with the fields you need; remove Markdown fences if present. A missing key is not a zero.
 - Keep the input image and reference CSV unchanged. Do not process the whole folder yet.
 
 <details>
@@ -82,13 +99,13 @@ Include these Excel columns:
 
 1. **Name the file:** "Within `_for_STUDENT/tasks/06_receipt_ocr`, generate a Python script for me and name it `receipt_reader.py`."
 2. **Name the input and scope:** give the exact first-image path and say "one image only".
-3. **Name the local model:** use `tesserocr.PyTessBaseAPI`, `lang="eng"`, `OEM.LSTM_ONLY`, and the local `model/tessdata` path. `Pillow` can open the image; `openpyxl` can write Excel.
-4. **Describe the columns:** list the fields above and say how missing or uncertain values should be recorded. Ask the agent to inspect the layout before choosing extraction rules.
+3. **Name the local model:** import `read_image` from `model.glm_reader` and call `read_image(image_path, prompt)`. This provided helper handles local GLM-OCR; `openpyxl` can write Excel.
+4. **Describe the columns and schema:** ask for a prompt containing a JSON schema. Use the invoice's printed labels: the final **SUMMARY** row contains **Net worth**, **VAT**, and **Gross worth**. Ask for these separately, map VAT to tax and Gross worth to grand total, and check that net + tax equals total. A Tax Id is not a tax amount. Include invoice number, date, seller and printed currency mark. Say how missing values and changed date formats should be recorded.
 5. **Name both outputs:** give the Excel and raw-text paths. Ask the script to create the output folder and find paths relative to its own location.
 6. **Add your check:** ask for the run command and an explanation of what to inspect. Run it, compare with the image, and request one small fix if needed.
 
-The model extracts text; the agent-generated Python supplies the field-selection logic.
-Keep those two jobs clear when asking for a change.
+The model proposes fields; the agent-generated Python validates and maps the
+response into a spreadsheet. Keep those jobs clear when asking for a change.
 
 </details>
 
@@ -125,7 +142,8 @@ It is a read-only preview; it does not create example answers or run your script
     response_label="Which fields matched the image? Which need checking, and what one change would you ask the agent to make next?",
     reveal_html={panel("CHECK BEFORE SCALING UP", "A readable spreadsheet is not proof of correct data. "
         "Check the filename, date, seller and totals against the image. Keep raw OCR text "
-        "so a mistake can be traced. Get one invoice right before processing more.", "success")!r},
+        "so a mistake can be traced. GLM-OCR can omit fields or normalise dates; "
+        "flag these differences rather than guessing. Get one invoice right before processing more.", "success")!r},
 )''', "interactive"),
         markdown("""
 ### Stop after one checked receipt

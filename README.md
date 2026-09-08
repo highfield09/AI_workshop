@@ -35,19 +35,30 @@ Open [KEY_CONCEPTS.md](_for_STUDENT/KEY_CONCEPTS.md) for the growing student tak
 
 ### Workbook 6 · One-time preparation
 
-New Codespaces install the OCR/Excel Python packages and recommend the spreadsheet editor. In an existing Codespace, update the packages and download only the first 499-image invoice sub-batch plus its original CSV:
+Use a **16 GB RAM environment** for this workbook. GLM-OCR is a local
+vision-language model that returns document fields, not just unstructured OCR
+text. Its optional runtime is installed only when you start Workbook 6:
 
 ```bash
 ./_for_TRAINER/scripts/setup_environment.sh
 source .venv/bin/activate
+sh _for_TRAINER/scripts/setup_glm_ocr.sh
 python _for_TRAINER/scripts/prepare_receipt_data.py
 ```
 
-The data download is about **101 MB**, is Git-ignored, and stays in your own Codespace. The **4.1 MB English OCR model** is already stored in `_for_STUDENT/tasks/06_receipt_ocr/model/`; local OCR needs no API key or GPU. The notebook credits the Kaggle uploader and records the source version and licence.
+The data download is about **101 MB**. The pinned [GLM-OCR snapshot](https://huggingface.co/zai-org/GLM-OCR)
+is about **2.66 GB**, stored at `_for_STUDENT/tasks/06_receipt_ocr/model/glm-ocr/`.
+Both downloads are Git-ignored and stay in your own Codespace. Allow at least
+**6 GB spare disk** for model and runtime, plus possible package-cache space.
+Model provenance and SHA-256 hashes are committed; the large weights are not.
+Inference needs no API key or GPU and runs locally after installation. Our
+four-thread CPU sample took about 47 seconds and peaked at 6.6 GiB RAM; hardware
+and prompts affect results. An 8 GB default Codespace may not have enough
+headroom. The notebook documents setup and cites the model and Kaggle uploader.
 
 Use your coding agent to create `_for_STUDENT/tasks/06_receipt_ocr/receipt_reader.py`. Its first version reads **only `batch1-0001.jpg`** and writes `_for_STUDENT/outputs/06_receipt_ocr/first_receipt.xlsx`. This is a student exercise, so a completed extraction script is not supplied.
 
-To view Excel files, install **SpreadJS XLSX Editor** by **MESCIUS** from Extensions, or use Workbook 6's built-in read-only spreadsheet preview. The script, spreadsheet, raw OCR text and written answers are Git-ignored. No Microsoft Excel installation is needed.
+To view Excel files, install **SpreadJS XLSX Editor** by **MESCIUS** from Extensions, or use Workbook 6's built-in read-only spreadsheet preview. The script, spreadsheet, raw model response and written answers are Git-ignored. No Microsoft Excel installation is needed.
 
 ## Your work belongs to your Codespace
 
