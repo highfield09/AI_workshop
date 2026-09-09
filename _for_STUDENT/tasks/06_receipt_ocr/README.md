@@ -9,10 +9,10 @@ iteration at a time; a completed pipeline is deliberately not provided.
    per purchased line, including numeric quantity, and one **Receipts** summary
    row per document. Convert decimal commas carefully; preserve IDs/dates as
    text. Use `review_status` and `review_note` to record checks and uncertainty.
-3. **Batch:** select exactly the first 20 JPG filenames in sorted order, ending
-   at `batch1-0020.jpg`. Process sequentially, cache raw text, avoid duplicate
+3. **Batch:** select exactly the first 5 JPG filenames in sorted order, ending
+   at `batch1-0005.jpg`. Process sequentially, cache raw text, avoid duplicate
    item rows, preserve human reviews, and account for all files in `batch_run.csv`.
-   Save combined tables in `receipts_20.xlsx`; do not overwrite the first example.
+   Save combined tables in `receipts_5.xlsx`; do not overwrite the first example.
 4. **Analysis:** use checked item rows from Excel, not another OCR call. Sum
    quantity by item description; save `item_quantity_summary.csv` and a labelled
    bar chart `item_quantities.png`. Explain exclusions and sample limitations.
@@ -29,9 +29,9 @@ from model.glm_reader import read_image
 text = read_image(image_path, "Text Recognition:", max_new_tokens=4096, max_time=600)
 ```
 
-See [model setup](model/README.md). Use a 16 GB environment; allow roughly 40
-minutes or longer for 20 uncached pages. The helper reuses one model in the same
+See [model setup](model/README.md). Use a 16 GB environment; allow roughly 10–15
+minutes for five similar uncached pages. The helper reuses one model in the same
 process. Do not edit it or start parallel model copies. Ask your agent to anchor
 file paths to the script rather than the terminal's current folder.
 
-Q19–Q24 in the notebook each save separately to this workbook's `answers.json`.
+Q17–Q22 in the notebook each save separately to this workbook's `answers.json`.

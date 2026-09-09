@@ -6,22 +6,22 @@ from llm_workshop.quiz import _message
 # question, choices, correct index, explanation
 QUESTIONS = {
     '01_start_here': [
-        ('Which README welcomes you to the whole workshop?', ['README.md at the repository root', '_for_STUDENT/data/notebook1/README.md', 'Any file with README in its name'], 0, 'The full path matters. Root README.md describes the whole project; nested READMEs explain their own folders.'),
+        ('Which README welcomes you to the whole workshop?', ['README.md at the repository root', '_for_STUDENT/data/notebook5/README.md', 'Any file with README in its name'], 0, 'The full path matters. Root README.md describes the whole project; nested READMEs explain their own folders.'),
         ('How do you run a notebook cell?', ['Rename its file', 'Shift + Enter or the play button', 'Close the notebook'], 1, 'Running a code cell produces its output or widget. After a kernel restart, rerun setup and the activity.'),
         ('Which prompt gives an AI the clearest target?', ['Make something good', 'Do everything', 'Name the input, desired output and constraints'], 2, 'A concrete target and relevant context give you something specific to check and refine.'),
         ('An AI returns a confident factual answer. What next?', ['Accept confidence as proof', 'Open its sources and check the claim', 'Ask it to sound more certain'], 1, 'Ask for citations when needed and check that the original sources actually support the answer.'),
     ],
     '02_models_and_reasoning': [
         ('What helps you choose a model that can interpret images?', ['Its name alone', 'Its modality labels and model card', 'The longest description'], 1, 'Check supported input types and capability icons. Not every language model accepts images.'),
-        ('How should you compare two models fairly?', ['Use the same prompt and compare the results', 'Change the task for each model', 'Judge only the response length'], 0, 'Keeping the prompt fixed makes differences easier to interpret; longer answers are not automatically better.'),
+        ('How should you compare two models fairly?', ['Give each model the same task and evaluation criteria', 'Use exactly the same prompt regardless of the model', 'Compare only response length'], 0, 'Keep the task, input information and success criteria consistent. Prompts may be adapted to suit each model—the goal is to compare how well they solve the same problem, not how well they respond to identical wording.'),
         ('Which rule is best when choosing model size?', ['Always choose the largest', 'Always choose the smallest', 'Balance task quality, cost and resources'], 2, 'Size alone does not guarantee the best result for your specific task.'),
         ('Good scientific reasoning guarantees a correct EC identifier. True?', ['Yes, reasoning guarantees recall', 'No—verify the identifier in an authoritative database', 'Only if the answer is long'], 1, 'Reasoning and precise knowledge retrieval are different abilities. Check classifications and identifiers independently.'),
     ],
     '03_vision_and_context': [
-        ('Before asking about an image, what should you confirm?', ['An image attachment chip is present', 'Its filename is short', 'The image is mentioned somewhere on disk'], 0, 'A file path in text is not proof that the model received the image. Attach it and inspect the response.'),
+        ('What does an AI need to actually analyse an image?', ['The image must be provided to a model that supports vision', 'The filename must describe what is in the image', 'A file path to the image is enough'], 0, "A model can only analyse visual content it can actually access. A filename or file path alone doesn't give it the image."),
         ('Why can a short follow-up still have many input tokens?', ['Input tokens measure only your new sentence', 'Only answers use tokens', 'Earlier messages and attachments may be included'], 2, 'Chat context can include previous turns, tool results and attachments; provider processing and caching also affect usage.'),
         ('You are switching to a different project. What is a useful habit?', ['Keep adding unrelated instructions', 'Start a new focused chat', 'Assume unlimited memory'], 1, 'The active context is bounded. Older material may be summarised or omitted, and unrelated context can reduce relevance.'),
-        ('Where do you inspect input/output tokens and cost for your OpenRouter-key request?', ['Only the GitHub repository page', 'OpenRouter Activity', 'The image properties dialog'], 1, 'Check the service handling your request. The editor and the billing provider are not always the same.'),
+        ('What determines the cost of a typical OpenRouter API request?', ['The model used and the number of input/output tokens processed', 'How long you keep the notebook open', 'The number of files in your project'], 0, "API costs generally depend on the selected model’s pricing and the tokens processed—not how long your notebook or application is running."),
     ],
     '04_debugging': [
         ('A NameError says disco_colours is undefined. What should you inspect?', ['Variable spelling and where it was defined', 'The invoice CSV', 'Your display brightness'], 0, 'Compare the reported name with the code that creates it; a small spelling mismatch can stop execution.'),
@@ -33,7 +33,7 @@ QUESTIONS = {
         ('Full-page OCR finishes normally. What does that prove?', ['Every printed detail was captured', 'The output still needs comparison with the image', 'The reference CSV is unnecessary for any check'], 1, 'A completed response can still omit a field or misread a value. Preserve raw text and inspect the source.'),
         ('In this decimal-comma example, what quantity does 3,00 mean?', ['300', '0.03', '3'], 2, 'The comma is a decimal separator. Do not remove it blindly; write an actual numeric Excel cell.'),
         ('Where should a receipt grand total be stored?', ['Once per receipt, separate from item rows', 'As the price of every item', 'As an item quantity'], 0, 'Define what one row represents. Repeating invoice totals across item rows causes double-counting.'),
-        ('Before charting the 20-receipt batch, what matters?', ['Silently discard failures', 'Count rows instead of quantities', 'Audit failures and use checked numeric quantities'], 2, 'Account for every input, exclude unresolved rows explicitly, and explain grouping and unit choices. The first 20 files are not a representative sales sample.'),
+        ('Before charting the five receipts, what matters?', ['Silently discard failures', 'Count rows instead of quantities', 'Use quantities checked against the receipts'], 2, 'Check the extracted values before interpreting the chart. Five receipts are not a complete picture of sales.'),
     ],
 }
 

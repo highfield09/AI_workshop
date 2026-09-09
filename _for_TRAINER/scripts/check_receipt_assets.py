@@ -17,7 +17,8 @@ def check_assets(require_data=False):
     manifest = json.loads((DATA / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["dataset"] == HANDLE
     expected_paths = {"batch1_1.csv"} | {f"batch1_1/{name}" for name in EXPECTED_IMAGES}
-    assert len(manifest["files"]) == 500
+    assert manifest["image_count"] == 5
+    assert len(manifest["files"]) == 6
     assert {row["path"] for row in manifest["files"]} == expected_paths
     if not (DATA / "batch1_1.csv").exists() and not list((DATA / "batch1_1").glob("*.jpg")):
         if require_data:
@@ -27,12 +28,13 @@ def check_assets(require_data=False):
         path = DATA / record["path"]
         assert path.stat().st_size == record["bytes"], f"Wrong size: {path}"
         assert sha256(path) == record["sha256"], f"Changed receipt asset: {path}"
-    assert {p.name for p in (DATA / "batch1_1").glob("*.jpg")} == EXPECTED_IMAGES
+    assert EXPECTED_IMAGES <= {p.name for p in (DATA / "batch1_1").glob("*.jpg")}
     with (DATA / "batch1_1.csv").open(newline="", encoding="utf-8-sig") as handle:
         reader = csv.DictReader(handle)
         assert reader.fieldnames == ["File Name", "Json Data", "OCRed Text"]
         rows = list(reader)
-    assert len(rows) == 499 and {row["File Name"] for row in rows} == EXPECTED_IMAGES
+    assert len(rows) == 499
+    assert {row["File Name"] for row in rows} == {f"batch1-{n:04d}.jpg" for n in range(1, 500)}
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ from scripts.build_course_notebook import build_workbooks
 def test_split_boundaries_and_independent_setup():
     books = build_workbooks()
     assert list(books) == [x[0] for x in course.WORKBOOKS]
-    expected_counts = [2, 5, 7, 0, 2, 6]
+    expected_counts = [2, 5, 6, 0, 1, 6]
     for (stem, _, questions), count in zip(course.WORKBOOKS, expected_counts):
         book = books[stem]
         setups = [c for c in book.cells if "setup" in c.metadata.get("tags", [])]

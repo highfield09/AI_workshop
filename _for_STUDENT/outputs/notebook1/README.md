@@ -9,8 +9,8 @@ Chat to return code, then create this file and paste the code yourself.
 
 Open `catalogue.html` in VS Code, right-click inside the editor, and choose
 **Open with Live Server**. Serving the page over HTTP lets it load
-`../../data/notebook1/products.csv` and resolve image filenames from
-`../../data/notebook1/`.
+`../../data/notebook5/products.csv` and resolve image filenames from
+`../../data/notebook5/`.
 
 The source is deliberately imperfect: IDs are out of numerical order and one
 CSV image reference does not match a file. Keep all 18 products visible and

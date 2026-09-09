@@ -19,9 +19,9 @@ from llm_workshop.course import WORKBOOKS
 from scripts.check_receipt_assets import check_assets
 README = ROOT / "README.md"
 EFFORT_REPORT = ROOT / "_for_STUDENT" / "Resources" / "2026 Agentic Coding Trends Report.pdf"
-CATALOGUE_DATA = ROOT / "_for_STUDENT" / "data" / "notebook1"
+CATALOGUE_DATA = ROOT / "_for_STUDENT" / "data" / "notebook5"
 CATALOGUE_CSV = CATALOGUE_DATA / "products.csv"
-VISION_IMAGE = CATALOGUE_DATA / "Screenshot 2026-02-23 145127.png"
+VISION_IMAGE = ROOT / "_for_STUDENT/data/notebook3/Screenshot 2026-02-23 145127.png"
 EXPECTED_MISSING_IMAGE = "ice-harbour-jacket.png"
 EXPECTED_MESSY_ID_ORDER = [
     "NB014",
@@ -78,7 +78,7 @@ REQUIRED_SNIPPETS = [
     "EXPERIMENT 5",
     "moonshotai/Kimi-K3",
     "Gemini 3.5 Flash-Lite",
-    "QUESTION 13 · Answer B — Gemini 3.5 Flash-Lite with extended thinking",
+    "QUESTION 12 · Answer B — Gemini 3.5 Flash-Lite with extended thinking",
     "KEY CONCEPT · INFERENCE AND ASSUMPTIONS",
     "KEY CONCEPT · ARTICULATE THE TARGET",
     "KEY CONCEPT · REITERATION LOOP",
@@ -95,7 +95,7 @@ REQUIRED_SNIPPETS = [
     "appropriate message or icon if its image is missing",
     "country_of_origin",
     "release_date",
-    "_for_STUDENT/data/notebook1/products.csv",
+    "_for_STUDENT/data/notebook5/products.csv",
     "_for_STUDENT/outputs/05_shopping_catalogue/catalogue.html",
     "### Round 1 requirements",
     "ONE-TIME SETUP · INSTALL LIVE SERVER",
@@ -158,7 +158,7 @@ FORBIDDEN_SNIPPETS = [
     "Add Context → Files & Folders",
     "Gemini 3.6 Flash",
 ]
-EXPECTED_QUESTION_LABELS = [f"QUESTION {number} ·" for number in range(1, 25)]
+EXPECTED_QUESTION_LABELS = [f"QUESTION {number} ·" for number in range(1, 23)]
 
 SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
@@ -333,7 +333,7 @@ def main() -> None:
         raise SystemExit("OpenRouter Activity guidance must appear before Question 11")
 
     if not (
-        all_sources.index("QUESTION 11 ·")
+        all_sources.index("QUESTION 10 ·")
         < all_sources.index("### Match effort to the task")
         < all_sources.index("EXPERIMENT 4")
     ):
@@ -352,7 +352,7 @@ def main() -> None:
         raise SystemExit("Probabilistic definition must use a hover-only abbreviation")
 
     thumbnails = re.findall(
-        r"src='../data/notebook1/(?!Screenshot%20)([^']+\.png)'",
+        r"src='../data/notebook5/(?!Screenshot%20)([^']+\.png)'",
         markdown,
     )
     if len(thumbnails) != 18 or len(set(thumbnails)) != 18:
@@ -409,9 +409,9 @@ def main() -> None:
         for index, cell in enumerate(notebook.cells)
         if cell.cell_type == "code" and "worksheet_box(" in cell.source
     ]
-    if len(worksheet_cells) != 22:
+    if len(worksheet_cells) != 20:
         raise SystemExit(
-            "Course must contain twenty-two independently saved worksheet questions; "
+            "Course must contain twenty independently saved worksheet questions; "
             f"found {[index for index, _ in worksheet_cells]}"
         )
     for index, cell in worksheet_cells:

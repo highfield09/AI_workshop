@@ -2,7 +2,7 @@
 
 - `raw/batch1-0001.txt` (and later one per image): unchanged full-page responses.
 - `first_receipt.xlsx`: checked first-document **Items** and **Receipts** sheets.
-- `receipts_20.xlsx`: combined item and receipt tables for the first 20 inputs.
+- `receipts_5.xlsx`: combined item and receipt tables for the first 5 inputs.
 - `batch_run.csv`: one status row per selected document, including failed cases.
 - `item_quantity_summary.csv`: grouped quantities used in the chart.
 - `item_quantities.png`: top-10 item bar chart, or a clearly labelled alternative.

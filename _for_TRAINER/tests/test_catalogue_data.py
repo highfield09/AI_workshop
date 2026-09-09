@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DATA_DIR = ROOT / "_for_STUDENT" / "data" / "notebook1"
+DATA_DIR = ROOT / "_for_STUDENT" / "data" / "notebook5"
 
 EXPECTED_MESSY_ID_ORDER = [
     "NB014",

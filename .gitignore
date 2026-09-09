@@ -15,8 +15,10 @@ _for_STUDENT/tasks/*/.answers-*.tmp
 _for_STUDENT/tasks/stage3_answers.json
 _for_STUDENT/outputs/**/*.html
 _for_STUDENT/data/notebook1/*.html
+_for_STUDENT/data/notebook5/*.html
 _for_STUDENT/data/notebook3/*
 !_for_STUDENT/data/notebook3/README.md
+!_for_STUDENT/data/notebook3/Screenshot 2026-02-23 145127.png
 _for_STUDENT/data/notebook6/batch1_1/
 _for_STUDENT/data/notebook6/batch1_1.csv
 _for_STUDENT/outputs/06_receipt_ocr/*

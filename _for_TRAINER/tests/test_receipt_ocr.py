@@ -14,16 +14,16 @@ def test_ocr_lesson_has_four_iterations_and_traceable_outputs():
     source = "\n".join(c.source for c in book.cells)
     assert "osama hosam Abdellatif" in source
     assert "version 3" in source and "Database: Open Database" in source
-    assert "499 images in batch1_1" in source
+    assert "first five images" in source
     assert "seven item rows" in source and "one receipt row" in source
-    for text in ['Iteration 1', 'Iteration 2', 'Iteration 3', 'Iteration 4', 'first 20', 'quantity', 'receipts_20.xlsx', 'batch_run.csv', 'item_quantities.png', 'histogram', 'not PDFs', 'Text Recognition:', 'max_new_tokens=4096']:
+    for text in ['Iteration 1', 'Iteration 2', 'Iteration 3', 'Iteration 4', 'first 5', 'quantity', 'receipts_5.xlsx', 'batch_run.csv', 'item_quantities.png', 'histogram', 'not PDFs', 'Text Recognition:', 'max_new_tokens=4096']:
         assert text in source
     assert "receipt_reader.py" in source and "first_receipt.xlsx" in source
     assert "<details>" in source and "Hint · Build your prompt" in source
-    assert "Do not process the whole folder yet" in source
+    assert "the whole folder yet" in source
     assert "Do not let the script copy answers from" in source
     assert "from llm_workshop.receipt_support" in book.cells[1].source
-    assert source.index("DATASET AND CREDIT") < source.index("show_receipt_preview()")
+    assert source.index("Dataset, licensing and credit") < source.index("show_receipt_preview()")
 
 
 def test_model_and_dataset_manifest_are_valid():
@@ -45,10 +45,14 @@ def test_downloader_requests_only_explicit_first_subbatch_files(tmp_path, monkey
     dest = tmp_path / "data"
     prepare(dest)
     expected = {REMOTE_CSV} | {f"{REMOTE_IMAGES}/{name}" for name in EXPECTED_IMAGES}
-    assert set(calls) == expected and len(calls) == 500
+    assert set(calls) == expected and len(calls) == 6
     calls.clear()
     prepare(dest)
     assert calls == []  # Reuse all verified local files.
+    older = dest / "batch1_1/batch1-0006.jpg"
+    older.write_bytes(b"older download")
+    prepare(dest)
+    assert older.read_bytes() == b"older download" and calls == []
     (dest / "batch1_1/batch1-0001.jpg").write_bytes(b"changed")
     with pytest.raises(RuntimeError, match="differs"):
         prepare(dest)
@@ -109,3 +113,16 @@ def test_excel_preview_can_select_each_sheet(tmp_path, monkeypatch):
     assert 'grand_total' in shown[-1] and 'Receipts' in shown[-1]
     receipt_support.preview_spreadsheet(path, sheet_name='Missing')
     assert 'Could not open' in shown[-1]
+
+
+def test_short_lesson_has_copyable_requirements_and_correct_viewer():
+    book = build_workbooks()["06_receipt_ocr"]
+    prompts = [c.source for c in book.cells if "copyable_prompt(" in c.source]
+    assert len(prompts) == 2
+    assert "Input:" in prompts[0] and "raw/batch1-0001.txt" in prompts[0]
+    assert "unit_net_price" in prompts[1] and "Receipts" in prompts[1]
+    source = "\n".join(c.source for c in book.cells)
+    assert "GrapeCity.gc-excelviewer" in source
+    assert "Illustrative output—not a live download" in source
+    assert "receipts_20" not in source and "first 20" not in source
+    assert "model.glm_reader" in source

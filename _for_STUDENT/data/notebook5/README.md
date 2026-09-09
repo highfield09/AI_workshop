@@ -1,4 +1,4 @@
-# Notebook 1 catalogue data
+# Notebook 5 catalogue data
 
 This folder is the input for the main task in `_for_STUDENT/notebooks/05_shopping_catalogue.ipynb`.
 

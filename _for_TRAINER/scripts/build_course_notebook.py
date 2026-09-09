@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT / "_for_TRAINER"))
 from llm_workshop.course import WORKBOOKS
 from llm_workshop.presentation import readable_html
 from scripts.receipt_lesson import receipt_lesson_cells
-CATALOGUE_CSV = ROOT / "_for_STUDENT" / "data" / "notebook1" / "products.csv"
+CATALOGUE_CSV = ROOT / "_for_STUDENT" / "data" / "notebook5" / "products.csv"
 PALETTES = {
     "info": {
         "background": "#EFF8FF",
@@ -171,7 +171,7 @@ def catalogue_preview() -> str:
             "box-sizing:border-box;overflow:hidden'>"
             "<div style='height:64px;background:#F2F4F7;border-radius:6px;"
             "display:grid;place-items:center;overflow:hidden'>"
-            f"<img src='../data/notebook1/{image}' alt='{name}' "
+            f"<img src='../data/notebook5/{image}' alt='{name}' "
             "style='display:block;width:64px;height:64px;object-fit:contain;"
             "image-rendering:pixelated'></div>"
             f"<div style='font-size:0.72rem;font-weight:700;margin-top:5px;"
@@ -781,9 +781,15 @@ This is why a strong reasoning process can still end with a small identifier err
         "sphingolipid C4-monooxygenase</b>; its canonical reaction forms a "
         "phytoceramide and one H₂O. Statement A correctly identifies EC "
         "1.14.19.17 as sphingolipid 4-desaturase, whose canonical reaction forms "
-        "two H₂O. Before editing SBML, still confirm metabolite structures, "
-        "database identifiers, atom/charge balance, organism evidence and the "
-        "original model source.",
+    "two H₂O.<br><br><b>Reported classroom trial:</b> Kimi K3 showed stronger "
+        "chemistry: it distinguished desaturation (−H₂) from hydroxylation (+O) "
+        "and interpreted the O₂/H₂O stoichiometry well. But it accepted the false "
+        "premise that EC 1.14.18.6 was the C4 hydroxylase. The correct C4 enzyme "
+        "is EC 1.14.18.<b>5</b>. Neither reported answer fully passed the check; "
+        "your models may respond differently.<br><br><b>Key lesson:</b> larger "
+        "models can reason well within a false premise yet fail to verify "
+        "identifiers or assumptions. Ground scientific EC/function mappings "
+        "in database validation before accepting them.",
         "success",
     )!r},
 )''',
@@ -847,11 +853,11 @@ See [OpenRouter pricing](https://openrouter.ai/pricing) for the live plan detail
 
 1. In the Copilot Chat box, click **Auto → Other Models → Google: Gemma 4 26B A4B**. Widen the chat panel to see the full model name. If it is hidden, make it visible in Manage Models first. Its OpenRouter ID is [`google/gemma-4-26b-a4b-it`](https://openrouter.ai/google/gemma-4-26b-a4b-it).
 2. Beside the model name, inspect **Thinking Effort** (or its arrow submenu). Choose **Medium** if available. Some models have a default effort; others do not expose this setting.
-3. Find the source image in **Explorer**, following **_for_STUDENT → data → notebook1 → Screenshot 2026-02-23 145127.png**.
+3. Find the source image in **Explorer**, following **_for_STUDENT → data → notebook3 → Screenshot 2026-02-23 145127.png**.
 
 <div style='background:#F8FAFC;border:1px solid #D0D5DD;border-radius:12px;padding:12px;margin:12px 0;max-width:100%;box-sizing:border-box;text-align:center'>
-<img src='../data/notebook1/Screenshot%202026-02-23%20145127.png' alt='Vision experiment source image' style='display:block;width:min(100%,480px);height:auto;margin:0 auto;border-radius:8px'>
-<div style='font-size:0.75rem;color:#667085;margin-top:7px'>SOURCE IMAGE · _for_STUDENT/data/notebook1/Screenshot 2026-02-23 145127.png</div>
+<img src='../data/notebook3/Screenshot%202026-02-23%20145127.png' alt='Vision experiment source image' style='display:block;width:min(100%,480px);height:auto;margin:0 auto;border-radius:8px'>
+<div style='font-size:0.75rem;color:#667085;margin-top:7px'>SOURCE IMAGE · _for_STUDENT/data/notebook3/Screenshot 2026-02-23 145127.png</div>
 </div>
 
 ### Attach the image and ask
@@ -898,7 +904,7 @@ Open [OpenRouter Activity](https://openrouter.ai/activity), select the vision re
 Requests to models marked `:free` have no token charge. A free account does
 **not** make every model free: a non-zero Activity cost can deduct account
 credits, including promotional credits if provided. Do not assume the selected
-Gemma model is free; check its price before sending. If this class requires
+model is free; check its price before sending. If this class requires
 no personal spending, ask the trainer for a free model or an approved funded
 account before using a paid option. [OpenRouter billing guide](https://openrouter.ai/docs/faq).
 
@@ -907,8 +913,13 @@ input and output tokens can have different rates. Even when a request is free
 or covered by classroom credit, comparing usage builds an appreciation of
 the cost of running AI.
 
-Record the input tokens, output tokens and cost of this first request for Q11.
-If a value is not displayed, write **not shown** rather than guessing.
+OpenRouter describes a small introductory allowance for new users without
+specifying its amount. Check your account balance before testing paid models.
+Separately, the free-model tier allows **50 requests per day** for accounts
+below the paid-credit threshold. [Introductory allowance](https://openrouter.ai/support)
+and [free-tier limits](https://openrouter.ai/blog/tutorials/kilo-code-openrouter/).
+
+Observe the token counts and cost; no written submission is needed.
 """
         ),
         markdown("""
@@ -921,29 +932,19 @@ types, name the files or formats you mean so the question is clear.
         code('''copyable_prompt("What programs can be used to visualise and generate these files?")''', "interactive"),
         markdown("""
 Open [OpenRouter Activity](https://openrouter.ai/activity) again and select the
-new request. Record **input tokens, output tokens and cost**. Inspect the answer:
-do the proposed programs actually support those file formats? Keep the response
-or a short summary for Q11.
+new request. Observe **input tokens, output tokens and cost**. Inspect the answer:
+do the proposed programs actually support those file formats?
 
 ### Vision follow-up B · Choose your own image
 
 1. Find a public image online that you have permission to use. Avoid private documents, personal information and screenshots containing keys.
-2. Save/download it to your laptop, then drag and drop that file into **`_for_STUDENT/data/notebook3/` in the Codespace Explorer**. This copies it into your Codespace. Use a JPG or PNG. Save its source URL beside it as `image_source.txt`.
+2. Save/download it to your laptop, then drag and drop that file into **`_for_STUDENT/data/notebook3/` in the Codespace Explorer**. This copies it into your Codespace. Use a JPG or PNG.
 3. Keep this related experiment in the same Gemma chat. Drag the saved image **from Explorer into the chat box**, and confirm the attachment chip appears. Saving a file in Explorer alone does not attach it to the model.
 4. Ask **“Describe what is shown in this image.”** Inspect the answer against the image: what is accurate, missing or uncertain?
-5. Inspect [OpenRouter Activity](https://openrouter.ai/activity) once more. Record this request's **input tokens, output tokens and cost**, and keep the response or a short summary for Q11.
+5. Inspect [OpenRouter Activity](https://openrouter.ai/activity) once more. Observe the **input tokens, output tokens and cost**; no recording is needed.
 
 These learner-chosen files are Git-ignored. Do not upload them to the shared repository.
 """),
-        code(
-            '''worksheet_box(
-    "vision_cost",
-    question_label="QUESTION 11 · Trace the vision request",
-    response_label="Record three requests: original image, programs follow-up, and your own image. For each give input tokens, output tokens and cost (or not shown). Summarise the two follow-up answers; note any image-description errors and your saved image path/source:",
-    response_height="260px",
-)''',
-            "interactive",
-        ),
         markdown(f"""
 {panel("KEY CONCEPT · CONTEXT IS A RUNNING WINDOW", "A chat's history grows as you add "
     "messages, replies and attachments. The model works within a <b>limited active "
@@ -1030,7 +1031,7 @@ Open [Google Gemini](https://gemini.google.com/app) and sign in with a Google ac
         code(
             '''worksheet_box(
     "carwash_answer_a",
-    question_label="QUESTION 12 · Answer A — Gemini 3.5 Flash-Lite at default effort",
+    question_label="QUESTION 11 · Answer A — Gemini 3.5 Flash-Lite at default effort",
     response_label="Paste the original Flash-Lite answer:",
     response_height="140px",
 )''',
@@ -1039,7 +1040,7 @@ Open [Google Gemini](https://gemini.google.com/app) and sign in with a Google ac
         code(
             '''worksheet_box(
     "carwash_answer_b",
-    question_label="QUESTION 13 · Answer B — Gemini 3.5 Flash-Lite with extended thinking",
+    question_label="QUESTION 12 · Answer B — Gemini 3.5 Flash-Lite with extended thinking",
     response_label="Paste the same model’s extended-thinking answer:",
     response_height="140px",
 )''',
@@ -1048,7 +1049,7 @@ Open [Google Gemini](https://gemini.google.com/app) and sign in with a Google ac
         code(
             f'''worksheet_box(
     "carwash_logic",
-    question_label="QUESTION 14 · Compare the logic",
+    question_label="QUESTION 13 · Compare the logic",
     response_label="Does either answer contain a logic flaw? Which assumption did it make?",
     reveal_html={panel(
         "REVEAL · THE HIDDEN ASSUMPTION",
@@ -1085,7 +1086,7 @@ Return to **Gemini 3.5 Flash-Lite** in a fresh tab or chat and send this revised
         code(
             '''worksheet_box(
     "carwash_clear_answer",
-    question_label="QUESTION 15 · Record the clearer-prompt answer",
+    question_label="QUESTION 14 · Record the clearer-prompt answer",
     response_label="Paste Gemini 3.5 Flash-Lite’s answer to the clearer prompt:",
     response_height="140px",
 )''',
@@ -1094,7 +1095,7 @@ Return to **Gemini 3.5 Flash-Lite** in a fresh tab or chat and send this revised
         code(
             f'''worksheet_box(
     "carwash_clear_observation",
-    question_label="QUESTION 16 · Evaluate the clearer prompt",
+    question_label="QUESTION 15 · Evaluate the clearer prompt",
     response_label="Did the explicit target remove the logic flaw? What changed?",
     reveal_html={panel(
         "KEY TIP",
@@ -1206,14 +1207,11 @@ This time the coding agent makes the edit for you.
 
 1. Run the next cell and inspect its error.
 2. Open Copilot Chat, switch **Ask → Agent**, and keep the model on **Auto**.
-3. Select the broken cell and include it in the chat context. Tell the agent:
-   **“Fix only the cell labelled AGENT REPAIR · GIF in this notebook. Make the
-   smallest change so it displays the GIF at 300 pixels wide. Edit the notebook
-   cell directly; leave all other cells and files unchanged.”** Include the error.
+3. Select the broken cell and include it in the chat context. In your own words,
+   explain the issue and ask the agent to repair that cell directly.
 4. Review the proposed edit and approve only the scoped change. Do not approve
    unrelated commands or file edits.
-5. Rerun the edited cell yourself. Check that the GIF appears and its width is
-   still 300 pixels. Compare this with copying a fix manually in Ask mode.
+5. Rerun the edited cell yourself.
 
 The animation comes from an external Giphy URL and needs internet access.
 If it is blocked or unavailable, a repaired cell may still show no image;
@@ -1290,7 +1288,7 @@ display(Images(
 ### 1 · Inspect the data and define the first version
 
 <table style="width:100%;table-layout:fixed">
-<tr><td style="width:22%"><b>Data</b></td><td><code>_for_STUDENT/data/notebook1/products.csv</code>: 18 product records and their image filenames, with columns including <code>release_date</code> and <code>country_of_origin</code>.</td></tr>
+<tr><td style="width:22%"><b>Data</b></td><td><code>_for_STUDENT/data/notebook5/products.csv</code>: 18 product records and their image filenames, with columns including <code>release_date</code> and <code>country_of_origin</code>.</td></tr>
 <tr><td><b>Output</b></td><td>One file that you create yourself: <code>_for_STUDENT/outputs/notebook1/catalogue.html</code>.</td></tr>
 <tr><td><b>Target</b></td><td>You need to build a simple shopping catalogue of the items listed in the <code>*.csv</code> file. The catalogue should be neat and organised and should display information that would be relevant to potential consumers. Inspect the CSV file to learn what information it contains.</td></tr>
 </table>
@@ -1317,8 +1315,8 @@ Copy this first-round specification into your Copilot message, then add any visu
             '''copyable_prompt(
     """ROUND 1 REQUIREMENTS
 
-- Load ../../data/notebook1/products.csv in the browser.
-- Map every CSV image filename to ../../data/notebook1/<filename>.
+- Load ../../data/notebook5/products.csv in the browser.
+- Map every CSV image filename to ../../data/notebook5/<filename>.
 - Create one catalogue entry per CSV row instead of hard-coding 18 products.
 - Choose and show information that is relevant to a potential consumer.
 - Use equal square image areas and consistent entry heights.
@@ -1358,7 +1356,7 @@ layout you are asking Copilot to build.
 
 1. Close the vision experiment conversation, then open a fresh **GitHub Copilot Chat**.
 2. In the Chat box, change the mode to **Ask** and change the model to **Auto**.
-3. In the Explorer, open `_for_STUDENT/data/notebook1/products.csv`. Inspect its columns, image filenames and deliberately mixed ID order.
+3. In the Explorer, open `_for_STUDENT/data/notebook5/products.csv`. Inspect its columns, image filenames and deliberately mixed ID order.
 4. Explain the **data**, **output**, **target** and paste the copyable Round 1 requirements. Tell Copilot to return one complete HTML document in chat rather than editing files.
 5. Read its short plan. If it misunderstood a path or requirement, correct the instruction before accepting code.
 6. In the Explorer, create `_for_STUDENT/outputs/notebook1/catalogue.html`, paste the returned HTML code into that file, and save it.
@@ -1380,18 +1378,9 @@ Do not open the HTML as a plain `file://` page: serving it with Live Server allo
         ),
         code(
             '''worksheet_box(
-    "catalogue_brief_prompt",
-    question_label="QUESTION 17 · Write the first Copilot instruction",
-    response_label="Write the instruction you will send to GitHub Copilot:",
-    response_height="150px",
-)''',
-            "interactive",
-        ),
-        code(
-            '''worksheet_box(
     "catalogue_brief_mismatch",
-    question_label="QUESTION 18 · Inspect the first catalogue",
-    response_label="After opening the first version, what is its most important mismatch?",
+    question_label="QUESTION 16 · Inspect the first catalogue",
+    response_label="After opening the first version, what issues can you see? What does not look correct?",
 )''',
             "interactive",
         ),
@@ -1407,9 +1396,9 @@ Do not open the HTML as a plain `file://` page: serving it with Live Server allo
     "task",
 )}
 
-1. Open `_for_STUDENT/data/notebook1/products.csv` and compare each product row with the 11-column header.
+1. Open `_for_STUDENT/data/notebook5/products.csv` and compare each product row with the 11-column header.
 2. Ask Copilot in **Ask** mode to inspect that file and **report suspicious rows and evidence only**. It should not edit the file for you.
-3. Check every image filename against the files in `_for_STUDENT/data/notebook1/`. Also look for a row whose separators no longer line up with the header.
+3. Check every image filename against the files in `_for_STUDENT/data/notebook5/`. Also look for a row whose separators no longer line up with the header.
 4. Correct only the two source-data problems in `products.csv`, save it, and reload the Live Server page.
 5. Confirm that all 18 records now have complete fields and valid images before requesting a new display order.
 
@@ -1502,6 +1491,13 @@ something that worked in the previous version.
         ),
     ]
 
+    # Keep the EC explanation next to, but after, its answer widget.
+    explanation = next(c for c in cells if c.cell_type == "markdown"
+                       and "QUESTION 9 · FACT-CHECK THE EC NUMBERS" in c.source)
+    cells.remove(explanation)
+    answer_index = next(i for i, c in enumerate(cells)
+                        if c.cell_type == "code" and '"ec_number_fact_check"' in c.source)
+    cells.insert(answer_index + 1, explanation)
     return cells + receipt_lesson_cells(markdown, code, panel)
 
 

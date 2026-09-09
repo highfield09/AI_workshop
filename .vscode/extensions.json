@@ -4,6 +4,6 @@
     "ms-toolsai.jupyter",
     "ms-toolsai.jupyter-renderers",
     "ritwickdey.LiveServer",
-    "Mescius.spreadjs-xlsx-editor"
+    "GrapeCity.gc-excelviewer"
   ]
 }

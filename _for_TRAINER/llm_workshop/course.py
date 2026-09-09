@@ -8,10 +8,10 @@ ROOT = Path(__file__).resolve().parents[2]
 WORKBOOKS = (
     ("01_start_here", "Find your way and ask clearly", (1, 4)),
     ("02_models_and_reasoning", "Compare models and check evidence", (5, 9)),
-    ("03_vision_and_context", "Explore vision, context and effort", (10, 16)),
+    ("03_vision_and_context", "Explore vision, context and effort", (10, 15)),
     ("04_debugging", "Run, repair and rerun", None),
-    ("05_shopping_catalogue", "Build and refine a shopping catalogue", (17, 18)),
-    ("06_receipt_ocr", "Read, table and explore receipts", (19, 24)),
+    ("05_shopping_catalogue", "Build and refine a shopping catalogue", (16, 16)),
+    ("06_receipt_ocr", "Read, table and explore receipts", (17, 22)),
 )
 
 

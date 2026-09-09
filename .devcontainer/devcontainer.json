@@ -20,7 +20,7 @@
         "GitHub.copilot",
         "GitHub.copilot-chat",
         "ritwickdey.LiveServer",
-        "Mescius.spreadjs-xlsx-editor"
+        "GrapeCity.gc-excelviewer"
       ],
       "settings": {
         "jupyter.askForKernelRestart": false

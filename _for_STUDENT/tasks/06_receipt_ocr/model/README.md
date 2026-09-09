@@ -47,7 +47,7 @@ model for sequential calls in the same process, not across separate script runs.
 Do not start parallel workers. Restart the kernel/process to release the model.
 
 The student script saves the raw response, builds item and receipt tables,
-validates numbers, batches the first 20 inputs, and charts checked data.
+validates numbers, batches the first five inputs, and charts checked data.
 An intermediate JSON schema is optional for structuring, not required for full
 transcription. Responses may contain Markdown fences, omit keys,
 normalise dates or misread values. Missing fields should remain blank and be

@@ -84,7 +84,7 @@ References: [Claude effort controls](https://platform.claude.com/docs/en/build-w
 
 **Key concept: express the data, output, target, and success checks before asking a coding agent for code.**
 
-- Data: 18 rows in `_for_STUDENT/data/notebook1/products.csv` and their mapped pixel-art apparel images.
+- Data: 18 rows in `_for_STUDENT/data/notebook5/products.csv` and their mapped pixel-art apparel images.
 - Output: `_for_STUDENT/outputs/05_shopping_catalogue/catalogue.html`.
 - Target: a responsive shopping grid whose cards come from the CSV.
 - Ask GitHub Copilot Chat to return the code; create the HTML file and paste the code yourself.
@@ -106,7 +106,7 @@ References: [Claude effort controls](https://platform.claude.com/docs/en/build-w
 - Define what one row means. Quantities belong to item rows; invoice totals belong to receipt rows and must not be repeatedly summed.
 - Decimal commas represent numbers, not disposable punctuation. Store quantities and money numerically; preserve raw text as evidence.
 - Account for every batch input, including failures, and preserve review decisions on reruns.
-- Sum quantities rather than merely counting rows. Explain exclusions and grouping choices; the first 20 filenames are not a representative sales sample.
+- Sum quantities rather than merely counting rows. Explain exclusions and grouping choices; the first 5 filenames are not a representative sales sample.
 
 - GLM-OCR is a vision-language model: it reads document images and can propose structured fields. Your script validates those fields and builds a spreadsheet.
 - Start with one image and check every value before expanding to a folder of images.

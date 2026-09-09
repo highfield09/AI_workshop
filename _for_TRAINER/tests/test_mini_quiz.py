@@ -99,3 +99,29 @@ def test_openrouter_setup_and_cost_caveat_are_explicit():
     assert "free account does" in source
     assert "not** make every model free" in source
     assert "prices shown will not be charged" not in source
+
+
+def test_removed_worksheets_and_updated_paths():
+    books = build_workbooks()
+    all_sources = "\n".join(c.source for b in books.values() for c in b.cells)
+    assert "vision_cost" not in all_sources
+    assert "catalogue_brief_prompt" not in all_sources
+    assert "image_source.txt" not in all_sources
+    assert "data/notebook1/" not in all_sources
+    assert "data/notebook3/Screenshot" in all_sources
+    assert "../../data/notebook5/products.csv" in all_sources
+    assert "Before editing SBML" not in all_sources
+    book = books["02_models_and_reasoning"]
+    answer = next(i for i,c in enumerate(book.cells) if '"ec_number_fact_check"' in c.source)
+    explanation = next(i for i,c in enumerate(book.cells) if "QUESTION 9 · FACT-CHECK THE EC NUMBERS" in c.source)
+    assert explanation == answer + 1
+    assert "EC 1.14.18.<b>5</b>" in book.cells[answer].source
+
+
+def test_fair_comparison_and_vision_quiz_answers():
+    q = QUESTIONS["02_models_and_reasoning"][1]
+    assert q[1][q[2]] == "Give each model the same task and evaluation criteria"
+    assert "Prompts may be adapted" in q[3]
+    vision = QUESTIONS["03_vision_and_context"]
+    assert vision[0][2] == 0 and "supports vision" in vision[0][1][0]
+    assert vision[3][2] == 0 and "tokens processed" in vision[3][1][0]
