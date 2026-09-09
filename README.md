@@ -27,11 +27,17 @@ If the notebook asks for a kernel, choose the Python interpreter marked **.venv*
 | [1 · Start here](_for_STUDENT/notebooks/01_start_here.ipynb) | Workspace, prompting, tokens and Google AI Mode | Q1–Q4 |
 | [2 · Models and reasoning](_for_STUDENT/notebooks/02_models_and_reasoning.ipynb) | HuggingChat model cards, translation and source checking | Q5–Q9 |
 | [3 · Vision and context](_for_STUDENT/notebooks/03_vision_and_context.ipynb) | Vision in Copilot, request costs and Gemini effort comparisons | Q10–Q16 |
-| [4 · Debugging](_for_STUDENT/notebooks/04_debugging.ipynb) | Ask for a small repair, rerun and inspect | Repaired cell and animation |
+| [4 · Debugging](_for_STUDENT/notebooks/04_debugging.ipynb) | Repair manually in Ask mode, then review an Agent edit | Two repaired cells and animations |
 | [5 · Shopping catalogue](_for_STUDENT/notebooks/05_shopping_catalogue.ipynb) | Build HTML from messy CSV data; repair, sort and refine | Q17–Q18 and your catalogue |
 | [6 · Receipt OCR](_for_STUDENT/notebooks/06_receipt_ocr.ipynb) | Full text → checked item tables → 20 receipts → chart | Q19–Q24, spreadsheets and chart |
 
 Open [KEY_CONCEPTS.md](_for_STUDENT/KEY_CONCEPTS.md) for the growing student take-home reference.
+
+Workbooks 1–4 and 6 finish with a four-question interactive mini quiz. Click
+**Submit quiz** for explanations, then retry as needed. These practice choices
+are not saved to worksheet JSON files; rerun the quiz cell after a restart.
+Workbook 5 has no mini quiz. For Workbook 3, put your chosen image and its source
+note in `_for_STUDENT/data/notebook3/`; these learner files are Git-ignored.
 
 ### Workbook 6 · One-time preparation
 

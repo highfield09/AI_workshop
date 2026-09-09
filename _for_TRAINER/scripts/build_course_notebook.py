@@ -549,7 +549,7 @@ Answer in one sentence and include one source link."""
         ),
         interface_intro(
             "HuggingChat",
-            "Use <b>HuggingChat</b> to try different models, and <b>Hugging Face "
+            "Use <a href='https://huggingface.co/chat/models'><b>HuggingChat</b></a> to try different models, and <b>Hugging Face "
             "model cards</b> to find out what each model is designed to do. "
             "Compare the responses to the same prompt.<br><br>"
             "<b>HuggingChat allowance:</b> free accounts have <b>20 questions</b>. "
@@ -701,12 +701,6 @@ Use the **same small model** chosen for Question 5 and **moonshotai/Kimi-K3** fr
     "info",
 )}
 
-While both models work, contemplate:
-
-1. Which model showed a longer visible reasoning process?
-2. Did either model fail, hang, repeat itself, or become lost in a reasoning loop?
-3. Did one visible reasoning trace contain more useful detail?
-4. Did either model insert special characters, equations, headings, or other formatting?
 """
         ),
         code(
@@ -736,7 +730,7 @@ If the reaction, name and candidate EC assignments cannot all simultaneously be 
             f'''worksheet_box(
     "expert_reasoning_comparison",
     question_label="QUESTION 8 · Compare the visible reasoning",
-    response_label="Record only your four observations; do not paste the full model responses:",
+    response_label="While both models work, contemplate:<ol><li>Which model showed a longer visible reasoning process?</li><li>Did either model fail, hang, repeat itself, or become lost in a reasoning loop?</li><li>Did one visible reasoning trace contain more useful detail?</li><li>Did either model insert special characters, equations, headings, or other formatting?</li></ol>Record your four observations below; do not paste the full model responses:",
     response_height="170px",
     reveal_html={panel(
         "BENCHMARK CONTEXT",
@@ -759,16 +753,11 @@ If the reaction, name and candidate EC assignments cannot all simultaneously be 
             f"""
 {panel(
     "QUESTION 9 · FACT-CHECK THE EC NUMBERS",
-    "<b>The prompt deliberately contains a small annotation error.</b><br><br>"
-    "<b>A.</b> EC 1.14.19.17 — claimed to be a sphingolipid Δ4 desaturase "
-    "whose canonical reaction produces 2 H₂O.<br>"
-    "<b>B.</b> EC 1.14.18.6 — claimed to be a sphingolipid C4 hydroxylase "
-    "whose canonical reaction produces 1 H₂O.<br><br>"
-    "Open the authoritative entries: "
-    "<a href='https://enzyme.expasy.org/EC/1.14.18.6'>EC 1.14.18.6</a>, "
-    "<a href='https://enzyme.expasy.org/EC/1.14.19.17'>EC 1.14.19.17</a>, and "
-    "<a href='https://enzyme.expasy.org/EC/1.14.18.5'>EC 1.14.18.5</a>."
-    "<br><br><b>Which statement is wrong, and what should it say?</b>",
+    "<b>The mistake reported while developing this workbook was an enzyme-number "
+    "mismatch:</b> the model could discuss the chemistry but accepted the wrong "
+    "EC number for the C4 enzyme. The prompt above preserves that mismatch for "
+    "you to check. A model can overlook or misremember a specific identifier in "
+    "a large prompt; fluent reasoning does not guarantee accurate recall.",
     "warning",
 )}
 
@@ -783,7 +772,7 @@ This is why a strong reasoning process can still end with a small identifier err
             f'''worksheet_box(
     "ec_number_fact_check",
     question_label="QUESTION 9 · State the corrected EC assignment",
-    response_label="Which candidate statement is wrong? Write the correct EC number and enzyme name:",
+    response_label="Cross-check these two claims against the linked enzyme entries:<br><br><b>A.</b> EC 1.14.19.17 — sphingolipid Δ4 desaturase (2 H₂O).<br><b>B.</b> EC 1.14.18.6 — sphingolipid C4 hydroxylase (1 H₂O).<br><br>Open <a href='https://enzyme.expasy.org/EC/1.14.19.17'>EC 1.14.19.17</a>, <a href='https://enzyme.expasy.org/EC/1.14.18.6'>EC 1.14.18.6</a> and <a href='https://enzyme.expasy.org/EC/1.14.18.5'>EC 1.14.18.5</a>. Write what the incorrect EC number and enzyme name should be:",
     reveal_html={panel(
         "FACT-CHECK ANSWER",
         "<b>Statement B is wrong.</b> EC 1.14.18.6 is a "
@@ -825,13 +814,14 @@ This is why a strong reasoning process can still end with a small identifier err
     "<ol style='margin:0;padding-left:22px'>"
     "<li>Create a free <a href='https://openrouter.ai/'>OpenRouter</a> account, "
     "then open <a href='https://openrouter.ai/workspaces/default/keys'>"
-    "OpenRouter Keys</a> and create a key.</li>"
-    "<li>In the Chat model picker, choose <b>Other Models</b>, then the "
-    "<b>Manage Language Models</b> gear icon.</li>"
-    "<li>Select <b>Add Models → OpenRouter</b>. Enter a group name if asked, "
-    "then paste the key into VS Code's secure API-key prompt and press Enter.</li>"
-    "<li>To replace it later, return to the gear icon, choose the OpenRouter "
-    "provider, and select <b>Update API Key</b>.</li>"
+    "OpenRouter Keys</a>, generate a key and click <b>Copy</b>.</li>"
+    "<li>Back in your GitHub Codespace, press <b>Ctrl + Alt + I</b> to open "
+    "Copilot Chat (Mac: <b>Control + Command + I</b>). Click <b>Auto</b> "
+    "to open the model picker, then <b>Manage Models</b> (also labelled "
+    "<b>Manage Language Models</b>, gear icon) → <b>Add Models → OpenRouter</b>. "
+    "Press Enter to confirm the provider. If asked, enter a group name first. "
+    "When the <b>API-key prompt</b> appears, paste your key and press Enter. "
+    "Models should then appear under the <b>OpenRouter</b> section.</li>"
     "</ol>",
     "info",
 )}
@@ -855,8 +845,9 @@ See [OpenRouter pricing](https://openrouter.ai/pricing) for the live plan detail
 
 ### Select the vision model
 
-1. In **Manage Language Models**, make **Gemma 4 26B A4B** visible, then select it from the Chat model picker. Its OpenRouter ID is [`google/gemma-4-26b-a4b-it`](https://openrouter.ai/google/gemma-4-26b-a4b-it).
-2. Choose the arrow beside the model name and set **Thinking Effort → Medium**.
+1. In the Copilot Chat box, click **Auto → Other Models → Google: Gemma 4 26B A4B**. Widen the chat panel to see the full model name. If it is hidden, make it visible in Manage Models first. Its OpenRouter ID is [`google/gemma-4-26b-a4b-it`](https://openrouter.ai/google/gemma-4-26b-a4b-it).
+2. Beside the model name, inspect **Thinking Effort** (or its arrow submenu). Choose **Medium** if available. Some models have a default effort; others do not expose this setting.
+3. Find the source image in **Explorer**, following **_for_STUDENT → data → notebook1 → Screenshot 2026-02-23 145127.png**.
 
 <div style='background:#F8FAFC;border:1px solid #D0D5DD;border-radius:12px;padding:12px;margin:12px 0;max-width:100%;box-sizing:border-box;text-align:center'>
 <img src='../data/notebook1/Screenshot%202026-02-23%20145127.png' alt='Vision experiment source image' style='display:block;width:min(100%,480px);height:auto;margin:0 auto;border-radius:8px'>
@@ -865,9 +856,9 @@ See [OpenRouter pricing](https://openrouter.ai/pricing) for the live plan detail
 
 ### Attach the image and ask
 
-1. Drag **Screenshot 2026-02-23 145127.png** directly from the Explorer into Copilot Chat.
-2. Confirm that an image/file chip appears in the Chat box.
-3. Send the prompt below.
+4. Drag **Screenshot 2026-02-23 145127.png** directly from the Explorer into Copilot Chat.
+5. Confirm that an image/file chip appears in the Chat box.
+6. Send the prompt below.
 """
         ),
         code(
@@ -900,36 +891,76 @@ See [OpenRouter pricing](https://openrouter.ai/pricing) for the live plan detail
 
 Open [OpenRouter Activity](https://openrouter.ai/activity), select the vision request, and look for:
 
-- **Route:** which provider route actually handled the model request.
 - **Input / output tokens:** how much content was sent to and generated by the model.
-- **Cost:** whether the route was free or the amount charged.
+- **Cost:** the amount charged, including zero if the request was free.
 
-OpenRouter-key usage is measured by OpenRouter and does **not** use a Copilot request allowance.
+**Free requests and real costs:** OpenRouter offers rate-limited free-model queries.
+Requests to models marked `:free` have no token charge. A free account does
+**not** make every model free: a non-zero Activity cost can deduct account
+credits, including promotional credits if provided. Do not assume the selected
+Gemma model is free; check its price before sending. If this class requires
+no personal spending, ask the trainer for a free model or an approved funded
+account before using a paid option. [OpenRouter billing guide](https://openrouter.ai/docs/faq).
+
+**Why inspect this?** It shows how AI services can charge for inference:
+input and output tokens can have different rates. Even when a request is free
+or covered by classroom credit, comparing usage builds an appreciation of
+the cost of running AI.
+
+Record the input tokens, output tokens and cost of this first request for Q11.
+If a value is not displayed, write **not shown** rather than guessing.
 """
         ),
+        markdown("""
+### Vision follow-up A · Ask about the files
+
+Stay in the **same Gemma chat** and send this follow-up. It refers to the files
+discussed in the previous image answer. If the model did not identify any file
+types, name the files or formats you mean so the question is clear.
+"""),
+        code('''copyable_prompt("What programs can be used to visualise and generate these files?")''', "interactive"),
+        markdown("""
+Open [OpenRouter Activity](https://openrouter.ai/activity) again and select the
+new request. Record **input tokens, output tokens and cost**. Inspect the answer:
+do the proposed programs actually support those file formats? Keep the response
+or a short summary for Q11.
+
+### Vision follow-up B · Choose your own image
+
+1. Find a public image online that you have permission to use. Avoid private documents, personal information and screenshots containing keys.
+2. Save/download it to your laptop, then drag and drop that file into **`_for_STUDENT/data/notebook3/` in the Codespace Explorer**. This copies it into your Codespace. Use a JPG or PNG. Save its source URL beside it as `image_source.txt`.
+3. Keep this related experiment in the same Gemma chat. Drag the saved image **from Explorer into the chat box**, and confirm the attachment chip appears. Saving a file in Explorer alone does not attach it to the model.
+4. Ask **“Describe what is shown in this image.”** Inspect the answer against the image: what is accurate, missing or uncertain?
+5. Inspect [OpenRouter Activity](https://openrouter.ai/activity) once more. Record this request's **input tokens, output tokens and cost**, and keep the response or a short summary for Q11.
+
+These learner-chosen files are Git-ignored. Do not upload them to the shared repository.
+"""),
         code(
             '''worksheet_box(
     "vision_cost",
     question_label="QUESTION 11 · Trace the vision request",
-    response_label="From OpenRouter Activity, record the route, input/output tokens if shown, cost, and whether it was free or paid:",
+    response_label="Record three requests: original image, programs follow-up, and your own image. For each give input tokens, output tokens and cost (or not shown). Summarise the two follow-up answers; note any image-description errors and your saved image path/source:",
+    response_height="260px",
 )''',
             "interactive",
         ),
+        markdown(f"""
+{panel("KEY CONCEPT · CONTEXT IS A RUNNING WINDOW", "A chat's history grows as you add "
+    "messages, replies and attachments. The model works within a <b>limited active "
+    "context window</b>, not unlimited memory. When the available context fills, "
+    "the service may summarise or omit older material; it may also reject an "
+    "overlong request. Earlier requirements can then be lost or appear 'forgotten', "
+    "and response quality can suffer. Even before the limit, important details "
+    "can be overlooked.<br><br>Keep sessions focused and <b>start a new chat for "
+    "a different project or topic</b>. Restate essential requirements when needed. "
+    "Later requests may include earlier context, but token counts and costs do "
+    "not necessarily increase every time: attachment processing, caching and "
+    "context management can differ.", "success")}
+
+[VS Code guide to sessions and context](https://code.visualstudio.com/docs/agents/run/sessions/manage-sessions).
+"""),
         markdown(
             f"""
-### Compare with GitHub-provided Copilot usage
-
-For GitHub-provided Copilot usage, open [GitHub Billing and licensing](https://github.com/settings/billing), then choose **AI usage**, or check **Copilot settings → Usage**. The current Copilot Free plan includes up to **2,000 inline code completions per month**; Chat uses a limited monthly GitHub AI Credits allowance and Auto model selection. Read the [current Copilot plan details](https://docs.github.com/en/copilot/get-started/plans) rather than assuming an older fixed number of chats.
-
-{panel(
-    "KEY CONCEPT · TRACE THE PROVIDER",
-    "The interface and the model provider are not always the same. VS Code "
-    "displayed this chat, OpenRouter routed and measured the inference, and "
-    "your selected model interpreted the image. Check the activity page that "
-    "belongs to the provider holding the key.",
-    "success",
-)}
-
 ### Match effort to the task
 
 {panel(
@@ -1169,6 +1200,46 @@ Python reports that `disco_colours` is not defined. The list was created as `dis
         ),
         markdown(
             f"""
+### Experiment 5B · Let Agent mode repair a cell
+
+This time the coding agent makes the edit for you.
+
+1. Run the next cell and inspect its error.
+2. Open Copilot Chat, switch **Ask → Agent**, and keep the model on **Auto**.
+3. Select the broken cell and include it in the chat context. Tell the agent:
+   **“Fix only the cell labelled AGENT REPAIR · GIF in this notebook. Make the
+   smallest change so it displays the GIF at 300 pixels wide. Edit the notebook
+   cell directly; leave all other cells and files unchanged.”** Include the error.
+4. Review the proposed edit and approve only the scoped change. Do not approve
+   unrelated commands or file edits.
+5. Rerun the edited cell yourself. Check that the GIF appears and its width is
+   still 300 pixels. Compare this with copying a fix manually in Ask mode.
+
+The animation comes from an external Giphy URL and needs internet access.
+If it is blocked or unavailable, a repaired cell may still show no image;
+that is a separate network/display issue, not proof the code repair failed.
+"""
+        ),
+        code(
+            '''# AGENT REPAIR · GIF — intentionally broken
+from IPython.display import Image, display
+
+display(Images(
+    url="https://media.giphy.com/media/sIIhZliB2McAo/giphy.gif",
+    width=300,
+))''',
+            "expected-error", "agent-repair",
+        ),
+        markdown(
+            f"""
+{panel(
+    "CHECKPOINT · REVIEW AGENT EDITS",
+    "Ask mode gives suggestions for you to apply; Agent mode can edit files "
+    "and use tools. You still set the scope, review the changes and rerun the "
+    "result. An automatic edit is not automatically a correct edit.",
+    "success",
+)}
+
 {panel(
     "EXPERIMENT CHECKPOINT",
     "<ul style='margin:0;padding-left:20px'>"
@@ -1471,6 +1542,8 @@ def build_workbooks():
     ) for marker in markers] + [len(cells)]
     books = {}
     for index, (stem, title, questions) in enumerate(WORKBOOKS):
+        if stem == "02_models_and_reasoning":
+            title = "Compare [HuggingChat](https://huggingface.co/chat/models) models and check evidence"
         question_text = (f"Questions {questions[0]}–{questions[1]}" if questions
                          else "Hands-on repair · no written submission")
         destination = (f"Submit & save writes to **_for_STUDENT/tasks/{stem}/answers.json**."
@@ -1488,6 +1561,8 @@ def build_workbooks():
             "Use your own accounts and API keys for external AI services."
         ))
         section = [heading, code(SETUP, "setup", "hide-input")]
+        if stem != "05_shopping_catalogue":
+            section[1].source += "\nfrom llm_workshop.mini_quiz import mini_quiz"
         if stem == "06_receipt_ocr":
             section[1].source += "\nfrom llm_workshop.receipt_support import show_receipt_preview, preview_spreadsheet"
         for cell in deepcopy(cells[boundaries[index]:boundaries[index + 1]]):
@@ -1509,6 +1584,14 @@ def build_workbooks():
             if cell.cell_type == "markdown":
                 cell.source = readable_html(cell.source)
             section.append(cell)
+        if stem != "05_shopping_catalogue":
+            section.append(markdown(readable_html(
+                "## Mini quiz · Check your understanding\n\n"
+                "Choose one answer for each of four questions, then click **Submit quiz**. "
+                "Read the feedback and try again if helpful. These are practice checks, "
+                "not saved worksheet answers. If the button is inactive, rerun setup and this quiz cell."
+            )))
+            section.append(code(f"mini_quiz({stem!r})", "interactive", "mini-quiz", "hide-input"))
         if index < len(WORKBOOKS) - 1:
             next_stem, next_title, _ = WORKBOOKS[index + 1]
             section.append(markdown(readable_html(

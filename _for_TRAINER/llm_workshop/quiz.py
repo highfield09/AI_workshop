@@ -28,9 +28,11 @@ def _question(tone: str) -> str:
     return _message(
         "<div style='font-size:0.78rem;letter-spacing:0.04em;margin-bottom:6px'>"
         "<b>QUESTION 1 · READ THE WELCOME PAGE</b></div>"
-        "<b>According to <code>README.md</code>, what is this workshop mainly "
+        "<b>According to the root <code>AI_workshop/README.md</code>, what is this workshop mainly "
         "asking you to practise?</b><br><small>Hint: the answer is somewhere "
-        "inside the README file at the root of the directory tree.</small>",
+        "inside the README directly under the top-level project folder, beside "
+        "<code>_for_STUDENT/</code> and <code>_for_TRAINER/</code>—not a README "
+        "inside either folder. From the repository root its path is <code>./README.md</code>.</small>",
         tone,
     )
 
@@ -116,7 +118,7 @@ def readme_quiz():
         else:
             question.value = _question("error")
             feedback.value = _message(
-                "<b>Not quite.</b> Open <code>README.md</code> in the Explorer, "
+                "<b>Not quite.</b> Open the top-level <code>./README.md</code> in the Explorer, "
                 "read the opening paragraph, and try again.",
                 "error",
             )

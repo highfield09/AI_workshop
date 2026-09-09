@@ -66,11 +66,12 @@ REQUIRED_SNIPPETS = [
     "google/gemma-4-26b-a4b-it",
     "OpenRouter Activity",
     "Screenshot 2026-02-23 145127.png",
-    "Thinking Effort → Medium",
-    "KEY CONCEPT · TRACE THE PROVIDER",
+    "Choose **Medium** if available",
+    "CHECKPOINT · REVIEW AGENT EDITS",
     "VISION MODELS AND OCR",
     "### Check where the vision request was charged",
-    "- **Route:**",
+    "KEY CONCEPT · CONTEXT IS A RUNNING WINDOW",
+    "What programs can be used to visualise and generate these files?",
     "START WITH A FRESH CONTEXT WINDOW",
     "same Gemini 3.5 Flash-Lite model",
     "Give me the smallest change",
@@ -115,6 +116,8 @@ REQUIRED_SNIPPETS = [
     "Statement B is wrong",
 ]
 FORBIDDEN_SNIPPETS = [
+    "KEY CONCEPT · TRACE THE PROVIDER",
+    "Compare with GitHub-provided Copilot usage",
     "it is no longer a clickable link",
     "The growing workshop reference",
     "Limits can change",
@@ -254,6 +257,9 @@ def main() -> None:
             raise SystemExit(f"Missing workbook identity: {stem}")
         if len([c for c in book.cells if "setup" in c.metadata.get("tags", [])]) != 1:
             raise SystemExit(f"Workbook must have its own setup: {stem}")
+        quizzes = [c for c in book.cells if "mini-quiz" in c.metadata.get("tags", [])]
+        if len(quizzes) != (0 if stem == "05_shopping_catalogue" else 1):
+            raise SystemExit(f"Unexpected mini quiz count: {stem}")
         found_questions = set()
         for cell in book.cells:
             found_questions.update(int(n) for n in re.findall(r"QUESTION (\d+) ·", cell.source))
@@ -271,6 +277,8 @@ def main() -> None:
         for widget in state.values():
             if widget.get("model_name") == "TextareaModel" and widget.get("state", {}).get("value"):
                 raise SystemExit(f"Learner answer found in distributed widget state: {stem}")
+            if widget.get("model_name") == "RadioButtonsModel" and widget.get("state", {}).get("index") is not None:
+                raise SystemExit(f"Preselected quiz answer found in distributed widget state: {stem}")
         serialized = nbformat.writes(book)
         for pattern in SECRET_PATTERNS:
             if pattern.search(serialized):
@@ -321,7 +329,6 @@ def main() -> None:
     if not (
         all_sources.index("### Check where the vision request was charged")
         < all_sources.index("QUESTION 11 ·")
-        < all_sources.index("### Compare with GitHub-provided Copilot usage")
     ):
         raise SystemExit("OpenRouter Activity guidance must appear before Question 11")
 
@@ -391,9 +398,9 @@ def main() -> None:
         for index, cell in enumerate(notebook.cells)
         if "expected-error" in cell.get("metadata", {}).get("tags", [])
     ]
-    if len(expected_error_cells) != 1:
+    if len(expected_error_cells) != 2:
         raise SystemExit(
-            "Notebook must contain exactly one intentional repair cell; "
+            "Notebook must contain exactly two intentional repair cells; "
             f"found {expected_error_cells}"
         )
 
