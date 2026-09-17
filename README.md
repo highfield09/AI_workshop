@@ -39,20 +39,21 @@ are not saved to worksheet JSON files; rerun the quiz cell after a restart.
 Workbook 5 has no mini quiz. For Workbook 3, put your chosen image in
 `_for_STUDENT/data/notebook3/`; learner images are Git-ignored.
 
-### Workbook 6 · One-time preparation
+### Prepare for Workbook 6 at the start of Workbook 1
 
 Use a **16 GB RAM environment** for this workbook. GLM-OCR is a local
 vision-language model that returns document fields, not just unstructured OCR
-text. Its optional runtime is installed only when you start Workbook 6:
+text. Start its preparation from the **Master setup** section at the beginning
+of Workbook 1, so the downloads are ready for the later OCR exercise.
+After normal Codespaces setup finishes, run from the repository root:
 
 ```bash
-./_for_TRAINER/scripts/setup_environment.sh
-source .venv/bin/activate
-sh _for_TRAINER/scripts/setup_glm_ocr.sh
-python _for_TRAINER/scripts/prepare_receipt_data.py
+sh _for_TRAINER/scripts/setup_glm_ocr.sh &&
+.venv/bin/python _for_TRAINER/scripts/prepare_receipt_data.py &&
+.venv/bin/python _for_TRAINER/scripts/check_receipt_assets.py --require-data
 ```
 
-The data download is about **101 MB**. The pinned [GLM-OCR snapshot](https://huggingface.co/zai-org/GLM-OCR)
+This prepares ten receipt images and their reference CSV; the guided exercise uses the first five. The pinned [GLM-OCR snapshot](https://huggingface.co/zai-org/GLM-OCR)
 is about **2.66 GB**, stored at `_for_STUDENT/tasks/06_receipt_ocr/model/glm-ocr/`.
 Both downloads are Git-ignored and stay in your own Codespace. Allow at least
 **6 GB spare disk** for model and runtime, plus possible package-cache space.

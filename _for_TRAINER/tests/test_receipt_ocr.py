@@ -14,7 +14,7 @@ def test_ocr_lesson_has_four_iterations_and_traceable_outputs():
     source = "\n".join(c.source for c in book.cells)
     assert "osama hosam Abdellatif" in source
     assert "version 3" in source and "Database: Open Database" in source
-    assert "first five images" in source
+    assert "first ten images" in source
     assert "seven item rows" in source and "one receipt row" in source
     for text in ['Iteration 1', 'Iteration 2', 'Iteration 3', 'Iteration 4', 'first 5', 'quantity', 'receipts_5.xlsx', 'batch_run.csv', 'item_quantities.png', 'histogram', 'not PDFs', 'Text Recognition:', 'max_new_tokens=4096']:
         assert text in source
@@ -45,11 +45,11 @@ def test_downloader_requests_only_explicit_first_subbatch_files(tmp_path, monkey
     dest = tmp_path / "data"
     prepare(dest)
     expected = {REMOTE_CSV} | {f"{REMOTE_IMAGES}/{name}" for name in EXPECTED_IMAGES}
-    assert set(calls) == expected and len(calls) == 6
+    assert set(calls) == expected and len(calls) == 11
     calls.clear()
     prepare(dest)
     assert calls == []  # Reuse all verified local files.
-    older = dest / "batch1_1/batch1-0006.jpg"
+    older = dest / "batch1_1/batch1-0011.jpg"
     older.write_bytes(b"older download")
     prepare(dest)
     assert older.read_bytes() == b"older download" and calls == []
@@ -90,7 +90,7 @@ def test_preview_handles_missing_receipt_without_downloading(tmp_path, monkeypat
 
 def test_glm_lesson_documents_local_runtime_and_validation():
     source = '\n'.join(c.source for c in build_workbooks()['06_receipt_ocr'].cells)
-    for required in ['GLM-OCR', '16 GB RAM', 'setup_glm_ocr.sh', 'model.glm_reader', 'JSON schema', 'Tax Id']:
+    for required in ['GLM-OCR', '16 GB RAM', 'Workbook 1 · Master setup', 'model.glm_reader', 'JSON schema', 'Tax Id']:
         assert required in source
     assert 'tesserocr' not in source and 'Tesseract' not in source
 
@@ -126,3 +126,26 @@ def test_short_lesson_has_copyable_requirements_and_correct_viewer():
     assert "Illustrative output—not a live download" in source
     assert "receipts_20" not in source and "first 20" not in source
     assert "model.glm_reader" in source
+
+
+def test_ocr_preparation_is_at_the_beginning_of_workbook_one():
+    books = build_workbooks()
+    opening = books["01_start_here"].cells[0].source
+    assert "Master setup" in opening
+    assert opening.index("Master setup") < opening.index("START HERE")
+    for required in ["setup_glm_ocr.sh", "prepare_receipt_data.py",
+                     "check_receipt_assets.py --require-data", "16 GB RAM",
+                     "Terminal → New Terminal", "does **not** load"]:
+        assert required in opening
+    sixth = "\n".join(c.source for c in books["06_receipt_ocr"].cells)
+    assert "sh _for_TRAINER/scripts/setup_glm_ocr.sh" not in sixth
+    assert "(01_start_here.ipynb)" in sixth
+
+
+def test_receipt_preview_follows_the_task_immediately():
+    cells = build_workbooks()["06_receipt_ocr"].cells
+    task = next(i for i,c in enumerate(cells) if "TASK · READ THE RECEIPT" in c.source)
+    assert "preview directly below" in cells[task].source
+    assert cells[task+1].source == "show_receipt_preview()"
+    assert "copyable_prompt(" in cells[task+2].source
+    assert sum(c.source == "show_receipt_preview()" for c in cells) == 1

@@ -8,6 +8,15 @@ READING_CSS = """
   line-height:1.6; box-sizing:border-box; max-width:100%; overflow-wrap:anywhere; }
 .workshop-reading :is(p,li,td,th,h1,h2,h3,h4,summary,strong,b,small,em) { color:inherit; }
 .workshop-reading a { color:#1849A9 !important; text-decoration:underline; }
+.workshop-reading details { background:#FDF2FA !important; color:#1D2939 !important;
+  border:1px solid #FCCEEE !important; border-left:5px solid #9E165F !important;
+  border-radius:10px; padding:12px; margin:12px 0; }
+.workshop-reading details > summary { display:list-item !important;
+  list-style:disclosure-closed inside !important; cursor:pointer; color:#851651 !important; }
+.workshop-reading details[open] > summary { list-style-type:disclosure-open !important; }
+.workshop-reading details > summary::after { content:" — Click the arrow for more information";
+  font-size:0.85em; font-weight:normal; }
+.workshop-reading details > summary:focus-visible { outline:3px solid #9E165F; outline-offset:3px; }
 .workshop-reading :is(code,kbd) { color:#1D2939 !important; background:#F2F4F7 !important;
   border-radius:4px; padding:1px 4px; overflow-wrap:anywhere; }
 .workshop-reading table { display:block; max-width:100%; overflow-x:auto;

@@ -19,6 +19,11 @@ from llm_workshop.presentation import readable_html
 from scripts.receipt_lesson import receipt_lesson_cells
 CATALOGUE_CSV = ROOT / "_for_STUDENT" / "data" / "notebook5" / "products.csv"
 PALETTES = {
+    "hint": {
+        "background": "#FDF2FA",
+        "border": "#FCCEEE",
+        "accent": "#9E165F",
+    },
     "info": {
         "background": "#EFF8FF",
         "border": "#B2DDFF",
@@ -248,7 +253,9 @@ You do not need to memorize commands. The aim is to learn where things live and 
     "COLOUR KEY",
     chip("KEYWORD") + " marks a useful term. &nbsp; "
     + chip("TASK", "task") + " tells you to do something. &nbsp; "
-    + chip("CHECKPOINT", "success") + " shows progress.",
+    + chip("CHECKPOINT", "success") + " shows progress. &nbsp; "
+    + chip("HINT / MORE INFORMATION", "hint")
+    + " marks a hidden dropdown. <b>Click the arrow for more information.</b>",
     "info",
 )}
 
@@ -554,7 +561,7 @@ Answer in one sentence and include one source link."""
             "Compare the responses to the same prompt.<br><br>"
             "<b>HuggingChat allowance:</b> free accounts have <b>20 questions</b>. "
             "Experiment 2 uses four of them.",
-            "LLMs are <abbr title='Probabilistic means the model chooses among likely next pieces of text; the same request can produce different wording.' style='text-decoration:underline dotted;cursor:help'><b>probabilistic</b></abbr>. "
+            "Large Language Models (LLMs) are <abbr title='Probabilistic means the model chooses among likely next pieces of text; the same request can produce different wording.' style='text-decoration:underline dotted;cursor:help'><b>probabilistic</b></abbr>. "
             "In simple words, models choose from several likely next pieces of text rather "
             "than retrieving one fixed sentence. Two runs may therefore use different wording "
             "or detail. Ideally, the answers should remain **semantically similar**—their "
@@ -1241,15 +1248,15 @@ display(Images(
 {panel(
     "EXPERIMENT CHECKPOINT",
     "<ul style='margin:0;padding-left:20px'>"
-    "<li>separate text-first models from vision or multimodal models;</li>"
-    "<li>expect probabilistic wording while checking semantic meaning;</li>"
-    "<li>distinguish translation from interpretation;</li>"
-    "<li>check hidden assumptions before accepting a confident answer;</li>"
-    "<li>make the target explicit before paying for more reasoning;</li>"
-    "<li>use a short run–repair–rerun troubleshooting loop;</li>"
-    "<li>find saved work in <b>_for_STUDENT/tasks/workbook_answers.json</b>.</li></ul>"
-    "<p style='margin:10px 0 0'><b>Always know where your output is going "
-    "and where to find it.</b></p>",
+    "<li>run the broken cell and read its error;</li>"
+    "<li>use Ask mode to suggest a small repair you apply yourself;</li>"
+    "<li>use Agent mode to edit the GIF cell, then review what changed;</li>"
+    "<li>rerun repaired cells and inspect their outputs;</li>"
+    "<li>save your edited notebook with <b>Ctrl+S</b> (Windows/Linux) or "
+    "<b>Command+S</b> (Mac).</li></ul>"
+    "<p style='margin:10px 0 0'>This workbook has no written-answer form or "
+    "<code>answers.json</code>. Your work is the repaired notebook. "
+    "The mini quiz is practice only.</p>",
     "success",
 )}
 """
@@ -1546,7 +1553,56 @@ def build_workbooks():
                        if questions else
                        "Your result is the repaired cell and its animation. Save this notebook to keep your edit.")
         heading = markdown(readable_html(
-            f"# Workbook {index + 1} · {title}\n\n{question_text}\n\n"
+            f"# Workbook {index + 1} · {title}\n\n"
+            + (f"""
+## Master setup · Prepare once for the whole workshop
+
+{panel("START THE DOWNLOADS NOW", "Prepare the packages, local OCR model and "
+    "ten receipt images for Workbook 6 (the exercise uses the first five). Do this once in <b>your own "
+    "Codespace</b>; you do not need Python installed on your laptop. "
+    "Choose a cloud machine with <b>16 GB RAM</b> and allow at least "
+    "<b>6 GB spare disk</b> plus package-cache space. The model download is "
+    "about <b>2.66 GB</b>.", "info")}
+
+1. Wait for the normal Codespaces environment setup to finish.
+2. Open **Terminal → New Terminal**. Start at the repository root—the folder
+   containing `README.md`, `_for_STUDENT` and `_for_TRAINER`.
+3. Paste this block into the **terminal**, not a notebook cell:
+
+```bash
+sh _for_TRAINER/scripts/setup_glm_ocr.sh &&
+.venv/bin/python _for_TRAINER/scripts/prepare_receipt_data.py &&
+.venv/bin/python _for_TRAINER/scripts/check_receipt_assets.py --require-data
+```
+
+Leave that terminal open. You can read the introduction and explore the AI
+websites while it runs. Wait for it to finish successfully before running
+notebook code. If a command fails, read its error before continuing.
+
+The final check confirms the model and receipt files match their recorded
+provenance. Select the **.venv** kernel afterwards; if you already started a
+kernel, restart it once installation finishes and rerun its setup cell.
+
+<details>
+<summary><b>If setup needs help</b></summary>
+
+- If `.venv` is missing, run `./_for_TRAINER/scripts/setup_environment.sh`
+  from the repository root, then retry the block above.
+- If Kaggle asks for login, create your own
+  [Kaggle API token](https://www.kaggle.com/settings/api) and add
+  `KAGGLE_API_TOKEN` as a Codespaces secret. Never paste it into a notebook or chat.
+- The model is saved in `_for_STUDENT/tasks/06_receipt_ocr/model/glm-ocr/`;
+  the ten images and reference CSV go in `_for_STUDENT/data/notebook6/`.
+  These downloads stay in your own Codespace and are Git-ignored.
+- This downloads the model; it does **not** load its weights into memory or
+  run OCR. That still happens when you run your Workbook 6 script.
+- Reopening the same Codespace retains the files. A new or deleted-and-recreated
+  Codespace needs preparation again. Existing verified downloads are reused.
+
+</details>
+
+""" if stem == "01_start_here" else "")
+            + f"{question_text}\n\n"
             + panel("START HERE", "Select the <b>.venv</b> Python kernel. "
                     "Run the setup cell below with <b>Shift + Enter</b> or its "
                     "<b>▶ play button</b>, then run each activity cell in order. "
@@ -1590,8 +1646,20 @@ def build_workbooks():
             section.append(code(f"mini_quiz({stem!r})", "interactive", "mini-quiz", "hide-input"))
         if index < len(WORKBOOKS) - 1:
             next_stem, next_title, _ = WORKBOOKS[index + 1]
+            save_note = (
+                "For written worksheet answers, click **Submit & save** and look for "
+                "**Saved** below the response. Auto Save does not submit these answers.\n\n"
+                if questions else
+                "This workbook has no written-answer form. Save your repaired notebook.\n\n"
+            )
             section.append(markdown(readable_html(
-                f"## A good stopping point\n\nSave your work before moving on. "
+                "## A good stopping point\n\n" + save_note
+                + "To save notebook edits, press **Ctrl+S** (Windows/Linux) or "
+                "**Command+S** (Mac), or choose **File → Save**. If Auto Save is "
+                "enabled it may already have saved them; check that no unsaved-change "
+                "dot remains on the tab. This saves to your Codespace, not to GitHub. "
+                "Mini-quiz choices are practice, not saved worksheet submissions.\n\n"
+                +
                 f"Next: [Workbook {index + 2} · {next_title}]({next_stem}.ipynb)."
             )))
         notebook = nbf.v4.new_notebook(cells=section)

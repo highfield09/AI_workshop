@@ -1,4 +1,4 @@
-"""Download only the first five images and the unchanged matching reference CSV."""
+"""Download only the first ten images and the unchanged matching reference CSV."""
 
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
@@ -12,7 +12,7 @@ DATA = ROOT / "_for_STUDENT" / "data" / "notebook6"
 HANDLE = "osamahosamabdellatif/high-quality-invoice-images-for-ocr/versions/3"
 REMOTE_IMAGES = "batch_1/batch_1/batch1_1"
 REMOTE_CSV = "batch_1/batch_1/batch1_1.csv"
-EXPECTED_IMAGES = {f"batch1-{number:04d}.jpg" for number in range(1, 6)}
+EXPECTED_IMAGES = {f"batch1-{number:04d}.jpg" for number in range(1, 11)}
 
 
 def sha256(path):
@@ -41,8 +41,8 @@ def prepare(data=DATA):
             shutil.copy2(cached, target)
     with ThreadPoolExecutor(max_workers=4) as pool:
         for count, _ in enumerate(pool.map(download_image, sorted(EXPECTED_IMAGES)), 1):
-            print(f"Checked/downloaded {count}/5 images", flush=True)
-    # Preserve older downloads in existing workspaces; select only these five.
+            print(f"Checked/downloaded {count}/10 images", flush=True)
+    # Preserve older downloads in existing workspaces; select only these ten.
     files = [csv_path, *(image_dir / name for name in sorted(EXPECTED_IMAGES))]
     records = [{"path": p.relative_to(data).as_posix(), "bytes": p.stat().st_size,
                 "sha256": sha256(p)} for p in files]
@@ -52,8 +52,8 @@ def prepare(data=DATA):
         if records != expected:
             raise RuntimeError("Local receipt data differs from the recorded manifest; no existing file was overwritten.")
     else:
-        manifest.write_text(json.dumps({"dataset": HANDLE, "image_count": 5, "files": records}, indent=2) + "\n", encoding="utf-8")
-    print(f"Ready: first 5 images and unchanged batch1_1.csv in {data}")
+        manifest.write_text(json.dumps({"dataset": HANDLE, "image_count": 10, "files": records}, indent=2) + "\n", encoding="utf-8")
+    print(f"Ready: first 10 images and unchanged batch1_1.csv in {data}")
     return image_dir, csv_path
 
 

@@ -15,7 +15,12 @@ def test_labelled_layout_and_codespaces_setup():
     assert '_for_TRAINER/scripts/create_venv.sh' in setup.read_text()
     subprocess.run(['sh', '-n', str(setup)], check=True)
     assert answer_path('06_receipt_ocr').relative_to(ROOT).as_posix() == '_for_STUDENT/tasks/06_receipt_ocr/answers.json'
-    assert not list(ROOT.glob('**/products.cleaned.csv'))
+    # Check distributed files, not ignored student outputs or the installed venv.
+    tracked_answers = subprocess.run(
+        ['git', 'ls-files', '--', '**/products.cleaned.csv', 'products.cleaned.csv'],
+        cwd=ROOT, check=True, capture_output=True, text=True,
+    )
+    assert not tracked_answers.stdout.strip()
     for book in build_workbooks().values():
         assert '"_for_TRAINER" / "llm_workshop"' in book.cells[1].source
 

@@ -12,10 +12,10 @@ Run from the repository root:
 python _for_TRAINER/scripts/prepare_receipt_data.py
 ```
 
-- `batch1_1/` — first five original JPG images, unchanged, named batch1-0001.jpg through batch1-0005.jpg.
+- `batch1_1/` — first ten original JPG images, unchanged, named batch1-0001.jpg through batch1-0010.jpg. The guided exercise uses the first five.
 - `batch1_1.csv` — original reference CSV, unchanged.
 - `manifest.json` — source version, local filenames, sizes and SHA-256 hashes.
 
-Only five images and the unchanged 499-row reference CSV are downloaded into each student's own Codespace and are Git-ignored. Existing older downloads are preserved, but the exercise selects only the first five. Only this documentation and the six-file manifest travel with the course repository. If Kaggle requires authentication, use your own account and the documented Kaggle token mechanism; never paste a token into a notebook or chat.
+Only ten images and the unchanged 499-row reference CSV are downloaded into each student's own Codespace and are Git-ignored. Existing older downloads are preserved, but the exercise selects only the first five. Only this documentation and the eleven-file manifest travel with the course repository. If Kaggle requires authentication, use your own account and the documented Kaggle token mechanism; never paste a token into a notebook or chat.
 
 Start with `batch1_1/batch1-0001.jpg`. Keep the reference CSV separate from OCR input: use it to check provenance and results, not to copy an answer into the extracted spreadsheet.

@@ -7,6 +7,7 @@ tools. Store private answer keys outside the shared repository.
 - **scripts/** — environment setup, notebook builders, demo execution and validation.
 - **llm_workshop/** — shared widgets, readable panels and answer-saving functions.
 - **tests/** — maintenance checks.
+- **[TA_CHECKLIST.md](TA_CHECKLIST.md)** — pre-class rehearsal and student-support checklist.
 - **vibe_jupyterhub_vllm_sandbox/** — older deployment reference, not the classroom workflow.
 
 Students may run setup/data-preparation commands when instructed. They do not

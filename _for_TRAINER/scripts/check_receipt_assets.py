@@ -17,8 +17,8 @@ def check_assets(require_data=False):
     manifest = json.loads((DATA / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["dataset"] == HANDLE
     expected_paths = {"batch1_1.csv"} | {f"batch1_1/{name}" for name in EXPECTED_IMAGES}
-    assert manifest["image_count"] == 5
-    assert len(manifest["files"]) == 6
+    assert manifest["image_count"] == 10
+    assert len(manifest["files"]) == 11
     assert {row["path"] for row in manifest["files"]} == expected_paths
     if not (DATA / "batch1_1.csv").exists() and not list((DATA / "batch1_1").glob("*.jpg")):
         if require_data:

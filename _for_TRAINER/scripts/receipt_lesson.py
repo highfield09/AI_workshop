@@ -20,6 +20,11 @@ def receipt_lesson_cells(markdown, code, panel):
 Use [GLM-OCR by Z.ai](https://huggingface.co/zai-org/GLM-OCR), a local
 vision-language model, to read invoice images.
 
+Some models can be downloaded and run locally for a specific task, rather than
+called through a cloud API. GLM-OCR is a **small model**: our downloaded snapshot
+is about **2.66 GB**. It can run on a **CPU**—typically slower than a GPU, but
+sufficient for this exercise.
+
 **Read one receipt → Create an Excel table → Process five receipts → Make a chart.**
 
 Describe what you want to your coding agent, run the result, and inspect whether
@@ -32,37 +37,34 @@ API key is needed. These receipts are JPG images, **not PDFs**.
 **High-Quality Invoice Images for OCR**, uploaded by **osama hosam Abdellatif**
 (`osamahosamabdellatif`) on
 [Kaggle](https://www.kaggle.com/datasets/osamahosamabdellatif/high-quality-invoice-images-for-ocr).
-We use **version 3**, dated 9 May 2025: the first five images from the
+We use **version 3**, dated 9 May 2025: setup downloads the first ten images from the
 499-image `batch1_1` sub-batch, plus its unchanged reference CSV for traceability.
+This exercise processes the first five images; the other five are available for further practice.
 The listed licence is **Database: Open Database, Contents: Database Contents**.
 See `_for_STUDENT/data/notebook6/README.md` for provenance.
 
 </details>
 
 <details>
-<summary><b>One-time setup: download the model and five receipts</b></summary>
+<summary><b>Model and timing details</b></summary>
 
-From the repository root:
-
-```bash
-source .venv/bin/activate
-sh _for_TRAINER/scripts/setup_glm_ocr.sh
-python _for_TRAINER/scripts/prepare_receipt_data.py
-```
-
-If Kaggle asks for login, create your own
-[Kaggle API token](https://www.kaggle.com/settings/api) and add
-`KAGGLE_API_TOKEN` as a Codespaces secret. Never paste it into a notebook or chat.
-The MIT-licensed model snapshot is saved in
-`_for_STUDENT/tasks/06_receipt_ocr/model/glm-ocr/`.
-It is about **2.66 GB**; allow at least **6 GB spare disk** plus package caches.
-Model weights, receipt downloads and learner outputs are Git-ignored.
+The MIT-licensed model runs locally. Preparation downloads it; your script
+loads its weights into memory when it first reads a receipt.
 
 Our four-thread CPU test took about 115 seconds for one full page and used
 6.6 GiB RAM. Allow roughly **10–15 minutes** for five similar uncached receipts;
 loading time and your hardware can make it longer. Use one model process.
 
 </details>
+
+**Already prepared?** The model and receipt downloads were covered in
+[Workbook 1 · Master setup](01_start_here.ipynb). If you skipped that step or
+opened a new Codespace, complete it before continuing. No repeat download is
+needed in the same prepared Codespace.
+That setup created the model folder
+`_for_STUDENT/tasks/06_receipt_ocr/model/glm-ocr/` and downloaded the ten receipt
+images into `_for_STUDENT/data/notebook6/batch1_1/`. This avoids waiting for
+downloads here; the model still needs to load into memory when your script starts.
 
 Open a fresh Copilot Chat in **Agent** mode. Keep the supplied helper and source
 JPG/CSV files unchanged. Your script belongs in
@@ -76,8 +78,10 @@ JPG/CSV files unchanged. Your script belongs in
 {panel("TASK · READ THE RECEIPT", "Ask your coding agent to create "
     "<code>receipt_reader.py</code> and read <b>all visible text</b> using the "
     "supplied GLM-OCR helper. Save the text, then open it beside the original "
-    "image. Check the seller, client, items and summary.", "task")}
+    "image. <b>Refer to the receipt preview directly below.</b> Check the seller, "
+    "client, items and summary.", "task")}
 """),
+        code("show_receipt_preview()", "hide-input"),
         prompt("""Input: _for_STUDENT/data/notebook6/batch1_1/batch1-0001.jpg
 Output: _for_STUDENT/outputs/06_receipt_ocr/raw/batch1-0001.txt
 Script: _for_STUDENT/tasks/06_receipt_ocr/receipt_reader.py
@@ -105,7 +109,6 @@ the whole folder yet.
 
 </details>
 """),
-        code("show_receipt_preview()", "hide-input"),
         markdown("""
 ### What model startup can look like
 

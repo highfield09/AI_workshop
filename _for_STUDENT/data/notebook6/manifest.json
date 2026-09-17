@@ -1,6 +1,6 @@
 {
   "dataset": "osamahosamabdellatif/high-quality-invoice-images-for-ocr/versions/3",
-  "image_count": 5,
+  "image_count": 10,
   "files": [
     {
       "path": "batch1_1.csv",
@@ -31,6 +31,31 @@
       "path": "batch1_1/batch1-0005.jpg",
       "bytes": 212125,
       "sha256": "c212aa5440b23e4b5e97af3c271685769b1050edd73a1ee461acce2c5998eb3c"
+    },
+    {
+      "path": "batch1_1/batch1-0006.jpg",
+      "bytes": 197089,
+      "sha256": "53578760195449773b666bc9ed019504fa4c16e14f79181f12bb63f0a20a53b4"
+    },
+    {
+      "path": "batch1_1/batch1-0007.jpg",
+      "bytes": 255055,
+      "sha256": "e86c8029e20dcc19c0eabf497e9ec8f5d051d95292bd80ad9156180ab15b30a1"
+    },
+    {
+      "path": "batch1_1/batch1-0008.jpg",
+      "bytes": 208864,
+      "sha256": "d27664655834db2a5c1b3f30d28ff4c120c90ee426cceedc2afc74e66429ba8a"
+    },
+    {
+      "path": "batch1_1/batch1-0009.jpg",
+      "bytes": 166334,
+      "sha256": "d533e8f3b01f075e38018047706536b1d4da4b2938a80b138ba828ec9399d8ce"
+    },
+    {
+      "path": "batch1_1/batch1-0010.jpg",
+      "bytes": 174190,
+      "sha256": "4911f4a8769883843fdfbc1b07a623563dba5f92918cc6dc97b37eab86449ca1"
     }
   ]
 }
