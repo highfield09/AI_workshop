@@ -170,3 +170,19 @@ def test_iteration_one_explains_cloud_cpu_and_wait_time():
     for text in ["GitHub Codespace in the cloud", "CPU, not a GPU",
                  "Allow a few minutes", "not on your laptop", "If an error appears"]:
         assert text in cells[note].source
+
+
+def test_receipt_navigation_batch_tips_and_final_lesson():
+    cells = build_workbooks()["06_receipt_ocr"].cells
+    intro = next(c.source for c in cells if "## From invoice images" in c.source)
+    assert "(../data/notebook6/batch1_1/)" in intro
+    assert "(../data/notebook6/batch1_1/batch1-0001.jpg)" in intro
+    batch = next(c.source for c in cells if "### Iteration 3" in c.source)
+    assert "deviations or variations between extracted texts" in batch
+    assert "OCR mistake from a script/parsing mistake" in batch
+    assert "does not guarantee" in batch
+    assert "mini_quiz(" in cells[-3].source
+    assert "MODELS ARE NOT ALWAYS DROP-IN REPLACEMENTS" in cells[-2].source
+    assert "Benchmark before swapping" in cells[-2].source
+    assert "not literally" in cells[-2].source
+    assert "THANK YOU" in cells[-1].source

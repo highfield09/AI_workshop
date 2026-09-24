@@ -31,6 +31,17 @@ Describe what you want to your coding agent, run the result, and inspect whether
 it worked. Use a Codespace or computer with about **16 GB RAM**. No inference
 API key is needed. These receipts are JPG images, **not PDFs**.
 
+{panel("FIND THE SAMPLE RECEIPTS", "In Explorer, open <b>_for_STUDENT → data → "
+    "notebook6 → batch1_1</b>, then click a JPG to preview it. The files appear "
+    "after Workbook 1's downloads finish.", "info")}
+
+[Open the receipt folder](../data/notebook6/batch1_1/) ·
+[Preview the first receipt](../data/notebook6/batch1_1/batch1-0001.jpg)
+
+In a Codespace named `AI_workshop`, the full folder path is
+`/workspaces/AI_workshop/_for_STUDENT/data/notebook6/batch1_1/`.
+If a folder link does not open in your viewer, follow the Explorer path above.
+
 <details>
 <summary><b>Dataset, licensing and credit</b></summary>
 
@@ -220,6 +231,29 @@ Inspect all five results, then tell your agent which rows may be marked checked.
 Allow roughly **10–15 minutes** for five similar uncached receipts.
 
 <details>
+<summary><b>Tips · New receipts, new variations</b></summary>
+
+A language-based vision model can use visual and language context to interpret
+documents, so it may still extract useful text when the next receipt's layout
+or wording changes. This flexibility is useful, but it does not guarantee correct
+reading, reasoning or calculations.
+
+Your first script may have been tailored too closely to image 1. New receipts
+can expose bugs in how it turns OCR text into spreadsheet rows. Use your in-chat
+coding agent to inspect and fix these bugs, one small change at a time.
+
+- Look out for the agent describing **deviations or variations between extracted texts**:
+  different headings, line breaks, decimal separators, missing fields or item counts.
+- Give it the affected filename, raw text and error. Check the original image
+  to distinguish an OCR mistake from a script/parsing mistake.
+- Ask it to explain what changed, preserve the raw text and flag uncertain values
+  rather than inventing them.
+- Rerun the affected receipt and recheck image 1: a fix for one layout should not
+  break another. Reuse saved OCR text when only the parsing code changed.
+
+</details>
+
+<details>
 <summary><b>Hint · A reliable batch</b></summary>
 
 Select the first five filenames in sorted order, not every image in the folder.
@@ -271,5 +305,47 @@ so plotted values can be checked. The first five receipts are not a random sales
 - [ ] I inspected the spreadsheet and checked a product calculation.
 - [ ] I accounted for five receipts.
 - [ ] I can explain the chart and one limitation.
+"""),
+    ]
+
+
+def receipt_closing_cells(markdown, panel):
+    """Closing reflection and thanks, placed after the final mini quiz."""
+    return [
+        markdown(f"""
+## Final lesson · Choose a model and test the whole workflow
+
+{panel("KEY CONCEPT · MODELS ARE NOT ALWAYS DROP-IN REPLACEMENTS",
+    "Models are different tools: their <b>training, size, supported inputs and "
+    "output styles</b> can vary. A workflow tuned for one model may need changes "
+    "before another model works reliably in its place.", "success")}
+
+A **harness** is the surrounding code, prompts, tools and checks that let a model
+do a job. Here, it includes the image reader, recognition prompt, text parser,
+spreadsheet writer and validation checks. Even models with similar interfaces
+can return different text or need different resources.
+
+Choose a stable **working setup**—your model, runtime and harness. Think of it as
+your workflow's “operating system” only as an analogy; a model is not literally
+an operating system, and you are not locked into it forever.
+
+**Benchmark before swapping:** keep representative receipts and checked expected
+results. Record extraction accuracy, missing fields, failures, runtime and
+memory or cost. Test a candidate model on the same inputs and success criteria;
+adapt its prompt or supporting code where needed. Compare the complete workflow,
+not just one impressive response, before adopting the change.
+
+[Revisit the workshop's key concepts](../KEY_CONCEPTS.md).
+"""),
+        markdown(f"""
+{panel("THANK YOU · YOU HAVE REACHED THE END", "If you completed all four "
+    "iterations, you have turned receipt images into checked text, an Excel "
+    "table, a five-receipt workflow and a chart. <b>Thank you for working through "
+    "the exercises!</b> The skill to take away is describing a clear goal, "
+    "inspecting the result and improving it through small, tested changes.", "success")}
+
+Click **Submit & save** for any written answers you want to keep. Save notebook
+edits with **Ctrl+S** (Windows/Linux) or **Command+S** (Mac), and download the
+outputs you want to retain before deleting your Codespace.
 """),
     ]

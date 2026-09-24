@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "_for_TRAINER"))
 from llm_workshop.course import WORKBOOKS
 from llm_workshop.presentation import readable_html
-from scripts.receipt_lesson import receipt_lesson_cells
+from scripts.receipt_lesson import receipt_lesson_cells, receipt_closing_cells
 CATALOGUE_CSV = ROOT / "_for_STUDENT" / "data" / "notebook5" / "products.csv"
 CLASSROOM_SETUP_COMMANDS = """sh _for_TRAINER/scripts/setup_environment.sh &&
 sh _for_TRAINER/scripts/setup_glm_ocr.sh &&
@@ -1679,6 +1679,10 @@ If a command fails, read its error and use the help section below before continu
                 "not saved worksheet answers. If the button is inactive, rerun setup and this quiz cell."
             )))
             section.append(code(f"mini_quiz({stem!r})", "interactive", "mini-quiz", "hide-input"))
+        if stem == "06_receipt_ocr":
+            section.extend(receipt_closing_cells(
+                lambda text: markdown(readable_html(text)), panel,
+            ))
         if index < len(WORKBOOKS) - 1:
             next_stem, next_title, _ = WORKBOOKS[index + 1]
             save_note = (

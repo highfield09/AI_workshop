@@ -37,7 +37,13 @@ def test_quizzes_are_hidden_end_of_lesson_cells_except_workbook_five():
             continue
         assert len(indices) == 1
         index = indices[0]
-        assert index >= len(book.cells) - 2
+        # Workbook 6 closes with a model-selection lesson and a thank-you cell.
+        if stem == "06_receipt_ocr":
+            assert index == len(book.cells) - 3
+            assert "Final lesson" in book.cells[index + 1].source
+            assert "THANK YOU" in book.cells[index + 2].source
+        else:
+            assert index >= len(book.cells) - 2
         assert book.cells[index].metadata.jupyter.source_hidden
         assert book.cells[index].source == f"mini_quiz({stem!r})"
         assert "from llm_workshop.mini_quiz import mini_quiz" in book.cells[1].source
