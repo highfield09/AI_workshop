@@ -161,3 +161,12 @@ def test_startup_example_has_theme_independent_contrast_and_runtime_guidance():
     assert ".venv/bin/python _for_STUDENT/tasks/06_receipt_ocr/receipt_reader.py" in source
     assert "TASK_DIR.parents[1]" in source
     assert "Choosing a notebook kernel does not change" in source
+
+
+def test_iteration_one_explains_cloud_cpu_and_wait_time():
+    cells = build_workbooks()["06_receipt_ocr"].cells
+    note = next(i for i,c in enumerate(cells) if "ALLOW A FEW MINUTES · RUNNING ON CPU" in c.source)
+    assert "Implement only this first iteration" in cells[note-1].source
+    for text in ["GitHub Codespace in the cloud", "CPU, not a GPU",
+                 "Allow a few minutes", "not on your laptop", "If an error appears"]:
+        assert text in cells[note].source

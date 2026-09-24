@@ -87,6 +87,17 @@ Output: _for_STUDENT/outputs/06_receipt_ocr/raw/batch1-0001.txt
 Script: _for_STUDENT/tasks/06_receipt_ocr/receipt_reader.py
 Read the entire receipt using the supplied local GLM-OCR model.
 Save all recognised text. Implement only this first iteration."""),
+        markdown(f"""
+{panel("ALLOW A FEW MINUTES · RUNNING ON CPU", "For this class, GLM-OCR runs "
+    "inside your <b>GitHub Codespace in the cloud</b>, not on your laptop. "
+    "Our classroom setup uses a <b>CPU, not a GPU</b>. The vision model can "
+    "still run, but transcription is generally slower than with GPU acceleration. "
+    "<b>Allow a few minutes for the first receipt image to be transcribed</b>: "
+    "the model must load into memory before it reads the image. Timing varies "
+    "with the Codespace and image. Leave the script running and avoid launching "
+    "another copy while you wait. If an error appears, inspect it rather than "
+    "continuing to wait.", "info")}
+"""),
         markdown("""
 <details>
 <summary><b>Hint · Build your prompt in small steps</b></summary>
