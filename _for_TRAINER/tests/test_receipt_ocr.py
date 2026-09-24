@@ -132,11 +132,12 @@ def test_ocr_preparation_is_at_the_beginning_of_workbook_one():
     books = build_workbooks()
     opening = books["01_start_here"].cells[0].source
     assert "Master setup" in opening
-    assert opening.index("Master setup") < opening.index("START HERE")
+    first = "\n".join(c.source for c in books["01_start_here"].cells)
+    assert first.index("Master setup") < first.index("START HERE")
     for required in ["setup_glm_ocr.sh", "prepare_receipt_data.py",
                      "check_receipt_assets.py --require-data", "16 GB RAM",
-                     "Terminal → New Terminal", "does **not** load"]:
-        assert required in opening
+                     "Run All", "does **not** load"]:
+        assert required in first
     sixth = "\n".join(c.source for c in books["06_receipt_ocr"].cells)
     assert "sh _for_TRAINER/scripts/setup_glm_ocr.sh" not in sixth
     assert "(01_start_here.ipynb)" in sixth
@@ -149,3 +150,14 @@ def test_receipt_preview_follows_the_task_immediately():
     assert cells[task+1].source == "show_receipt_preview()"
     assert "copyable_prompt(" in cells[task+2].source
     assert sum(c.source == "show_receipt_preview()" for c in cells) == 1
+
+
+def test_startup_example_has_theme_independent_contrast_and_runtime_guidance():
+    cells = build_workbooks()["06_receipt_ocr"].cells
+    example = next(c.source for c in cells if "What model startup can look like" in c.source)
+    assert '<pre style="background:#F8FAFC !important;color:#1D2939 !important;' in example
+    assert 'color:#1D2939 !important">Loading local GLM-OCR processor' in example
+    source = "\n".join(c.source for c in cells)
+    assert ".venv/bin/python _for_STUDENT/tasks/06_receipt_ocr/receipt_reader.py" in source
+    assert "TASK_DIR.parents[1]" in source
+    assert "Choosing a notebook kernel does not change" in source

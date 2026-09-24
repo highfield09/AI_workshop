@@ -1562,6 +1562,41 @@ def build_workbooks():
         destination = (f"Submit & save writes to **_for_STUDENT/tasks/{stem}/answers.json**."
                        if questions else
                        "Your result is the repaired cell and its animation. Save this notebook to keep your edit.")
+        setup_help = f"""
+<details>
+<summary><b>If setup needs help</b></summary>
+
+- If `.venv` is missing, run `./_for_TRAINER/scripts/setup_environment.sh`
+  from the repository root, then retry the setup commands.
+- If the copy button is blocked, select the text in its box and press
+  **Ctrl+C** (Windows/Linux) or **Command+C** (Mac).
+- If Kaggle asks for login, create your own
+  [Kaggle API token](https://www.kaggle.com/settings/api) and add
+  `KAGGLE_API_TOKEN` as a Codespaces secret. Never paste it into a notebook or chat.
+- The model is saved in `_for_STUDENT/tasks/06_receipt_ocr/model/glm-ocr/`;
+  the ten images and reference CSV go in `_for_STUDENT/data/notebook6/`.
+  These downloads stay in your own Codespace and are Git-ignored.
+- This downloads the model; it does **not** load its weights into memory or
+  run OCR. That happens when you run your Workbook 6 script.
+- Reopening the same Codespace retains the files. A new or deleted-and-recreated
+  Codespace needs preparation again. Existing verified downloads are reused.
+- After installation, restart a running notebook kernel and click **Run All**
+  again to refresh its widgets. Run All displays the activities; it does not
+  submit your answers or run the terminal installation commands.
+
+</details>
+
+{question_text}
+
+{panel("START HERE", "The setup code can stay collapsed. Work through the activities "
+    "in order. If a button stops responding after a restart, rerun the setup cell "
+    "and that question's cell.")}
+
+{destination}
+
+These files stay in your own Codespace unless you choose to share them.
+Use your own accounts and API keys for external AI services.
+"""
         heading = markdown(readable_html(
             f"# Workbook {index + 1} · {title}\n\n"
             + (f"""
@@ -1575,55 +1610,27 @@ def build_workbooks():
     "about <b>2.66 GB</b>.", "info")}
 
 1. Wait for the normal Codespaces environment setup to finish.
-2. Open **Terminal → New Terminal**. Start at the repository root—the folder
-   containing `README.md`, `_for_STUDENT` and `_for_TRAINER`.
-3. Click **Copy commands** on the setup card just below this introduction.
-   Paste into the **terminal** (right-click → Paste), then press **Enter**.
-   These are shell commands, not an AI-chat prompt. No typing is needed.
+2. Click **Run All** at the top of this notebook. If prompted to select a Python
+   environment/kernel, choose **.venv** (for example, **Python 3.12 (.venv)**).
+   Once selected, click **Run All** again.
+3. If prompted to allow widgets or third-party widget scripts, accept for this
+   trusted workshop notebook. Let the cells finish so the widgets appear.
 
-<details>
-<summary><b>Manual-copy fallback · If the copy button is unavailable</b></summary>
+Use the **Copy commands** widget directly below. Paste into your existing
+**terminal** and press **Enter**. Start at the repository root—the folder with
+`README.md`, `_for_STUDENT` and `_for_TRAINER`. These are terminal commands,
+not an AI-chat prompt; you do not need to create a new terminal.
 
-Select and copy this entire block, then paste it into the terminal:
+Leave the terminal running while you read the workshop. The commands prepare
+the classroom packages, GLM-OCR model and ten receipt images for Workbook 6.
+Existing verified downloads are reused.
 
-```bash
-{CLASSROOM_SETUP_COMMANDS}
-```
-
-</details>
-
-The block checks/installs the classroom packages, then prepares Workbook 6's
-model and ten images. Existing verified downloads are reused. The copy card is
-saved with this notebook; if your viewer blocks it, use the fallback above.
-
-Leave that terminal open. You can read the introduction and explore the AI
-websites while it runs. Wait for it to finish successfully before running
-notebook code. If a command fails, read its error before continuing.
-
-The final check confirms the model and receipt files match their recorded
-provenance. Select the **.venv** kernel afterwards; if you already started a
-kernel, restart it once installation finishes and rerun its setup cell.
-
-<details>
-<summary><b>If setup needs help</b></summary>
-
-- If `.venv` is missing, run `./_for_TRAINER/scripts/setup_environment.sh`
-  from the repository root, then retry the block above.
-- If Kaggle asks for login, create your own
-  [Kaggle API token](https://www.kaggle.com/settings/api) and add
-  `KAGGLE_API_TOKEN` as a Codespaces secret. Never paste it into a notebook or chat.
-- The model is saved in `_for_STUDENT/tasks/06_receipt_ocr/model/glm-ocr/`;
-  the ten images and reference CSV go in `_for_STUDENT/data/notebook6/`.
-  These downloads stay in your own Codespace and are Git-ignored.
-- This downloads the model; it does **not** load its weights into memory or
-  run OCR. That still happens when you run your Workbook 6 script.
-- Reopening the same Codespace retains the files. A new or deleted-and-recreated
-  Codespace needs preparation again. Existing verified downloads are reused.
-
-</details>
+**Setup is successful when you see:**
+`Receipt model and available data match their recorded provenance.`
+If a command fails, read its error and use the help section below before continuing.
 
 """ if stem == "01_start_here" else "")
-            + f"{question_text}\n\n"
+            + ("" if stem == "01_start_here" else f"{question_text}\n\n"
             + panel("START HERE", "Select the <b>.venv</b> Python kernel. "
                     "Run the setup cell below with <b>Shift + Enter</b> or its "
                     "<b>▶ play button</b>, then run each activity cell in order. "
@@ -1631,7 +1638,7 @@ kernel, restart it once installation finishes and rerun its setup cell.
                     "after reopening or restarting, rerun setup and that question's cell.")
             + "\n\n" + destination + "\n\n"
             "These files stay in your own Codespace unless you choose to share them. "
-            "Use your own accounts and API keys for external AI services."
+            "Use your own accounts and API keys for external AI services.")
         ))
         section = [heading, code(SETUP, "setup", "hide-input")]
         if stem == "01_start_here":
@@ -1648,6 +1655,8 @@ kernel, restart it once installation finishes and rerun its setup cell.
                 continue
             if cell.source.startswith("# Vibe Coding Workshop — Start Here"):
                 continue  # Replaced by the standalone workbook header.
+            if stem == "01_start_here" and "RUN A CELL" in cell.source:
+                section.append(markdown(readable_html(setup_help)))
             cell.source = cell.source.replace(
                 "_for_STUDENT/tasks/workbook_answers.json", f"_for_STUDENT/tasks/{stem}/answers.json"
             ).replace(

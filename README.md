@@ -9,9 +9,9 @@ A beginner-friendly workshop for learning how to reproduce a clear output with h
 1. Open the repository in GitHub Codespaces.
 2. Wait for the development container to finish rebuilding.
 3. Open [Workbook 1](_for_STUDENT/notebooks/01_start_here.ipynb).
-4. Follow **Master setup** at the beginning: click **Copy commands**, paste into **Terminal → New Terminal** at the repository root and press **Enter**. This prepares the classroom packages and Workbook 6's model and receipts. A manual-copy fallback is provided.
-5. Wait for preparation to finish, then select the Python kernel marked **.venv** (for example, **Python 3.12 (.venv)**). If a kernel was already running, restart it after installation.
-6. Run the setup cell at the top with **Shift + Enter** or its **▶ play button**, then run each activity cell in order. Each workbook has its own notebook setup; you can reopen it independently. The terminal preparation is only needed once per Codespace.
+4. Click **Run All** in Workbook 1. If prompted, select the Python kernel marked **.venv** (for example, **Python 3.12 (.venv)**), then click **Run All** again. Accept any widget/third-party script prompt for this trusted workshop notebook.
+5. In **Master setup**, use the **Copy commands** widget and paste into your existing terminal at the repository root, then press **Enter**. This prepares the classroom packages and Workbook 6's model and receipts.
+6. Wait for **Receipt model and available data match their recorded provenance.** After installation, restart the notebook kernel and click **Run All** to refresh the widgets. Then work through the activities. Run All displays questions; it does not submit answers or run the terminal commands. Terminal preparation is only needed once per Codespace.
 
 If a question is visible but its button does not respond after reopening or restarting the kernel, rerun the setup cell and that question's cell. Saved answers will reload.
 

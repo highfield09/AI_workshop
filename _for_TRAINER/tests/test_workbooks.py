@@ -12,8 +12,17 @@ from scripts.build_course_notebook import build_workbooks
 def test_master_setup_card_matches_readme_and_has_manual_fallback():
     from scripts.build_course_notebook import CLASSROOM_SETUP_COMMANDS
     book = build_workbooks()["01_start_here"]
-    assert CLASSROOM_SETUP_COMMANDS in book.cells[0].source
-    assert "Manual-copy fallback" in book.cells[0].source
+    assert "Run All" in book.cells[0].source
+    assert "third-party widget scripts" in book.cells[0].source
+    assert "Receipt model and available data match their recorded provenance." in book.cells[0].source
+    assert "Terminal → New Terminal" not in book.cells[0].source
+    assert "If setup needs help" not in book.cells[0].source
+    help_index = next(i for i,c in enumerate(book.cells) if "If setup needs help" in c.source)
+    assert help_index > 1
+    assert "Questions 1–4" in book.cells[help_index].source
+    assert "API keys for external AI services" in book.cells[help_index].source
+    assert "Ctrl+C" in book.cells[help_index].source
+    assert "RUN A CELL" in book.cells[help_index+1].source
     assert "destination='terminal'" in book.cells[1].source
     assert repr(CLASSROOM_SETUP_COMMANDS) in book.cells[1].source
     assert CLASSROOM_SETUP_COMMANDS in (course.ROOT / "README.md").read_text()

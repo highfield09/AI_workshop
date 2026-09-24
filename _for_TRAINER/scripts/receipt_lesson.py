@@ -107,6 +107,18 @@ Use the supplied `model.glm_reader` helper with the full-text task
 preserve raw text unchanged and report incomplete responses. Do not process
 the whole folder yet.
 
+Run the script from the repository root with the environment prepared in Workbook 1:
+
+```bash
+.venv/bin/python _for_STUDENT/tasks/06_receipt_ocr/receipt_reader.py
+```
+
+Choosing a notebook kernel does not change the terminal's Python. A bare `python3`
+may lack the OCR packages even when the model files have downloaded correctly.
+If `TASK_DIR` is the script's containing directory, `TASK_DIR.parents[1]` is
+`_for_STUDENT`; `TASK_DIR.parents[2]` is the repository root. Ask your agent to
+check the resolved input path before loading the model.
+
 </details>
 """),
         markdown("""
@@ -114,11 +126,12 @@ the whole folder yet.
 
 **Illustrative output—not a live download or benchmark:**
 
-```text
-Loading local GLM-OCR processor...
+<pre style="background:#F8FAFC !important;color:#1D2939 !important;
+border:1px solid #D0D5DD;padding:14px;border-radius:8px;white-space:pre-wrap;
+overflow-wrap:anywhere;color-scheme:light"><code style="background:transparent !important;
+color:#1D2939 !important">Loading local GLM-OCR processor...
 Loading weights: [████████████████████] 100%
-Model ready. Reading batch1-0001.jpg...
-```
+Model ready. Reading batch1-0001.jpg...</code></pre>
 
 The weights must be loaded into memory before the first image is read.
 This can take time. Later images in the same process reuse the loaded model.

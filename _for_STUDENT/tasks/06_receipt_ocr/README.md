@@ -34,4 +34,15 @@ minutes for five similar uncached pages. The helper reuses one model in the same
 process. Do not edit it or start parallel model copies. Ask your agent to anchor
 file paths to the script rather than the terminal's current folder.
 
+From the repository root, run your script with the prepared interpreter:
+
+```bash
+.venv/bin/python _for_STUDENT/tasks/06_receipt_ocr/receipt_reader.py
+```
+
+The notebook kernel selection does not activate the terminal environment.
+If `TASK_DIR` is the folder containing your script, `TASK_DIR.parents[1]`
+points to `_for_STUDENT`, while `TASK_DIR.parents[2]` points to the repository
+root. Verify the image path before starting the model.
+
 Q17–Q22 in the notebook each save separately to this workbook's `answers.json`.
