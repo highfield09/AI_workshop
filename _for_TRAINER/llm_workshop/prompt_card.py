@@ -9,9 +9,13 @@ from uuid import uuid4
 from IPython.display import HTML
 
 
-def copyable_prompt(prompt: str, *, title: str = "Copy this prompt"):
+def copyable_prompt(prompt: str, *, title: str = "Copy this prompt", destination: str = "chat"):
     """Return a prompt card whose copy action stays inside the browser click."""
 
+    if destination not in {"chat", "terminal"}:
+        raise ValueError("destination must be chat or terminal")
+    paste_target = "the terminal" if destination == "terminal" else "the AI chat"
+    button_label = "Copy commands" if destination == "terminal" else "Copy prompt"
     prompt = dedent(prompt).strip()
     line_count = prompt.count("\n") + 1
     prompt_height = max(115, min(360, 24 * line_count + 34))
@@ -35,8 +39,8 @@ def copyable_prompt(prompt: str, *, title: str = "Copy this prompt"):
     padding:10px 12px;background:#FFFFFF">
     <button type="button" data-copy-prompt style="border:1px solid #1570EF;
       border-radius:7px;background:#1570EF;color:#FFFFFF;padding:7px 12px;
-      font-weight:600;cursor:pointer">⧉ Copy prompt</button>
-    <small data-copy-status style="color:#475467">Click once, then paste into the AI chat.</small>
+      font-weight:600;cursor:pointer">⧉ {button_label}</button>
+    <small data-copy-status style="color:#475467">Click once, then paste into {paste_target}.</small>
   </div>
 </div>
 <script>
@@ -66,9 +70,9 @@ def copyable_prompt(prompt: str, *, title: str = "Copy this prompt"):
       button.textContent = "✓ Copied";
       button.style.background = "#067647";
       button.style.borderColor = "#067647";
-      status.innerHTML = "<b style='color:#067647'>Copied.</b> Paste it into the AI chat.";
+      status.innerHTML = "<b style='color:#067647'>Copied.</b> Paste it into {paste_target}.";
     }} else {{
-      status.innerHTML = "<b>Prompt selected.</b> Press Ctrl+C (Windows/Linux) or Cmd+C (Mac).";
+      status.innerHTML = "<b>Text selected.</b> Press Ctrl+C (Windows/Linux) or Cmd+C (Mac).";
     }}
   }});
 }})();

@@ -9,14 +9,15 @@ A beginner-friendly workshop for learning how to reproduce a clear output with h
 1. Open the repository in GitHub Codespaces.
 2. Wait for the development container to finish rebuilding.
 3. Open [Workbook 1](_for_STUDENT/notebooks/01_start_here.ipynb).
-4. Select the Python kernel marked **.venv** (for example, **Python 3.12 (.venv)**) if VS Code asks for one.
-5. Run the setup cell at the top with **Shift + Enter** or its **▶ play button**, then run each activity cell in order. Each workbook has its own setup; you can reopen it independently.
+4. Follow **Master setup** at the beginning: click **Copy commands**, paste into **Terminal → New Terminal** at the repository root and press **Enter**. This prepares the classroom packages and Workbook 6's model and receipts. A manual-copy fallback is provided.
+5. Wait for preparation to finish, then select the Python kernel marked **.venv** (for example, **Python 3.12 (.venv)**). If a kernel was already running, restart it after installation.
+6. Run the setup cell at the top with **Shift + Enter** or its **▶ play button**, then run each activity cell in order. Each workbook has its own notebook setup; you can reopen it independently. The terminal preparation is only needed once per Codespace.
 
 If a question is visible but its button does not respond after reopening or restarting the kernel, rerun the setup cell and that question's cell. Saved answers will reload.
 
 ### Do learners need Python on their laptops?
 
-No, not when they use GitHub Codespaces. Python, Jupyter, the extensions, and all course packages run inside the online Codespace.
+No, not when they use GitHub Codespaces. Python, Jupyter and the configured extensions run inside the online Codespace. Its initial setup installs the base packages; Workbook 1's master setup adds the OCR runtime and downloads.
 
 If the notebook asks for a kernel, choose the Python interpreter marked **.venv**. Codespaces users do not need to install Python locally.
 
@@ -41,13 +42,14 @@ Workbook 5 has no mini quiz. For Workbook 3, put your chosen image in
 
 ### Prepare for Workbook 6 at the start of Workbook 1
 
-Use a **16 GB RAM environment** for this workbook. GLM-OCR is a local
-vision-language model that returns document fields, not just unstructured OCR
-text. Start its preparation from the **Master setup** section at the beginning
+Use a **16 GB RAM environment** for Workbook 6. GLM-OCR is a local
+vision-language model used here to transcribe receipt images. Students then
+turn the checked text into structured tables with their script. Start its preparation from the **Master setup** section at the beginning
 of Workbook 1, so the downloads are ready for the later OCR exercise.
 After normal Codespaces setup finishes, run from the repository root:
 
 ```bash
+sh _for_TRAINER/scripts/setup_environment.sh &&
 sh _for_TRAINER/scripts/setup_glm_ocr.sh &&
 .venv/bin/python _for_TRAINER/scripts/prepare_receipt_data.py &&
 .venv/bin/python _for_TRAINER/scripts/check_receipt_assets.py --require-data
@@ -59,7 +61,7 @@ Both downloads are Git-ignored and stay in your own Codespace. Allow at least
 **6 GB spare disk** for model and runtime, plus possible package-cache space.
 Model provenance and SHA-256 hashes are committed; the large weights are not.
 Inference needs no API key or GPU and runs locally after installation. Our
-four-thread CPU sample took about 47 seconds and peaked at 6.6 GiB RAM; hardware
+four-thread CPU full-page sample took about 115 seconds and used 6.6 GiB RAM; hardware
 and prompts affect results. An 8 GB default Codespace may not have enough
 headroom. The notebook documents setup and cites the model and Kaggle uploader.
 
@@ -73,7 +75,7 @@ The supplied documents are JPGs, not PDFs; PDF conversion is not part of this le
 Allow roughly 10–15 minutes for five similar uncached receipts; reuse saved text
 when refining Excel or charts. The model helper supports longer full-text responses
 and reuses one loaded model sequentially. Matplotlib is included in the optional
-Workbook 6 setup. This is a student exercise, so a completed pipeline is not supplied.
+OCR setup run at the start of Workbook 1. This is a student exercise, so a completed pipeline is not supplied.
 
 To view Excel files, install **SpreadJS XLSX Editor** by **MESCIUS** from Extensions, or use Workbook 6's built-in read-only spreadsheet preview. The script, spreadsheet, raw model response and written answers are Git-ignored. No Microsoft Excel installation is needed.
 
@@ -82,6 +84,10 @@ To view Excel files, install **SpreadJS XLSX Editor** by **MESCIUS** from Extens
 Each student should open their **own Codespace** and use their own AI accounts and keys. Separate Codespaces have separate filesystems: saving an answer or repairing the CSV in yours does not change another student's copy or the shared repository. [GitHub explains Codespaces isolation here](https://docs.github.com/en/codespaces/reference/security-in-github-codespaces).
 
 Each **Submit & save** button writes to `_for_STUDENT/tasks/<workbook-name>/answers.json`, for example `_for_STUDENT/tasks/02_models_and_reasoning/answers.json`. Files appear on the first save; answers reload when you rerun the question. Q1 and Q2 are quick self-checks, not saved responses. Workbook 4 has no written-answer form: save its notebook to preserve your repaired code.
+
+After submitting, look for **Saved**. Save notebook edits with **Ctrl+S**
+(Windows/Linux), **Command+S** (Mac), or **File → Save**. Auto Save may save
+notebook edits, but it does not click **Submit & save** for you.
 
 Create the catalogue at `_for_STUDENT/outputs/05_shopping_catalogue/catalogue.html`. Answer JSON and generated HTML are Git-ignored. Previously created `_for_STUDENT/tasks/workbook_answers.json` and `_for_STUDENT/outputs/notebook1/` files stay where they are; they are not deleted or automatically merged into the new workbooks.
 
@@ -99,15 +105,24 @@ private model-answer tools.
 
 | Folder | What belongs there |
 |---|---|
-| _for_STUDENT/notebooks/ | Course lessons |
-| _for_STUDENT/tasks/ | Separate saved-answer folder for each workbook |
-| _for_STUDENT/data/ | Small course input files |
+| _for_STUDENT/data/ | Exercise inputs, including the downloaded receipt sample |
+| _for_STUDENT/notebooks/ | Six course lessons |
 | _for_STUDENT/outputs/ | Viewers, reports and catalogue files you create |
 | _for_STUDENT/Resources/ | Optional student reading and reports |
+| _for_STUDENT/tasks/ | Scripts, local OCR model and per-workbook saved answers |
 | _for_STUDENT/KEY_CONCEPTS.md | Student take-home reference |
-| _for_TRAINER/scripts/ | Reusable instructions and course checks |
+| _for_STUDENT/README.md | Guide to the student folder |
 | _for_TRAINER/llm_workshop/ | Notebook widgets and output-saving support |
+| _for_TRAINER/scripts/ | Reusable instructions and course checks |
 | _for_TRAINER/tests/ | Course maintenance checks, not student exercises |
+
+The student entries above follow Explorer's default order: folders alphabetically,
+then files. Configuration and generated environment folders are not listed here.
+For the first README question, read **this repository-root `README.md`**, not
+the separate guide inside `_for_STUDENT/`.
+
+Trainers and TAs: rehearse all six workbooks using the
+[pre-class checklist](_for_TRAINER/TA_CHECKLIST.md).
 
 The root README, requirements, Makefile and hidden VS Code/Codespaces settings
 stay at the repository root because they configure the environment. Treat them

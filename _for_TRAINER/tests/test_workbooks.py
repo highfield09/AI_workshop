@@ -9,6 +9,31 @@ from llm_workshop.worksheet import worksheet_box
 from scripts.build_course_notebook import build_workbooks
 
 
+def test_master_setup_card_matches_readme_and_has_manual_fallback():
+    from scripts.build_course_notebook import CLASSROOM_SETUP_COMMANDS
+    book = build_workbooks()["01_start_here"]
+    assert CLASSROOM_SETUP_COMMANDS in book.cells[0].source
+    assert "Manual-copy fallback" in book.cells[0].source
+    assert "destination='terminal'" in book.cells[1].source
+    assert repr(CLASSROOM_SETUP_COMMANDS) in book.cells[1].source
+    assert CLASSROOM_SETUP_COMMANDS in (course.ROOT / "README.md").read_text()
+    assert CLASSROOM_SETUP_COMMANDS.startswith("sh _for_TRAINER/scripts/setup_environment.sh &&")
+    assert book.cells[1].metadata.jupyter.source_hidden
+
+
+def test_workshop_map_matches_student_folder_order():
+    book = build_workbooks()["01_start_here"]
+    tree = next(c.source for c in book.cells if "WORKSHOP MAP" in c.source)
+    folders = ["data", "notebooks", "outputs", "Resources", "tasks"]
+    assert folders == sorted(folders, key=str.casefold)
+    positions = [tree.index(name + "/") for name in folders]
+    assert positions == sorted(positions)
+    for folder in folders:
+        assert (course.ROOT / "_for_STUDENT" / folder).is_dir()
+    assert tree.index("KEY_CONCEPTS.md") < tree.index("README.md")
+    assert "Configuration and environment" in tree
+
+
 def test_split_boundaries_and_independent_setup():
     books = build_workbooks()
     assert list(books) == [x[0] for x in course.WORKBOOKS]

@@ -18,6 +18,10 @@ from llm_workshop.course import WORKBOOKS
 from llm_workshop.presentation import readable_html
 from scripts.receipt_lesson import receipt_lesson_cells
 CATALOGUE_CSV = ROOT / "_for_STUDENT" / "data" / "notebook5" / "products.csv"
+CLASSROOM_SETUP_COMMANDS = """sh _for_TRAINER/scripts/setup_environment.sh &&
+sh _for_TRAINER/scripts/setup_glm_ocr.sh &&
+.venv/bin/python _for_TRAINER/scripts/prepare_receipt_data.py &&
+.venv/bin/python _for_TRAINER/scripts/check_receipt_assets.py --require-data"""
 PALETTES = {
     "hint": {
         "background": "#FDF2FA",
@@ -285,14 +289,20 @@ You do not need to memorize commands. The aim is to learn where things live and 
     "border:1px solid #D0D5DD;border-radius:8px;line-height:1.55;"
     "overflow:auto;max-width:100%;box-sizing:border-box'>AI_workshop/\n"
     "├── _for_STUDENT/\n"
-    "│   ├── notebooks/     ← your lessons\n"
-    "│   ├── tasks/         ← scripts and saved answers\n"
     "│   ├── data/          ← exercise inputs\n"
+    "│   ├── notebooks/     ← your six lessons\n"
     "│   ├── outputs/       ← results you create\n"
     "│   ├── Resources/     ← optional reading\n"
-    "│   └── KEY_CONCEPTS.md ← take-home reference\n"
+    "│   ├── tasks/         ← scripts, model and saved answers\n"
+    "│   ├── KEY_CONCEPTS.md ← take-home reference\n"
+    "│   └── README.md       ← student-folder guide\n"
     "├── _for_TRAINER/      ← notebook support; no edits needed\n"
     "└── README.md    ← the project welcome page</pre>"
+    "<p style='margin:10px 0 0'>This focused map follows Explorer's default "
+    "alphabetical order: folders first, then files. Configuration and environment "
+    "entries are omitted; your root folder may have a different name. "
+    "The root <b>README.md</b> is the project welcome page, not the README "
+    "inside <b>_for_STUDENT</b>.</p>"
     "<p style='margin:10px 0 0'>Keep each challenge self-contained inside "
     "its own <b>_for_STUDENT/tasks/</b> folder. Put shared source files in <b>_for_STUDENT/data/</b> "
     "and finished examples in <b>_for_STUDENT/outputs/</b>.</p>",
@@ -1567,13 +1577,24 @@ def build_workbooks():
 1. Wait for the normal Codespaces environment setup to finish.
 2. Open **Terminal → New Terminal**. Start at the repository root—the folder
    containing `README.md`, `_for_STUDENT` and `_for_TRAINER`.
-3. Paste this block into the **terminal**, not a notebook cell:
+3. Click **Copy commands** on the setup card just below this introduction.
+   Paste into the **terminal** (right-click → Paste), then press **Enter**.
+   These are shell commands, not an AI-chat prompt. No typing is needed.
+
+<details>
+<summary><b>Manual-copy fallback · If the copy button is unavailable</b></summary>
+
+Select and copy this entire block, then paste it into the terminal:
 
 ```bash
-sh _for_TRAINER/scripts/setup_glm_ocr.sh &&
-.venv/bin/python _for_TRAINER/scripts/prepare_receipt_data.py &&
-.venv/bin/python _for_TRAINER/scripts/check_receipt_assets.py --require-data
+{CLASSROOM_SETUP_COMMANDS}
 ```
+
+</details>
+
+The block checks/installs the classroom packages, then prepares Workbook 6's
+model and ten images. Existing verified downloads are reused. The copy card is
+saved with this notebook; if your viewer blocks it, use the fallback above.
 
 Leave that terminal open. You can read the introduction and explore the AI
 websites while it runs. Wait for it to finish successfully before running
@@ -1613,6 +1634,11 @@ kernel, restart it once installation finishes and rerun its setup cell.
             "Use your own accounts and API keys for external AI services."
         ))
         section = [heading, code(SETUP, "setup", "hide-input")]
+        if stem == "01_start_here":
+            section[1].source += (
+                f"\ndisplay(copyable_prompt({CLASSROOM_SETUP_COMMANDS!r}, "
+                "title='Classroom setup · Copy into the terminal', destination='terminal'))"
+            )
         if stem != "05_shopping_catalogue":
             section[1].source += "\nfrom llm_workshop.mini_quiz import mini_quiz"
         if stem == "06_receipt_ocr":

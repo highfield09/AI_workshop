@@ -17,3 +17,11 @@ def test_prompt_card_copies_during_the_browser_click_with_fallback():
     assert "navigator.clipboard.writeText(area.value)" in rendered
     assert "Ctrl+C" in rendered
     assert "width:100%;max-width:100%" in rendered
+
+
+def test_terminal_card_never_directs_students_to_ai_chat():
+    rendered = unescape(copyable_prompt("echo ready", destination="terminal").data)
+    assert "Copy commands" in rendered
+    assert "Paste it into the terminal" in rendered
+    assert "AI chat" not in rendered
+    assert "Ctrl+C" in rendered
