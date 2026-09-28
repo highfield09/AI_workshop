@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT / "_for_TRAINER"))
 from llm_workshop.course import WORKBOOKS
 from llm_workshop.presentation import readable_html
 from scripts.receipt_lesson import receipt_lesson_cells, receipt_closing_cells
+from scripts.extensions_lesson import extensions_lesson_cells
 CATALOGUE_CSV = ROOT / "_for_STUDENT" / "data" / "notebook5" / "products.csv"
 CLASSROOM_SETUP_COMMANDS = """sh _for_TRAINER/scripts/setup_environment.sh &&
 sh _for_TRAINER/scripts/setup_glm_ocr.sh &&
@@ -1255,6 +1256,11 @@ display(Images(
     "success",
 )}
 
+"""
+        ),
+        *extensions_lesson_cells(markdown, code),
+        markdown(
+            f"""
 {panel(
     "EXPERIMENT CHECKPOINT",
     "<ul style='margin:0;padding-left:20px'>"
@@ -1262,10 +1268,11 @@ display(Images(
     "<li>use Ask mode to suggest a small repair you apply yourself;</li>"
     "<li>use Agent mode to edit the GIF cell, then review what changed;</li>"
     "<li>rerun repaired cells and inspect their outputs;</li>"
+    "<li>convert the PDF with MarkItDown and an agent, then compare both files;</li>"
     "<li>save your edited notebook with <b>Ctrl+S</b> (Windows/Linux) or "
     "<b>Command+S</b> (Mac).</li></ul>"
     "<p style='margin:10px 0 0'>This workbook has no written-answer form or "
-    "<code>answers.json</code>. Your work is the repaired notebook. "
+    "<code>answers.json</code>. Your work is the repaired notebook and two Markdown conversions. "
     "The mini quiz is practice only.</p>",
     "success",
 )}
@@ -1558,10 +1565,10 @@ def build_workbooks():
         if stem == "02_models_and_reasoning":
             title = "Compare [HuggingChat](https://huggingface.co/chat/models) models and check evidence"
         question_text = (f"Questions {questions[0]}–{questions[1]}" if questions
-                         else "Hands-on repair · no written submission")
+                         else "Hands-on repair and conversion · no written submission")
         destination = (f"Submit & save writes to **_for_STUDENT/tasks/{stem}/answers.json**."
                        if questions else
-                       "Your result is the repaired cell and its animation. Save this notebook to keep your edit.")
+                       "Your results are two repaired cells and two PDF-to-Markdown conversions. Save your notebook and generated files.")
         setup_help = f"""
 <details>
 <summary><b>If setup needs help</b></summary>
@@ -1689,7 +1696,7 @@ If a command fails, read its error and use the help section below before continu
                 "For written worksheet answers, click **Submit & save** and look for "
                 "**Saved** below the response. Auto Save does not submit these answers.\n\n"
                 if questions else
-                "This workbook has no written-answer form. Save your repaired notebook.\n\n"
+                "This workbook has no written-answer form. Save your repaired notebook and the two Markdown files in _for_STUDENT/outputs/04_debugging_and_extensions/.\n\n"
             )
             section.append(markdown(readable_html(
                 "## A good stopping point\n\n" + save_note

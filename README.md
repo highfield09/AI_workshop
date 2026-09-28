@@ -28,7 +28,7 @@ If the notebook asks for a kernel, choose the Python interpreter marked **.venv*
 | [1 · Start here](_for_STUDENT/notebooks/01_start_here.ipynb) | Workspace, prompting, tokens and Google AI Mode | Q1–Q4 |
 | [2 · Models and reasoning](_for_STUDENT/notebooks/02_models_and_reasoning.ipynb) | HuggingChat model cards, translation and source checking | Q5–Q9 |
 | [3 · Vision and context](_for_STUDENT/notebooks/03_vision_and_context.ipynb) | Vision in Copilot, request costs and Gemini effort comparisons | Q10–Q15 |
-| [4 · Debugging](_for_STUDENT/notebooks/04_debugging.ipynb) | Repair manually in Ask mode, then review an Agent edit | Two repaired cells and animations |
+| [4 · Debugging and extensions](_for_STUDENT/notebooks/04_debugging_and_extensions.ipynb) | Repair in Ask/Agent mode; compare MarkItDown and agent PDF conversion | Two repaired cells and two Markdown files |
 | [5 · Shopping catalogue](_for_STUDENT/notebooks/05_shopping_catalogue.ipynb) | Build HTML from messy CSV data; repair, sort and refine | Q16 and your catalogue |
 | [6 · Receipt OCR](_for_STUDENT/notebooks/06_receipt_ocr.ipynb) | Full text → checked item tables → 5 receipts → chart | Q17–Q22, spreadsheets and chart |
 
@@ -83,7 +83,7 @@ To view Excel files, install **SpreadJS XLSX Editor** by **MESCIUS** from Extens
 
 Each student should open their **own Codespace** and use their own AI accounts and keys. Separate Codespaces have separate filesystems: saving an answer or repairing the CSV in yours does not change another student's copy or the shared repository. [GitHub explains Codespaces isolation here](https://docs.github.com/en/codespaces/reference/security-in-github-codespaces).
 
-Each **Submit & save** button writes to `_for_STUDENT/tasks/<workbook-name>/answers.json`, for example `_for_STUDENT/tasks/02_models_and_reasoning/answers.json`. Files appear on the first save; answers reload when you rerun the question. Q1 and Q2 are quick self-checks, not saved responses. Workbook 4 has no written-answer form: save its notebook to preserve your repaired code.
+Each **Submit & save** button writes to `_for_STUDENT/tasks/<workbook-name>/answers.json`, for example `_for_STUDENT/tasks/02_models_and_reasoning/answers.json`. Files appear on the first save; answers reload when you rerun the question. Q1 and Q2 are quick self-checks, not saved responses. Workbook 4 has no written-answer form: save its notebook to preserve your repaired code and inspect your two Markdown conversions in `_for_STUDENT/outputs/04_debugging_and_extensions/`.
 
 After submitting, look for **Saved**. Save notebook edits with **Ctrl+S**
 (Windows/Linux), **Command+S** (Mac), or **File → Save**. Auto Save may save
@@ -105,7 +105,7 @@ private model-answer tools.
 
 | Folder | What belongs there |
 |---|---|
-| _for_STUDENT/data/ | Exercise inputs, including the downloaded receipt sample |
+| _for_STUDENT/data/ | Exercise inputs, including the permanent Notebook 4 PDF and downloaded receipt sample |
 | _for_STUDENT/notebooks/ | Six course lessons |
 | _for_STUDENT/outputs/ | Viewers, reports and catalogue files you create |
 | _for_STUDENT/Resources/ | Optional student reading and reports |

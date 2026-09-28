@@ -69,7 +69,7 @@ def test_split_boundaries_and_independent_setup():
                 compile(cell.source, stem, "exec")
             else:
                 assert 'class="workshop-reading"' in cell.source
-    assert "expected-error" in str(books["04_debugging"])
+    assert "expected-error" in str(books["04_debugging_and_extensions"])
     assert "expected-error" not in str(books["05_shopping_catalogue"])
 
 

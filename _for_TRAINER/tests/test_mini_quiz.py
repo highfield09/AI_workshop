@@ -53,7 +53,7 @@ def test_resource_paths_vision_followups_and_billing_location():
     books = build_workbooks()
     assert "https://huggingface.co/chat/models" in books["02_models_and_reasoning"].cells[0].source
     vision = "\n".join(c.source for c in books["03_vision_and_context"].cells)
-    debugging = "\n".join(c.source for c in books["04_debugging"].cells)
+    debugging = "\n".join(c.source for c in books["04_debugging_and_extensions"].cells)
     assert "- **Route:**" not in vision
     assert "What programs can be used to visualise and generate these files?" in vision
     assert "_for_STUDENT/data/notebook3/" in vision
@@ -79,7 +79,7 @@ def test_model_observations_and_ec_claims_are_inside_the_worksheets():
 
 def test_agent_gif_exercise_fails_then_runs_with_one_name_repair(monkeypatch):
     import IPython.display
-    book = build_workbooks()["04_debugging"]
+    book = build_workbooks()["04_debugging_and_extensions"]
     errors = [c for c in book.cells if "expected-error" in c.metadata.get("tags", [])]
     assert len(errors) == 2
     cell = next(c for c in errors if "agent-repair" in c.metadata.tags)

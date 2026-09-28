@@ -23,7 +23,7 @@ QUESTIONS = {
         ('You are switching to a different project. What is a useful habit?', ['Keep adding unrelated instructions', 'Start a new focused chat', 'Assume unlimited memory'], 1, 'The active context is bounded. Older material may be summarised or omitted, and unrelated context can reduce relevance.'),
         ('What determines the cost of a typical OpenRouter API request?', ['The model used and the number of input/output tokens processed', 'How long you keep the notebook open', 'The number of files in your project'], 0, "API costs generally depend on the selected model’s pricing and the tokens processed—not how long your notebook or application is running."),
     ],
-    '04_debugging': [
+    '04_debugging_and_extensions': [
         ('A NameError says disco_colours is undefined. What should you inspect?', ['Variable spelling and where it was defined', 'The invoice CSV', 'Your display brightness'], 0, 'Compare the reported name with the code that creates it; a small spelling mismatch can stop execution.'),
         ('Which debugging prompt keeps the repair focused?', ['Rewrite the entire project', 'Ignore the traceback', 'Explain this error and give the smallest fix'], 2, 'Include the relevant code and traceback. Ask for a small change you can understand and test.'),
         ('The AI suggests a repair. How do you know it worked?', ['The answer sounds confident', 'Apply it, rerun, and inspect the result', 'Delete the error message'], 1, 'A proposed fix is a hypothesis until the code runs and the intended behaviour is checked.'),

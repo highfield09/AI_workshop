@@ -41,3 +41,8 @@ data/notebook6/batch1_1.csv
 # Private answer keys must live outside this repository; defence in depth.
 **/model_answers/
 **/PRIVATE_for_TRAINER/
+
+# Workbook 4 converter checkout and learner-generated Markdown.
+/markitdown/
+_for_STUDENT/outputs/04_debugging_and_extensions/*
+!_for_STUDENT/outputs/04_debugging_and_extensions/README.md
