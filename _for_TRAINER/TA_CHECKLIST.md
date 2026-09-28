@@ -13,8 +13,8 @@ supporting participants. This is a preparation checklist, not a record of comple
 - Run both debugging tasks in Workbook 4, including Agent-mode edit review.
 - Rehearse Experiment 5C: install Microsoft MarkItDown, convert the supplied
   `_for_STUDENT/data/notebook4/pipeline_overview_sample.pdf`, and compare with a separate agent
-  conversion. Check workspace MCP installation and local-file access if using
-  that alternative. Standard MarkItDown PDF conversion needs no LLM/API key.
+  conversion. Use the terminal CLI for the MarkItDown conversion.
+  Standard MarkItDown PDF conversion needs no LLM/API key.
 - Open Workbook 5's catalogue through Live Server and verify the new data paths.
 - Run the five-receipt OCR exercise, inspect spreadsheet tabs, then check the chart.
 - Practise explaining Save versus Submit & save: Auto Save may save notebook

@@ -2,7 +2,7 @@
 
 Experiment 5C creates these Git-ignored files here:
 
-- `pipeline_overview_sample.md` — MarkItDown CLI or MCP output.
+- `pipeline_overview_sample.md` — MarkItDown CLI output.
 - `pipeline_overview_sample.agent.md` — the separate agent conversion.
 
 Compare both against the original PDF in `../../data/notebook4/`.

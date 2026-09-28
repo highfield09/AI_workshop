@@ -78,40 +78,6 @@ Find **pipeline_overview_sample.md** in the output folder and open it. Check tha
 it contains text, then compare its headings and reading order with the PDF.
 An empty file may mean conversion failed: read the terminal error first.
 
-<details>
-<summary><b>Use the MarkItDown MCP server through the agent instead</b></summary>
-
-This is an alternative way to call the converter. Installing the MCP server in
-VS Code is separate from installing the `markitdown` terminal command.
-
-1. Open **Extensions**, enable MCP servers if your interface prompts you, and
-   search **@mcp markitdown**. Check that the entry points to Microsoft's project.
-2. Right-click the server and choose **Install in Workspace**. Start/enable it,
-   then enable its **convert_to_markdown** tool in the agent's tool picker.
-   For this local PDF, use a server running in your Codespace with access to the
-   workspace files; a remote server cannot read your local path automatically.
-3. If the gallery entry is unavailable, run this in the terminal:
-
-   ```bash
-   cd /workspaces/AI_workshop
-   .venv/bin/python -m pip install markitdown-mcp
-   ```
-
-   Run **MCP: Add Server** from the Command Palette, choose a command/stdio server,
-   enter `/workspaces/AI_workshop/.venv/bin/markitdown-mcp`, and choose **Workspace**.
-4. In **Agent** chat, send this prompt (use it instead of the CLI conversion):
-
-   ```text
-   Use MarkItDown's convert_to_markdown tool on
-   file:///workspaces/AI_workshop/_for_STUDENT/data/notebook4/pipeline_overview_sample.pdf
-   Save the returned Markdown unchanged to
-   _for_STUDENT/outputs/04_debugging_and_extensions/pipeline_overview_sample.md.
-   Create the output folder if needed. Do not rewrite or summarise the tool result.
-   ```
-
-[VS Code MCP setup guide](https://code.visualstudio.com/docs/agent-customization/mcp-servers).
-
-</details>
 """),
         markdown("""
 ### B · Ask an agent alongside the converter
@@ -125,11 +91,31 @@ this file and save.
 """),
         prompt(AGENT_PROMPT, "PDF to Markdown · Copy into inline chat or Agent chat"),
         markdown("""
-### C · Compare side by side
+### C · Explore extensions: read a PDF in the editor
+
+1. Open **Extensions** in the left sidebar. Type **pdf** into the Marketplace
+   search box and explore a few results. The Marketplace includes first-party
+   and third-party software; compare the publishers, descriptions and features.
+2. Find [**PDF Viewer** by **Mathematic Inc**](https://marketplace.visualstudio.com/items?itemName=mathematic.vscode-pdf)
+   (extension ID: `mathematic.vscode-pdf`). This is the viewer identified at
+   about **2.7 million downloads** in the workshop example; the count changes.
+3. Click **Install**. If prompted, confirm the publisher is **Mathematic Inc**
+   and click **Trust Publisher & Install**.
+4. In Explorer, open **_for_STUDENT → data → notebook4 → pipeline_overview_sample.pdf**.
+   The PDF should now be readable in the **Editor pane**. If an existing tab still
+   shows a binary-file message, close and reopen it, or use **Reopen Editor With… → PDF Viewer**.
+
+Keep the PDF visible beside your Markdown files for the comparison below.
+"""),
+        markdown("""
+### D · Compare side by side
 
 In Explorer, right-click **pipeline_overview_sample.md** → **Select for Compare**;
 then right-click **pipeline_overview_sample.agent.md** → **Compare with Selected**.
-Keep the original PDF open as your reference.
+Keep the original PDF open in PDF Viewer beside the comparison (drag its tab
+into a separate editor group). Compare **both** Markdown files with the original:
+`pipeline_overview_sample.md` from MarkItDown and `pipeline_overview_sample.agent.md`
+from the agent. Check what each preserved, lost or changed.
 
 | Check against the PDF | MarkItDown output | Agent output |
 |---|---|---|
@@ -145,5 +131,7 @@ is automatically better. Choose by faithfulness to the source and downstream
 usefulness. Optionally repeat with another model in a fresh chat and a new file.
 
 Some tools and services are free and open source and can be more economical than paid APIs or AI inference providers, especially for tasks that process large volumes of data; consider them alongside their compute and maintenance costs.
+
+There are lots of extensions available—explore the options and find one that best suits your work and preferences.
 """),
     ]
